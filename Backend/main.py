@@ -1,0 +1,20 @@
+from fastapi import FastAPI
+from Backend.routers import health,volunteers
+from Backend.auth import routes as auth_routes
+
+app=FastAPI(
+    title="Community Disaster Volunteer Hub",
+    description="API for disaster volunteer coordination",
+    version="1.0.0"
+)
+
+@app.get("/")
+def home():
+    return{
+        "message": "Welcome to Disaster Volunteer Hub!",
+        "status": "running"
+    }
+
+app.include_router(health.router)
+app.include_router(volunteers.router)
+app.include_router(auth_routes.router)
