@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDVH | Login</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#0b1b36',
+                            red: '#e62429',
+                            beige: '#f8f5f0',
+                            textDark: '#1a1a1a',
+                            textMuted: '#6b7280'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global Styles & Animations -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f5f0;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Login page layout */
+        .login-main {
+            min-height: calc(100vh - 138px);
+        }
+
+        @media (max-width: 767px) {
+            .login-main {
+                min-height: auto;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+        /* Input floating label animations */
+        .input-group {
+            position: relative;
+        }
+        .input-group input {
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-group label {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: white;
+            padding: 0 0.25rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+            transition: all 0.2s ease-out;
+            pointer-events: none;
+        }
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 0.75rem;
+            color: #0b1b36;
+            font-weight: 600;
+        }
+
+        /* Segmented Control for Roles */
+        .segmented-control {
+            display: flex;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+        }
+        .segmented-control label {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+        .segmented-control input[type="radio"]:checked + label {
+            background-color: white;
+            color: #0b1b36;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Button Hover Fill */
+        .btn-fill {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .btn-fill::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.15);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease-out;
+            z-index: -1;
+        }
+        .btn-fill:hover::before {
+            transform: scaleY(1);
+        }
+
+        /* Toast Animation */
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body class="min-h-screen bg-brand-beige text-brand-textDark">
+
+    <!-- Top Bar -->
+    <div class="bg-brand-navy text-white text-xs py-2 px-6 flex justify-between items-center hidden md:flex">
+        <div class="flex gap-6">
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                info@cdvh.org
+            </span>
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Chengannur, Kerala
+            </span>
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                030-123-4567
+            </span>
+        </div>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-brand-red transition">Facebook</a>
+            <a href="#" class="hover:text-brand-red transition">Twitter</a>
+            <a href="#" class="hover:text-brand-red transition">LinkedIn</a>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="../index.html" class="flex items-center gap-2">
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-1">
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-1">
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                    </div>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-brand-navy ml-2">CDVH<span class="text-brand-red">.</span></span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-textDark">
+                <a href="../index.html" class="hover:text-brand-red transition">Home</a>
+                <a href="about.html" class="hover:text-brand-red transition">About Us</a>
+                <a href="safety.html" class="hover:text-brand-red transition">Safety Tips</a>
+                <a href="ai-platform.html" class="hover:text-brand-red transition">AI Platform</a>
+                <a href="contact.html" class="hover:text-brand-red transition">Contact Us</a>
+            </nav>
+            
+            <!-- CTA -->
+            <div class="hidden md:flex items-center gap-3">
+
+                <!-- Donate Button -->
+                <a href="donate.html"
+                class="btn-hover relative overflow-hidden bg-brand-red hover:bg-red-700
+                        text-white px-6 py-2.5 rounded text-sm font-semibold
+                        transition-all duration-300 shadow-md hover:shadow-lg
+                        hover:-translate-y-0.5">
+                    Donate / Support
+                </a>
+
+                <!-- Login Button -->
+                <a href="login.html"
+                   class="btn-hover relative overflow-hidden bg-brand-navy text-white border-2 border-brand-navy
+                          hover:bg-[#152e59] hover:border-[#152e59]
+                          px-6 py-2.5 rounded text-sm font-semibold
+                          transition-all duration-300 shadow-md hover:shadow-lg
+                          hover:-translate-y-0.5">
+                    Login
+                </a>
+
+            </div>
+
+
+
+
+            <!-- Mobile menu button -->
+            <button class="md:hidden text-brand-navy">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </header>
+
+
+
+    <!-- Professional Centered Authentication Page -->
+    <main class="login-main flex items-center justify-center px-4 py-12 sm:px-6 relative">
+        <!-- Authentication Card -->
+        <div class="w-full max-w-lg">
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+
+                <!-- Brand Header -->
+                <div class="px-6 pt-8 pb-6 text-center border-b border-gray-100">
+                    <a href="../index.html" class="inline-flex items-center gap-3 group">
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-1">
+                                <div class="w-4 h-4 bg-brand-red"></div>
+                                <div class="w-4 h-4 bg-brand-navy group-hover:bg-brand-red transition"></div>
+                            </div>
+                            <div class="flex items-center gap-1 mt-1">
+                                <div class="w-4 h-4 bg-brand-navy group-hover:bg-brand-red transition"></div>
+                                <div class="w-4 h-4 bg-brand-red"></div>
+                            </div>
+                        </div>
+                        <span class="text-3xl font-bold text-brand-navy tracking-tight">
+                            CDVH<span class="text-brand-red">.</span>
+                        </span>
+                    </a>
+                    <p class="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+                        Community Disaster Volunteer Hub
+                    </p>
+                </div>
+
+                <!-- Form Area -->
+                <div class="p-6 sm:p-10">
+                    <!-- Header -->
+                    <div class="mb-8 text-center">
+                        <h2 id="formTitle" class="text-3xl font-bold text-brand-navy mb-2">Welcome back</h2>
+                        <p id="formSubtitle" class="text-gray-500 text-sm">
+                            Enter your credentials to access the CDVH dashboard.
+                        </p>
+                    </div>
+
+                    <!-- Tabs: Sign In / Sign Up -->
+                    <div class="flex border-b border-gray-200 mb-8">
+                        <button onclick="switchMode('login')" id="tabLogin"
+                                class="flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition">
+                            Sign In
+                        </button>
+                        <button onclick="switchMode('register')" id="tabRegister"
+                                class="flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
+                            Create Account
+                        </button>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="authForm" onsubmit="handleAuth(event)" class="space-y-5">
+
+                        <!-- Role Selector -->
+                        <div class="mb-6">
+                            <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                Select Your Role
+                            </label>
+                            <div class="segmented-control">
+                                <input type="radio" name="role" id="roleVolunteer" value="volunteer" checked>
+                                <label for="roleVolunteer">Volunteer</label>
+
+                                <input type="radio" name="role" id="roleCoordinator" value="coordinator">
+                                <label for="roleCoordinator">Coordinator</label>
+
+                                <input type="radio" name="role" id="roleAdmin" value="admin">
+                                <label for="roleAdmin">Admin</label>
+                            </div>
+                        </div>
+
+                        <!-- Register Specific Fields -->
+                        <div id="registerFields" class="hidden space-y-5 animate-fadeIn">
+
+                            <!-- Common Registration Fields -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="input-group">
+                                    <input type="text" id="firstName" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="firstName">First Name</label>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="lastName" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="lastName">Last Name</label>
+                                </div>
+                                <div class="input-group">
+                                    <input type="tel" id="regPhone" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="regPhone">Phone</label>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="regCity" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="regCity">City</label>
+                                </div>
+                                <div class="input-group sm:col-span-2">
+                                    <input type="text" id="regAddress" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="regAddress">Address</label>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="regState" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="regState">State</label>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="regPincode" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="regPincode">Pincode</label>
+                                </div>
+                            </div>
+
+                            <!-- Volunteer Specific Fields -->
+                            <div id="volunteerFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Date of Birth</label>
+                                    <input type="date" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Gender</label>
+                                    <select class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                        <option value="" disabled selected>Select Gender</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Blood Group</label>
+                                    <select class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                        <option value="" disabled selected>Select Group</option>
+                                        <option>A+</option><option>A-</option>
+                                        <option>B+</option><option>B-</option>
+                                        <option>AB+</option><option>AB-</option>
+                                        <option>O+</option><option>O-</option>
+                                    </select>
+                                </div>
+                                <div class="input-group mt-6">
+                                    <input type="text" id="aadhaar" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="aadhaar">Aadhaar Number</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input type="text" id="skill1" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="skill1">Skill 1 (e.g., First Aid)</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input type="text" id="skill2" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="skill2">Skill 2</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input type="text" id="skill3" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="skill3">Skill 3</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input type="number" id="yoe" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="yoe">Years of Experience</label>
+                                </div>
+                                <div class="input-group sm:col-span-2 mt-2">
+                                    <input type="text" id="prevExp" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="prevExp">Previous Experience</label>
+                                </div>
+                                <div class="sm:col-span-2 grid grid-cols-2 gap-4 mt-2">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Available From</label>
+                                        <input type="time" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Available To</label>
+                                        <input type="time" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    </div>
+                                </div>
+                                <div class="input-group sm:col-span-2 mt-2">
+                                    <input type="text" id="langs" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="langs">Languages</label>
+                                </div>
+                            </div>
+
+                            <!-- Coordinator Specific Fields -->
+                            <div id="coordinatorFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-4 hidden">
+                                <div class="input-group mt-2">
+                                    <input type="text" id="org" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="org">Organization</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input type="text" id="region" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="region">Region</label>
+                                </div>
+                            </div>
+
+                            <!-- Admin Specific Fields -->
+                            <div id="adminFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-4 hidden">
+                                <div class="input-group mt-2">
+                                    <input type="text" id="adminId" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="adminId">Admin ID</label>
+                                </div>
+                                <div class="input-group mt-2">
+                                    <input type="text" id="dept" placeholder=" "
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="dept">Department</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div class="input-group">
+                            <input type="email" id="email" placeholder=" " required
+                                   class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                            <label for="email">Email Address</label>
+                        </div>
+
+                        <div class="input-group relative">
+                            <input type="password" id="password" placeholder=" " required
+                                   class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition pr-12">
+                            <label for="password">Password</label>
+                            <button type="button" onclick="togglePassword()"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-navy focus:outline-none transition">
+                                <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Form Utilities -->
+                        <div id="loginUtils" class="flex items-center justify-between mt-2">
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <div class="relative flex items-center justify-center w-4 h-4">
+                                    <input type="checkbox"
+                                           class="peer appearance-none w-4 h-4 border border-gray-300 rounded checked:bg-brand-navy checked:border-brand-navy transition cursor-pointer">
+                                    <svg class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition"
+                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                              d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-600 group-hover:text-brand-navy transition">Remember me</span>
+                            </label>
+                            <a href="#" class="text-xs font-semibold text-brand-navy hover:text-brand-red transition">
+                                Forgot Password?
+                            </a>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="submitBtn"
+                                class="btn-fill w-full bg-brand-navy text-white font-semibold py-3.5 rounded-lg text-sm
+                                       transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 mt-6
+                                       flex justify-center items-center gap-2">
+                            <span>Sign In</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="flex-1 h-px bg-gray-200"></div>
+                        <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">Or continue with</span>
+                        <div class="flex-1 h-px bg-gray-200"></div>
+                    </div>
+
+                    <!-- Social Logins -->
+                    <div class="mt-6 grid grid-cols-2 gap-4">
+                        <button type="button"
+                                class="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg
+                                       hover:bg-gray-50 hover:border-gray-400 transition text-sm font-medium text-gray-700">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                <path fill="none" d="M1 1h22v22H1z"/>
+                            </svg>
+                            Google
+                        </button>
+
+                        <button type="button"
+                                class="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg
+                                       hover:bg-gray-50 hover:border-gray-400 transition text-sm font-medium text-gray-700">
+                            <svg class="w-5 h-5 text-gray-900" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                            </svg>
+                            GitHub
+                        </button>
+                    </div>
+
+                    <p class="text-center text-xs text-gray-400 mt-10">
+                        Secured by FastAPI & JWT. Protected by
+                        <a href="#" class="underline hover:text-brand-navy">Privacy Policy</a>.
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-center text-xs text-gray-400 mt-5">
+                © 2026 Community Disaster Volunteer Hub
+            </p>
+        </div>
+    </main>
+
+
+    <!-- Deep Footer (Navy) -->
+    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            <div>
+                <span class="text-xl font-bold tracking-tight text-white block mb-4">CDVH<span class="text-brand-red">.</span></span>
+                <p class="text-gray-400 mb-4">Community Disaster Volunteer Hub. AI-Assisted platform for rapid response coordination.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Platform</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="ai-platform.html" class="hover:text-white transition">ML Volunteer Matching</a></li>
+                    <li><a href="ai-platform.html" class="hover:text-white transition">DL Intent Detection</a></li>
+                    <li><a href="ai-platform.html" class="hover:text-white transition">RAG Architecture</a></li>
+                    <li><a href="login.html" class="hover:text-white transition">Security (JWT)</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Resources</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="coordinator.html" class="hover:text-white transition">Coordinator Dashboard</a></li>
+                    <li><a href="safety.html" class="hover:text-white transition">Disaster Guidelines</a></li>
+                    <li><a href="#" class="hover:text-white transition">API Documentation</a></li>
+                    <li><a href="#" class="hover:text-white transition">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Contact</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li>112 Emergency Line</li>
+                    <li>030-123-4567 (Hub)</li>
+                    <li>support@cdvh.org</li>
+                    <li>Kerala, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-12 pt-6 border-t border-white/10 text-center text-xs text-gray-500">
+            &copy; 2026 Community Disaster Volunteer Hub. All rights reserved.
+        </div>
+    </footer>
+
+
+    <!-- Toast Notification (Hidden by default) -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-brand-navy text-white px-6 py-4 rounded-lg shadow-2xl hidden items-center gap-3 z-50">
+        <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm" id="toastTitle">Authentication Success</h4>
+            <p class="text-xs text-gray-300" id="toastMessage">JWT token received. Redirecting to dashboard...</p>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'login';
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const title = document.getElementById('formTitle');
+            const subtitle = document.getElementById('formSubtitle');
+            const registerFields = document.getElementById('registerFields');
+            const loginUtils = document.getElementById('loginUtils');
+            const btnSpan = document.querySelector('#submitBtn span');
+
+            if (mode === 'login') {
+                // UI Updates for Login
+                tabLogin.className = "flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition";
+                tabRegister.className = "flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
+                
+                title.textContent = "Welcome back";
+                subtitle.textContent = "Enter your credentials to access the CDVH dashboard.";
+                btnSpan.textContent = "Sign In";
+                
+                registerFields.classList.add('hidden');
+                loginUtils.classList.remove('hidden');
+
+            } else {
+                // UI Updates for Register
+                tabRegister.className = "flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition";
+                tabLogin.className = "flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
+                
+                title.textContent = "Create an Account";
+                subtitle.textContent = "Join 1.5K+ volunteers ready to respond to disasters.";
+                btnSpan.textContent = "Register Profile";
+                
+                registerFields.classList.remove('hidden');
+                loginUtils.classList.add('hidden');
+            }
+        }
+
+        // Listen for role changes to show specific fields
+        document.querySelectorAll('input[name="role"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const volFields = document.getElementById('volunteerFields');
+                const coordFields = document.getElementById('coordinatorFields');
+                const adminFields = document.getElementById('adminFields');
+                
+                if(volFields && coordFields && adminFields) {
+                    volFields.classList.add('hidden');
+                    coordFields.classList.add('hidden');
+                    adminFields.classList.add('hidden');
+                    
+                    if (e.target.value === 'volunteer') volFields.classList.remove('hidden');
+                    if (e.target.value === 'coordinator') coordFields.classList.remove('hidden');
+                    if (e.target.value === 'admin') adminFields.classList.remove('hidden');
+                }
+            });
+        });
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>`;
+            } else {
+                input.type = 'password';
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>`;
+            }
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const originalContent = btn.innerHTML;
+            
+            // Set loading state
+            btn.disabled = true;
+            btn.innerHTML = `<svg class="animate-spin w-5 h-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span>Processing...</span>`;
+            
+            // Simulate API request to FastAPI Auth Module
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                
+                // Get selected role for toast message
+                const role = document.querySelector('input[name="role"]:checked').value;
+                
+                // Show Success Toast
+                const toast = document.getElementById('toast');
+                document.getElementById('toastTitle').textContent = currentMode === 'login' ? 'Login Successful' : 'Registration Complete';
+                document.getElementById('toastMessage').textContent = `Authenticated as ${role.charAt(0).toUpperCase() + role.slice(1)}. Redirecting...`;
+                
+                toast.classList.remove('hidden');
+                toast.classList.add('flex', 'toast-enter');
+                
+                // Simulate redirect
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            }, 1500);
+        }
+    </script>
+    <!-- Global Animations & Effects -->
+    <script src="../assets/js/animations.js"></script>
+</body>
+</html>

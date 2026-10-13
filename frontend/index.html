@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDVH | Community Disaster Volunteer Hub</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration matching the reference image -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#0b1b36',
+                            red: '#e62429',
+                            beige: '#f8f5f0',
+                            textDark: '#1a1a1a',
+                            textMuted: '#6b7280'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- === CSS SECTION === -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-white text-brand-textDark flex flex-col min-h-screen">
+
+    <!-- Top Bar -->
+    <div class="bg-brand-navy text-white text-xs py-2 px-6 flex justify-between items-center hidden md:flex">
+        <div class="flex gap-6">
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                info@cdvh.org
+            </span>
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Chengannur, Kerala
+            </span>
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                030-123-4567
+            </span>
+        </div>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-brand-red transition">Facebook</a>
+            <a href="#" class="hover:text-brand-red transition">Twitter</a>
+            <a href="#" class="hover:text-brand-red transition">LinkedIn</a>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2">
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-1">
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-1">
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                    </div>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-brand-navy ml-2">CDVH<span class="text-brand-red">.</span></span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-textDark">
+                <a href="#" class="text-brand-red">Home</a>
+                <a href="#" class="hover:text-brand-red transition">About Us</a>
+                <a href="#" class="hover:text-brand-red transition">Safety Tips</a>
+                <a href="#" class="hover:text-brand-red transition">AI Platform</a>
+                <a href="#" class="hover:text-brand-red transition">Contact Us</a>
+            </nav>
+            
+            <!-- CTA -->
+            <div class="hidden md:flex items-center gap-3">
+
+                <!-- Donate Button -->
+                <a href="#"
+                class="btn-hover relative overflow-hidden bg-brand-red hover:bg-red-700
+                        text-white px-6 py-2.5 rounded text-sm font-semibold
+                        transition-all duration-300 shadow-md hover:shadow-lg
+                        hover:-translate-y-0.5">
+                    Donate / Support
+                </a>
+
+                <!-- Login Button -->
+                <a href="pages/login.html"
+                class="btn-hover relative overflow-hidden
+                        border-2 border-brand-navy text-brand-navy
+                        hover:bg-brand-navy hover:text-white
+                        px-6 py-2.5 rounded text-sm font-semibold
+                        transition-all duration-300 shadow-sm hover:shadow-lg
+                        hover:-translate-y-0.5">
+                    Login
+                </a>
+
+            </div>
+
+
+
+
+            <!-- Mobile menu button -->
+            <button class="md:hidden text-brand-navy">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative w-full flex flex-col md:flex-row bg-brand-navy min-h-[600px] overflow-hidden">
+        
+        <!-- Left Side: Navy Blue -->
+        <div class="w-full md:w-[55%] relative z-10 px-6 py-16 md:py-24 md:pl-16 lg:pl-32 flex flex-col justify-center">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                Advanced Disaster Solutions, Empowering Response
+            </h1>
+            <p class="text-gray-300 text-sm md:text-base max-w-md mb-8 leading-relaxed">
+                An AI-assisted platform connecting the right volunteers to the right disaster-response tasks using Deep Learning and ML algorithms.
+            </p>
+
+            <!-- Interactive Emergency Form Container -->
+            <div class="bg-white p-6 rounded shadow-2xl max-w-md w-full border-t-4 border-brand-red">
+                <h3 class="text-brand-navy font-semibold text-lg mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    Report an Emergency
+                </h3>
+                <form id="heroEmergencyForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Incident Location</label>
+                        <input type="text" id="incidentLoc" placeholder="e.g., Main Street, Chengannur" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-500 mb-1">Emergency Details</label>
+                        <textarea id="incidentDesc" rows="3" placeholder="Describe the required help (e.g., medical, food, rescue)..." required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="btn-hover w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-sm font-semibold transition flex justify-center items-center gap-2 shadow-lg">
+                        Analyze with NLP & Send Alert
+                    </button>
+                </form>
+                
+                <!-- Status Alert Box (Hidden by default) -->
+                <div id="heroAlertStatus" class="mt-4 p-3 bg-red-50 border border-red-100 rounded hidden">
+                    <p class="text-xs text-brand-red font-medium" id="heroAlertText"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Red Block & Image -->
+        <div class="w-full md:w-[45%] bg-brand-red relative hidden md:block">
+            <!-- Overlapping Image -->
+            <div class="absolute top-1/2 -translate-y-1/2 -left-32 w-[120%] z-20 shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=800&q=80" alt="Volunteers in action" class="w-full h-auto object-cover border-8 border-white">
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="bg-brand-red text-white py-12 relative z-20">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/20">
+            <div class="pt-4 md:pt-0">
+                <div class="text-4xl lg:text-5xl font-bold mb-2">94%</div>
+                <div class="text-sm font-medium uppercase tracking-wider text-red-100">ML Match Accuracy</div>
+            </div>
+            <div class="pt-4 md:pt-0">
+                <div class="text-4xl lg:text-5xl font-bold mb-2">1.5K+</div>
+                <div class="text-sm font-medium uppercase tracking-wider text-red-100">Active Volunteers</div>
+            </div>
+            <div class="pt-4 md:pt-0">
+                <div class="text-4xl lg:text-5xl font-bold mb-2">98%</div>
+                <div class="text-sm font-medium uppercase tracking-wider text-red-100">Task Resolution</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            
+            <!-- Left: Images (Staggered layout matching reference) -->
+            <div class="relative h-[500px]">
+                <div class="absolute top-0 right-0 w-4/5 h-4/5">
+                    <img src="https://images.unsplash.com/photo-1593113565694-c6c21e649d21?auto=format&fit=crop&w=600&q=80" alt="Coordinator managing tasks" class="w-full h-full object-cover rounded shadow-lg grayscale hover:grayscale-0 transition duration-500">
+                </div>
+                <div class="absolute bottom-0 left-0 w-3/5 h-3/5 border-8 border-white shadow-xl bg-white">
+                    <div class="w-full h-full bg-brand-navy flex items-center justify-center p-6 text-center">
+                        <div class="text-white">
+                            <svg class="w-10 h-10 mx-auto mb-2 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            <h4 class="font-bold">FastAPI Backend</h4>
+                            <p class="text-xs text-gray-400 mt-1">Secure JWT & PostgreSQL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Text Content -->
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-6 h-6 bg-brand-red"></div>
+                    <div class="w-6 h-6 bg-brand-navy -ml-2 mt-2"></div>
+                    <span class="text-brand-red font-bold text-sm tracking-widest uppercase ml-2">About CDVH Platform</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-navy mb-6 leading-tight">
+                    Disaster Management Center Elevating coordination with Advanced AI solutions.
+                </h2>
+                <p class="text-brand-textMuted mb-8 leading-relaxed">
+                    During disasters, organizing help is difficult. Information is scattered, and finding volunteers with the right skills in real-time is a challenge. CDVH solves this by integrating Machine Learning for task matching and Natural Language Processing to instantly understand emergency messages.
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 p-5 rounded border-l-4 border-brand-red">
+                        <div class="w-8 h-8 rounded-full bg-brand-red/10 flex items-center justify-center mb-3">
+                            <svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h4 class="font-semibold text-brand-navy mb-1 text-sm">ML Volunteer Matching</h4>
+                        <p class="text-xs text-gray-500">Scikit-learn algorithms match profiles based on distance, skills, and urgency.</p>
+                    </div>
+                    <div class="bg-gray-50 p-5 rounded border-l-4 border-brand-navy">
+                        <div class="w-8 h-8 rounded-full bg-brand-navy/10 flex items-center justify-center mb-3">
+                            <svg class="w-4 h-4 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        </div>
+                        <h4 class="font-semibold text-brand-navy mb-1 text-sm">RAG Assistant Chatbot</h4>
+                        <p class="text-xs text-gray-500">Vector database search provides grounded, official disaster guidelines instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteer AI Matching Section -->
+    <section class="py-20 bg-brand-beige">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div class="max-w-2xl">
+                    <span class="text-brand-red font-bold text-sm tracking-widest uppercase mb-2 block">AI Recommendations</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-navy">Leading Volunteers Matched for Medical Task</h2>
+                </div>
+                <div class="mt-4 md:mt-0 text-sm text-gray-500">
+                    <span class="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span> High Compatibility
+                </div>
+            </div>
+
+            <!-- Grid of 4 Volunteer Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white rounded overflow-hidden shadow-soft group hover:-translate-y-1 transition duration-300">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80" alt="Volunteer" class="w-full h-48 object-cover">
+                    <div class="p-6 relative">
+                        <div class="absolute -top-5 right-4 bg-brand-navy text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                            94% Match
+                        </div>
+                        <h4 class="font-bold text-brand-navy text-lg">Anjana S.</h4>
+                        <p class="text-brand-red text-xs font-semibold mb-3">Medical, First Aid</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>Distance: 2 km</li>
+                            <li>Exp: 3 Years</li>
+                            <li>Available: Yes</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white rounded overflow-hidden shadow-soft group hover:-translate-y-1 transition duration-300">
+                    <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80" alt="Volunteer" class="w-full h-48 object-cover">
+                    <div class="p-6 relative">
+                        <div class="absolute -top-5 right-4 bg-brand-navy text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                            88% Match
+                        </div>
+                        <h4 class="font-bold text-brand-navy text-lg">Vishnu K.</h4>
+                        <p class="text-brand-red text-xs font-semibold mb-3">First Aid, Logistics</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>Distance: 5 km</li>
+                            <li>Exp: 1 Year</li>
+                            <li>Available: Yes</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white rounded overflow-hidden shadow-soft group hover:-translate-y-1 transition duration-300">
+                    <img src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=300&q=80" alt="Volunteer" class="w-full h-48 object-cover">
+                    <div class="p-6 relative">
+                        <div class="absolute -top-5 right-4 bg-gray-500 text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                            72% Match
+                        </div>
+                        <h4 class="font-bold text-brand-navy text-lg">Jomol M.</h4>
+                        <p class="text-brand-red text-xs font-semibold mb-3">General Relief</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>Distance: 8 km</li>
+                            <li>Exp: Entry</li>
+                            <li>Available: Pending</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white rounded overflow-hidden shadow-soft group hover:-translate-y-1 transition duration-300">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" alt="Volunteer" class="w-full h-48 object-cover">
+                    <div class="p-6 relative">
+                        <div class="absolute -top-5 right-4 bg-gray-500 text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                            65% Match
+                        </div>
+                        <h4 class="font-bold text-brand-navy text-lg">Arjun P.</h4>
+                        <p class="text-brand-red text-xs font-semibold mb-3">Search & Rescue</p>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>Distance: 12 km</li>
+                            <li>Exp: 4 Years</li>
+                            <li>Available: No</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-10">
+                <button class="btn-hover border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white px-8 py-2.5 font-semibold text-sm transition rounded">View All Profiles</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- NLP Feature Section (Modeled after testimonial layout) -->
+    <section class="py-24 bg-brand-navy relative overflow-hidden">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 relative z-10 flex flex-col lg:flex-row gap-12 items-center">
+            
+            <div class="lg:w-1/3 text-white">
+                <span class="text-brand-red font-bold text-sm tracking-widest uppercase mb-2 block">Deep Learning Engine</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">How our AI Understands Emergencies</h2>
+                <p class="text-gray-300 text-sm mb-8 leading-relaxed">
+                    Our platform utilizes TensorFlow and Keras to process incoming distress messages. The NLP module performs tokenization, embedding, and LSTM processing to automatically classify intents and extract required skills.
+                </p>
+                <div class="flex gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-brand-red mb-1">LSTM</div>
+                        <div class="text-[10px] uppercase tracking-widest text-gray-400">Model Arch</div>
+                    </div>
+                    <div class="w-px bg-white/20"></div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-brand-red mb-1">Softmax</div>
+                        <div class="text-[10px] uppercase tracking-widest text-gray-400">Classification</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overlapping White Box for NLP Output Simulation -->
+            <div class="lg:w-2/3 w-full">
+                <div class="bg-white p-8 md:p-10 rounded shadow-2xl relative">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-brand-red rounded-l"></div>
+                    
+                    <div class="flex items-start gap-4 mb-6 pb-6 border-b border-gray-100">
+                        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 italic mb-2">"There are injured people at the flood shelter near the main bridge. We need bandages and someone who knows CPR immediately."</p>
+                            <span class="text-xs font-bold text-brand-navy uppercase tracking-wider">Raw Input Message</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100 text-center">
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Detected Intent</div>
+                            <div class="text-sm font-bold text-brand-navy">Medical Request</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100 text-center">
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Urgency</div>
+                            <div class="text-sm font-bold text-brand-red">High / Critical</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100 text-center">
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Extracted Skill</div>
+                            <div class="text-sm font-bold text-brand-navy">First Aid, CPR</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-100 text-center">
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Auto-Action</div>
+                            <div class="text-sm font-bold text-green-600">Route to ML Match</div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- News / Articles Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16">
+            <div class="flex justify-between items-end mb-12 border-b border-gray-100 pb-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-brand-navy">Read Our Disaster Safety News</h2>
+                </div>
+                <a href="#" class="hidden md:block text-brand-red font-semibold text-sm hover:underline">View All Articles</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Article 1 -->
+                <div class="group cursor-pointer">
+                    <div class="overflow-hidden rounded mb-4">
+                        <img src="https://images.unsplash.com/photo-1542224566-6e85f2e6772f?auto=format&fit=crop&w=400&q=80" alt="Forest Fire Prep" class="w-full h-56 object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-brand-red text-white p-2 rounded flex flex-col items-center justify-center min-w-[50px] h-[50px]">
+                            <span class="text-sm font-bold">12</span>
+                            <span class="text-[10px] uppercase">Oct</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-navy mb-2 group-hover:text-brand-red transition">Essential Evacuation Kit Checklist</h4>
+                            <p class="text-sm text-gray-500 line-clamp-2">Learn what documents, medical supplies, and basic necessities you need to pack in your go-bag before a disaster strikes.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Article 2 -->
+                <div class="group cursor-pointer">
+                    <div class="overflow-hidden rounded mb-4">
+                        <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=400&q=80" alt="Medical Team" class="w-full h-56 object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-brand-red text-white p-2 rounded flex flex-col items-center justify-center min-w-[50px] h-[50px]">
+                            <span class="text-sm font-bold">08</span>
+                            <span class="text-[10px] uppercase">Oct</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-navy mb-2 group-hover:text-brand-red transition">First Aid Basics for Volunteers</h4>
+                            <p class="text-sm text-gray-500 line-clamp-2">A quick refresher on CPR, treating burns, and managing bleeding while waiting for professional medical personnel to arrive.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Article 3 -->
+                <div class="group cursor-pointer">
+                    <div class="overflow-hidden rounded mb-4">
+                        <img src="https://images.unsplash.com/photo-1527011045974-4b53ce70e8ed?auto=format&fit=crop&w=400&q=80" alt="Flooding response" class="w-full h-56 object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-brand-red text-white p-2 rounded flex flex-col items-center justify-center min-w-[50px] h-[50px]">
+                            <span class="text-sm font-bold">01</span>
+                            <span class="text-[10px] uppercase">Oct</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-navy mb-2 group-hover:text-brand-red transition">Navigating Flood Zones Safely</h4>
+                            <p class="text-sm text-gray-500 line-clamp-2">Safety protocols for moving through waterlogged areas, avoiding electrical hazards, and waterborne diseases.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pre-Footer Contact Section (Beige) -->
+    <section class="bg-brand-beige py-16 border-t border-gray-200">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="w-12 h-12 rounded-full bg-brand-red/10 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                </div>
+                <h2 class="text-3xl font-bold text-brand-navy mb-4">Start Your Volunteer Journey Here.</h2>
+                <p class="text-gray-600 text-sm mb-6 max-w-md">Register your profile, list your skills, and let our ML matching system connect you to urgent tasks when disasters strike.</p>
+                <ul class="space-y-3 text-sm font-medium text-brand-navy">
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Secure profile management</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Real-time alert notifications</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Connect directly with coordinators</li>
+                </ul>
+            </div>
+            
+            <div class="bg-white p-10 rounded shadow-soft border-t-4 border-brand-red text-center flex flex-col justify-center items-center h-full">
+                <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+                <h3 class="font-bold text-brand-navy text-2xl mb-4">Ready to make a difference?</h3>
+                <p class="text-gray-500 text-sm mb-8 max-w-sm">Join our network of over 1.5K+ active volunteers. Your skills can save lives during the next disaster.</p>
+                <button onclick="openLoginModal()" class="btn-hover w-full md:w-auto bg-brand-red hover:bg-red-700 text-white px-8 py-3.5 rounded text-sm font-bold transition shadow-lg uppercase tracking-wide">
+                    Register as a Volunteer
+                </button>
+                <p class="text-xs text-gray-400 mt-4">Registration takes less than 2 minutes.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deep Footer (Navy) -->
+    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            <div>
+                <span class="text-xl font-bold tracking-tight text-white block mb-4">CDVH<span class="text-brand-red">.</span></span>
+                <p class="text-gray-400 mb-4">Community Disaster Volunteer Hub. AI-Assisted platform for rapid response coordination.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Platform</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">ML Volunteer Matching</a></li>
+                    <li><a href="#" class="hover:text-white transition">DL Intent Detection</a></li>
+                    <li><a href="#" class="hover:text-white transition">RAG Architecture</a></li>
+                    <li><a href="#" class="hover:text-white transition">Security (JWT)</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Resources</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">Coordinator Dashboard</a></li>
+                    <li><a href="#" class="hover:text-white transition">Disaster Guidelines</a></li>
+                    <li><a href="#" class="hover:text-white transition">API Documentation</a></li>
+                    <li><a href="#" class="hover:text-white transition">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Contact</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li>112 Emergency Line</li>
+                    <li>030-123-4567 (Hub)</li>
+                    <li>support@cdvh.org</li>
+                    <li>Kerala, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-12 pt-6 border-t border-white/10 text-center text-xs text-gray-500">
+            &copy; 2026 Community Disaster Volunteer Hub. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Floating RAG Chatbot Widget -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        
+        <!-- Chat Window -->
+        <div id="chatWindow" class="bg-white w-80 md:w-96 rounded-lg shadow-2xl border border-gray-200 mb-4 hidden flex-col overflow-hidden animate-slide-up h-[400px]">
+            
+            <!-- Header -->
+            <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm">CDVH Assistant</h4>
+                        <p class="text-[10px] text-gray-300 uppercase tracking-widest">RAG Knowledge Base</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-gray-300 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Messages Area -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
+                <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm">
+                    Hello! I am the CDVH AI Assistant powered by FAISS/Chroma. Ask me about official disaster guidelines.
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <form id="chatForm" class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" id="chatInput" placeholder="Ask a question..." required class="flex-1 px-3 py-2 bg-gray-100 border-none rounded text-sm focus:outline-none focus:ring-1 focus:ring-brand-navy">
+                <button type="submit" class="bg-brand-red hover:bg-red-700 text-white px-3 py-2 rounded transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Toggle Button -->
+        <button onclick="toggleChat()" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 border-2 border-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        </button>
+    </div>
+
+    <script>
+        // --- Emergency Form Logic (Simulating DL/NLP backend) ---
+        document.getElementById('heroEmergencyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const location = document.getElementById('incidentLoc').value;
+            const text = document.getElementById('incidentDesc').value.toLowerCase();
+            const alertBox = document.getElementById('heroAlertStatus');
+            const alertText = document.getElementById('heroAlertText');
+            
+            const btn = this.querySelector('button');
+            const originalBtnText = btn.innerHTML;
+            btn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing NLP...`;
+            btn.disabled = true;
+
+            // Simulate server processing time for NLP Intent Detection
+            setTimeout(() => {
+                let intent = "General Request";
+                
+                if(text.includes('injur') || text.includes('medic') || text.includes('bleed')) {
+                    intent = "Medical Emergency";
+                } else if(text.includes('food') || text.includes('water')) {
+                    intent = "Relief Supplies";
+                } else if(text.includes('trapped') || text.includes('rescue')) {
+                    intent = "Search & Rescue";
+                }
+
+                alertBox.classList.remove('hidden');
+                alertText.innerHTML = `
+                    <span class="block mb-1 text-gray-800"><strong class="text-brand-navy">NLP Result:</strong> Intent classified as <strong>${intent}</strong> at ${location}.</span>
+                    <span class="block">Pinged FastAPI backend. Routing to Scikit-learn matching module...</span>
+                `;
+                
+                btn.innerHTML = originalBtnText;
+                btn.disabled = false;
+                
+                // Reset form
+                document.getElementById('incidentLoc').value = '';
+                document.getElementById('incidentDesc').value = '';
+                
+            }, 1500);
+        });
+
+        // --- RAG Chatbot Logic ---
+        let isChatOpen = false;
+        
+        function toggleChat() {
+            const window = document.getElementById('chatWindow');
+            isChatOpen = !isChatOpen;
+            
+            if(isChatOpen) {
+                window.classList.remove('hidden');
+                window.classList.add('flex');
+            } else {
+                window.classList.add('hidden');
+                window.classList.remove('flex');
+            }
+        }
+
+        // Simulated Vector Database for RAG
+        const ragDatabase = {
+            "flood": "In a flood scenario, move to higher ground immediately. Do not walk or drive through floodwaters. Disconnect electrical appliances if safe to do so.",
+            "fire": "If there is a fire, evacuate immediately. Stay low to the ground to avoid inhaling smoke. Call emergency services and do not re-enter the building.",
+            "medical": "Ensure the scene is safe first. If someone is bleeding, apply direct firm pressure. If unconscious but breathing normally, place in the recovery position.",
+            "volunteer": "As a volunteer, always report to your designated coordinator first. Do not self-deploy to danger zones. Keep your ID and protective gear on at all times."
+        };
+
+        document.getElementById('chatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            // Add user message
+            addChatMessage(msg, 'user');
+            input.value = '';
+
+            // Simulate RAG Retrieval & LLM Generation delay
+            setTimeout(() => {
+                let reply = "Searching vector database... Based on general guidelines, please stay calm and await instructions from local authorities.";
+                
+                const lowerMsg = msg.toLowerCase();
+                for (const [key, context] of Object.entries(ragDatabase)) {
+                    if (lowerMsg.includes(key)) {
+                        reply = `<strong class="text-brand-navy text-[10px] uppercase tracking-widest block mb-1">[Context Retrieved via FAISS]</strong>${context}`;
+                        break;
+                    }
+                }
+                
+                addChatMessage(reply, 'bot');
+            }, 800);
+        });
+
+        function addChatMessage(text, sender) {
+            const chatArea = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            
+            if (sender === 'user') {
+                div.className = "bg-brand-navy text-white p-3 rounded-lg rounded-tr-none text-sm self-end max-w-[85%] shadow-sm";
+            } else {
+                div.className = "bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm";
+            }
+            
+            div.innerHTML = text;
+            chatArea.appendChild(div);
+            
+            // Scroll to bottom
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        /* === JAVASCRIPT SECTION === */
+    </script>
+    <!-- Professional Animations & Effects Engine -->
+    <script src="assets/js/animations.js"></script>
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDVH | Coordinator Dashboard</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            navy:      '#0b1b36',
+                            red:       '#e62429',
+                            beige:     '#f8f5f0',
+                            textDark:  '#1a1a1a',
+                            textMuted: '#6b7280'
+                        }
+                    },
+                    boxShadow: {
+                        'soft':  '0 4px 20px -2px rgba(0,0,0,0.05)',
+                        'card':  '0 2px 10px -1px rgba(0,0,0,0.04)',
+                        'float': '0 10px 40px -10px rgba(0,0,0,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Coordinator Dashboard Styles -->
+    <link rel="stylesheet" href="../assets/css/coordinator.css">
+</head>
+<body class="bg-[#f3f4f6] text-brand-textDark flex flex-col min-h-screen">
+
+    <!-- Top Bar -->
+    <div class="bg-brand-navy text-white text-xs py-2 px-6 flex justify-between items-center hidden md:flex">
+        <div class="flex gap-6">
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                info@cdvh.org
+            </span>
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Chengannur, Kerala
+            </span>
+        </div>
+        <div class="flex gap-4">
+            <span class="flex items-center gap-2 text-green-400 font-semibold bg-green-400/10 px-2 py-0.5 rounded">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Operations Active
+            </span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="main.html" class="flex items-center gap-2 group">
+                <div class="flex flex-col transform group-hover:scale-105 transition">
+                    <div class="flex items-center gap-1">
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-1">
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                    </div>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-brand-navy ml-2">CDVH<span class="text-brand-red">.</span></span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-textDark">
+                <a href="#" class="text-brand-red">Operations</a>
+                <a href="#" class="hover:text-brand-red transition flex items-center gap-1">
+                    Alerts <span class="bg-brand-red text-white text-[10px] px-1.5 py-0.5 rounded-full">3</span>
+                </a>
+                <a href="#" class="hover:text-brand-red transition">Volunteer Pool</a>
+                <a href="#" class="hover:text-brand-red transition">Reports</a>
+                <a href="#" class="hover:text-brand-red transition">Field Guidelines</a>
+            </nav>
+
+            <!-- Profile CTA -->
+            <div class="flex items-center gap-4 border-l border-gray-200 pl-6">
+                <div class="text-right hidden sm:block">
+                    <div class="text-sm font-bold text-brand-navy leading-tight">Arjun P.</div>
+                    <div class="text-[10px] font-medium text-brand-red uppercase tracking-wider">Sector Coordinator</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-brand-navy border-2 border-white shadow-sm overflow-hidden cursor-pointer hover:ring-2 hover:ring-brand-red transition-all">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="Profile" class="w-full h-full object-cover">
+                </div>
+                <button class="md:hidden text-brand-navy ml-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 pb-12">
+
+        <!-- Welcome Hero (matching main.html navy/red split — full width) -->
+        <div class="w-full animate-fade-in">
+            <div class="relative w-full flex flex-col md:flex-row min-h-[520px] overflow-hidden">
+                <!-- Navy Left -->
+                <div class="bg-brand-navy text-white w-full md:w-[60%] px-6 py-16 md:py-24 md:pl-16 lg:pl-32 flex flex-col justify-center z-10">
+                    <span class="text-brand-red font-bold text-sm tracking-widest uppercase mb-4 block">Coordinator Portal</span>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Command Center,<br>Arjun.</h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed max-w-md mb-8">
+                        You have <strong class="text-white">3 active tasks</strong> and <strong class="text-white">1 urgent alert</strong>. The ML matching engine has pre-selected 8 volunteers for your pending deployments.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button class="btn-hover bg-brand-red hover:bg-red-700 text-white px-8 py-3.5 text-sm font-bold transition shadow-md inline-flex items-center gap-2">
+                            Manage Active Tasks
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                        <button class="px-8 py-3.5 border border-white/30 text-white hover:bg-white/10 text-sm font-semibold transition inline-flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            View Reports
+                        </button>
+                    </div>
+                </div>
+                <!-- Red Right with Overlapping Image -->
+                <div class="bg-brand-red w-full md:w-[45%] relative hidden md:block">
+                    <div class="absolute top-1/2 -translate-y-1/2 -left-24 w-[120%] z-20 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1593113565694-c6c21e649d21?auto=format&fit=crop&w=800&q=80" alt="Coordinator" class="w-full h-auto object-cover border-8 border-white">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Strip (matching main.html red stats bar) -->
+            <div class="bg-brand-red text-white border-t border-red-500/30">
+                <div class="max-w-7xl mx-auto py-8 px-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/20 text-center">
+                        <div class="px-4">
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">3</div>
+                            <div class="text-[10px] sm:text-xs uppercase tracking-wider text-red-100 font-medium">Active Tasks</div>
+                        </div>
+                        <div class="px-4">
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">24</div>
+                            <div class="text-[10px] sm:text-xs uppercase tracking-wider text-red-100 font-medium">Volunteers Deployed</div>
+                        </div>
+                        <div class="px-4">
+                            <div class="text-3xl lg:text-4xl font-bold mb-1 text-yellow-300">1</div>
+                            <div class="text-[10px] sm:text-xs uppercase tracking-wider text-red-100 font-medium">Urgent Alert</div>
+                        </div>
+                        <div class="px-4">
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">91%</div>
+                            <div class="text-[10px] sm:text-xs uppercase tracking-wider text-red-100 font-medium">Resolution Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-16 space-y-12 animate-fade-in">
+
+            <!-- Active Task Management (styled like main.html content blocks) -->
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-6 h-6 bg-brand-red"></div>
+                    <div class="w-6 h-6 bg-brand-navy -ml-2 mt-3"></div>
+                    <span class="text-brand-red font-bold text-sm tracking-widest uppercase ml-2">Live Task Board</span>
+                </div>
+                <div class="flex flex-col md:flex-row justify-between items-end mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-navy">Active Deployments</h2>
+                    <button onclick="openAssignModal('NEW')" class="btn-hover mt-4 md:mt-0 bg-brand-navy text-white px-6 py-2.5 text-sm font-semibold transition shadow-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        New Task
+                    </button>
+                </div>
+
+                <!-- Task Cards Grid (matching volunteer card style from main.html) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- Task Card 1 -->
+                    <div class="bg-white rounded shadow-card border border-gray-100 overflow-hidden hover:-translate-y-1 transition duration-300">
+                        <div class="h-2 bg-brand-red"></div>
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h4 class="font-bold text-brand-navy text-lg">Medical Triage</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5">Sector 4 Relief Camp, Highway Road</p>
+                                </div>
+                                <span id="status-T001" class="status-urgent text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Urgent</span>
+                            </div>
+                            <ul class="text-xs text-gray-500 space-y-1.5 mb-5">
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    Assigned: Anjana S., Vishnu K.
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Started: 2h ago · Est. 4h remaining
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                    Skills: First Aid, CPR, Triage
+                                </li>
+                            </ul>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs text-gray-500 mb-1.5">
+                                    <span>Progress</span><span>40%</span>
+                                </div>
+                                <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-brand-red rounded-full progress-bar" style="width: 40%"></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openAssignModal('T001')" class="flex-1 bg-brand-navy text-white py-2 text-xs font-semibold rounded hover:bg-[#152e59] transition">Assign More</button>
+                                <button onclick="updateTaskStatus('T001','resolved')" class="flex-1 border border-gray-200 text-gray-600 py-2 text-xs font-semibold rounded hover:bg-gray-50 transition">Mark Resolved</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task Card 2 -->
+                    <div class="bg-white rounded shadow-card border border-gray-100 overflow-hidden hover:-translate-y-1 transition duration-300">
+                        <div class="h-2 bg-green-500"></div>
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h4 class="font-bold text-brand-navy text-lg">Food Distribution</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5">Town Hall, Chengannur</p>
+                                </div>
+                                <span id="status-T002" class="status-active text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Active</span>
+                            </div>
+                            <ul class="text-xs text-gray-500 space-y-1.5 mb-5">
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    Assigned: Jomol M., Priya R.
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Started: 5h ago · Est. 2h remaining
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                    Skills: Logistics, General Relief
+                                </li>
+                            </ul>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs text-gray-500 mb-1.5">
+                                    <span>Progress</span><span>70%</span>
+                                </div>
+                                <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-500 rounded-full progress-bar" style="width: 70%"></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openAssignModal('T002')" class="flex-1 bg-brand-navy text-white py-2 text-xs font-semibold rounded hover:bg-[#152e59] transition">Assign More</button>
+                                <button onclick="updateTaskStatus('T002','resolved')" class="flex-1 border border-gray-200 text-gray-600 py-2 text-xs font-semibold rounded hover:bg-gray-50 transition">Mark Resolved</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task Card 3 -->
+                    <div class="bg-white rounded shadow-card border border-gray-100 overflow-hidden hover:-translate-y-1 transition duration-300">
+                        <div class="h-2 bg-yellow-400"></div>
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div>
+                                    <h4 class="font-bold text-brand-navy text-lg">Search & Rescue</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5">River Bank, Bridge Road</p>
+                                </div>
+                                <span id="status-T003" class="status-pending text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Pending</span>
+                            </div>
+                            <ul class="text-xs text-gray-500 space-y-1.5 mb-5">
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    Awaiting assignment
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Reported: 30 min ago · Urgent
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                    Skills: Rescue, Swimming, Navigation
+                                </li>
+                            </ul>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs text-gray-500 mb-1.5">
+                                    <span>Progress</span><span>0%</span>
+                                </div>
+                                <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-yellow-400 rounded-full progress-bar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openAssignModal('T003')" class="flex-1 bg-brand-red text-white py-2 text-xs font-semibold rounded hover:bg-red-700 transition alert-pulse">Assign Volunteers</button>
+                                <button onclick="updateTaskStatus('T003','active')" class="flex-1 border border-gray-200 text-gray-600 py-2 text-xs font-semibold rounded hover:bg-gray-50 transition">Activate</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ML Volunteer Matching (styled like main.html NLP section) -->
+            <section class="py-16 bg-brand-navy rounded relative overflow-hidden">
+                <div class="px-8 md:px-12 relative z-10 flex flex-col lg:flex-row gap-12 items-start">
+                    <div class="lg:w-1/3 text-white">
+                        <span class="text-brand-red font-bold text-sm tracking-widest uppercase mb-2 block">AI Recommendations</span>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4">Suggested Volunteers<br>for Search & Rescue</h2>
+                        <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                            Our Scikit-learn ML module ranked these volunteers by distance, skills, and availability for Task #T003.
+                        </p>
+                        <div class="flex gap-4 text-center">
+                            <div>
+                                <div class="text-2xl font-bold text-brand-red mb-1">KNN</div>
+                                <div class="text-[10px] uppercase tracking-widest text-gray-400">Algorithm</div>
+                            </div>
+                            <div class="w-px bg-white/20"></div>
+                            <div>
+                                <div class="text-2xl font-bold text-brand-red mb-1">94%</div>
+                                <div class="text-[10px] uppercase tracking-widest text-gray-400">Avg Score</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Volunteer Cards -->
+                    <div class="lg:w-2/3 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Vol 1 -->
+                        <div class="bg-white rounded p-5 flex items-center gap-4 shadow-soft hover:-translate-y-0.5 transition">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&q=80" alt="Volunteer" class="w-14 h-14 rounded-full object-cover flex-shrink-0 border-2 border-brand-red">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <h5 class="font-bold text-brand-navy text-sm">Arjun P.</h5>
+                                    <span class="bg-brand-navy text-white text-[10px] font-bold px-2 py-0.5 rounded">94%</span>
+                                </div>
+                                <p class="text-[10px] text-brand-red font-semibold">Search & Rescue · 4 Yrs Exp</p>
+                                <p class="text-[10px] text-gray-500">1.2 km · Available Now</p>
+                            </div>
+                        </div>
+                        <!-- Vol 2 -->
+                        <div class="bg-white rounded p-5 flex items-center gap-4 shadow-soft hover:-translate-y-0.5 transition">
+                            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=80&q=80" alt="Volunteer" class="w-14 h-14 rounded-full object-cover flex-shrink-0 border-2 border-brand-navy">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <h5 class="font-bold text-brand-navy text-sm">Anjana S.</h5>
+                                    <span class="bg-brand-navy text-white text-[10px] font-bold px-2 py-0.5 rounded">88%</span>
+                                </div>
+                                <p class="text-[10px] text-brand-red font-semibold">Medical · 3 Yrs Exp</p>
+                                <p class="text-[10px] text-gray-500">2.4 km · Available Now</p>
+                            </div>
+                        </div>
+                        <!-- Vol 3 -->
+                        <div class="bg-white rounded p-5 flex items-center gap-4 shadow-soft hover:-translate-y-0.5 transition">
+                            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=80&q=80" alt="Volunteer" class="w-14 h-14 rounded-full object-cover flex-shrink-0 border-2 border-gray-200">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <h5 class="font-bold text-brand-navy text-sm">Vishnu K.</h5>
+                                    <span class="bg-gray-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">79%</span>
+                                </div>
+                                <p class="text-[10px] text-brand-red font-semibold">Logistics · 1 Yr Exp</p>
+                                <p class="text-[10px] text-gray-500">3.1 km · On Standby</p>
+                            </div>
+                        </div>
+                        <!-- Vol 4 -->
+                        <div class="bg-white rounded p-5 flex items-center gap-4 shadow-soft hover:-translate-y-0.5 transition">
+                            <img src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=80&q=80" alt="Volunteer" class="w-14 h-14 rounded-full object-cover flex-shrink-0 border-2 border-gray-200">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <h5 class="font-bold text-brand-navy text-sm">Jomol M.</h5>
+                                    <span class="bg-gray-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">72%</span>
+                                </div>
+                                <p class="text-[10px] text-brand-red font-semibold">General Relief · Entry</p>
+                                <p class="text-[10px] text-gray-500">4.8 km · Available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emergency Report Form -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
+                <div class="bg-white rounded shadow-card border border-gray-100 p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-brand-navy">Log Field Report</h3>
+                            <p class="text-xs text-gray-500">Submit situation report to admin via NLP pipeline</p>
+                        </div>
+                    </div>
+                    <form id="reportForm" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Sector / Location</label>
+                            <input type="text" placeholder="e.g., Sector 4, Near Highway Bridge" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Situation Type</label>
+                            <select required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                                <option disabled selected>Select situation type</option>
+                                <option>Medical Emergency</option>
+                                <option>Rescue Required</option>
+                                <option>Resource Request</option>
+                                <option>Volunteer Shortage</option>
+                                <option>Infrastructure Damage</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Field Notes</label>
+                            <textarea rows="3" placeholder="Describe the on-ground situation..." required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="btn-hover w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-sm font-bold transition flex justify-center items-center gap-2 shadow-md">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                            Submit via NLP Pipeline
+                        </button>
+                    </form>
+                    <!-- Report Success -->
+                    <div id="reportStatus" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded items-center gap-3">
+                        <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-sm text-green-700 font-medium">Report submitted. Routed to Admin dashboard via FastAPI backend.</p>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Panel -->
+                <div class="bg-white rounded shadow-card border border-gray-100 p-8">
+                    <h3 class="text-xl font-bold text-brand-navy mb-6">Sector Overview</h3>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="font-medium text-brand-navy">Medical Volunteers</span>
+                                <span class="font-bold text-brand-navy">8 / 10</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full">
+                                <div class="h-full bg-brand-red rounded-full progress-bar" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="font-medium text-brand-navy">Rescue Team</span>
+                                <span class="font-bold text-brand-navy">3 / 6</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full">
+                                <div class="h-full bg-yellow-400 rounded-full progress-bar" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="font-medium text-brand-navy">Logistics & Supply</span>
+                                <span class="font-bold text-brand-navy">5 / 5</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full">
+                                <div class="h-full bg-green-500 rounded-full progress-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <span class="font-medium text-brand-navy">Food Distribution</span>
+                                <span class="font-bold text-brand-navy">6 / 8</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full">
+                                <div class="h-full bg-brand-navy rounded-full progress-bar" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-100 pt-5 grid grid-cols-2 gap-4">
+                            <div class="bg-brand-beige p-4 rounded border-l-4 border-brand-red">
+                                <div class="text-2xl font-bold text-brand-navy mb-1">17</div>
+                                <div class="text-xs text-gray-500 uppercase tracking-wider">Total Active Volunteers</div>
+                            </div>
+                            <div class="bg-brand-beige p-4 rounded border-l-4 border-brand-navy">
+                                <div class="text-2xl font-bold text-brand-navy mb-1">91%</div>
+                                <div class="text-xs text-gray-500 uppercase tracking-wider">ML Match Accuracy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Assign Modal -->
+    <div id="assignModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded shadow-2xl w-full max-w-md">
+            <div class="bg-brand-navy p-6 text-white rounded-t">
+                <h3 class="text-lg font-bold">Assign Volunteers</h3>
+                <p class="text-xs text-gray-300 mt-1">Task: <span id="assignTaskLabel" class="font-semibold text-white"></span></p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Select Volunteer</label>
+                    <select class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                        <option>Anjana S. (Medical) — 94% Match</option>
+                        <option>Vishnu K. (First Aid) — 88% Match</option>
+                        <option>Jomol M. (General) — 72% Match</option>
+                        <option>Arjun P. (Rescue) — 65% Match</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Message (Optional)</label>
+                    <textarea rows="2" placeholder="Any special instructions..." class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition resize-none"></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 p-6 pt-0">
+                <button onclick="closeAssignModal()" class="flex-1 btn-hover bg-brand-navy text-white py-2.5 rounded text-sm font-bold transition">Confirm Assignment</button>
+                <button onclick="closeAssignModal()" class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded text-sm font-semibold hover:bg-gray-50 transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (Matching main.html navy footer) -->
+    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10 mt-auto">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            <div>
+                <span class="text-xl font-bold tracking-tight text-white block mb-4">CDVH<span class="text-brand-red">.</span></span>
+                <p class="text-gray-400 mb-4 leading-relaxed">Community Disaster Volunteer Hub. AI-Assisted platform for rapid response coordination.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Platform</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">ML Volunteer Matching</a></li>
+                    <li><a href="#" class="hover:text-white transition">DL Intent Detection</a></li>
+                    <li><a href="#" class="hover:text-white transition">RAG Architecture</a></li>
+                    <li><a href="#" class="hover:text-white transition">Security (JWT)</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Resources</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">Coordinator Guide</a></li>
+                    <li><a href="#" class="hover:text-white transition">Disaster Guidelines</a></li>
+                    <li><a href="#" class="hover:text-white transition">API Documentation</a></li>
+                    <li><a href="#" class="hover:text-white transition">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Contact</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li>112 Emergency Line</li>
+                    <li>030-123-4567 (Hub)</li>
+                    <li>support@cdvh.org</li>
+                    <li>Kerala, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-12 pt-6 border-t border-white/10 text-center text-xs text-gray-500">
+            &copy; 2026 Community Disaster Volunteer Hub. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Floating RAG Chatbot -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+        <!-- Chat Window -->
+        <div id="chatWindow" class="bg-white w-80 md:w-96 rounded-xl shadow-float border border-gray-200 mb-4 hidden flex-col overflow-hidden h-[420px] pointer-events-auto">
+            <!-- Header -->
+            <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm">CDVH Assistant</h4>
+                        <p class="text-[10px] text-gray-300 uppercase tracking-widest">Coordinator RAG</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-gray-300 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <!-- Messages -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
+                <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm leading-relaxed">
+                    Hello Arjun! I'm your Coordinator AI Assistant. Ask me about protocols, resource allocation, or volunteer guidelines.
+                </div>
+            </div>
+            <!-- Input -->
+            <form id="chatForm" class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" id="chatInput" placeholder="Ask about protocols..." required autocomplete="off" class="flex-1 px-3 py-2.5 bg-gray-100 border border-transparent rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                <button type="submit" class="bg-brand-red hover:bg-red-700 text-white px-4 py-2.5 rounded-lg transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </form>
+        </div>
+        <!-- Toggle Button -->
+        <button onclick="toggleChat()" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-float transition-transform hover:scale-105 border-2 border-white pointer-events-auto">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        </button>
+    </div>
+
+    <!-- Global Animations & Effects -->
+    <script src="../assets/js/animations.js"></script>
+    <!-- Coordinator Dashboard Logic -->
+    <script src="../assets/js/coordinator.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,92 @@
+/* =============================================
+   CDVH | Admin Dashboard Styles
+   Matches main.html brand identity
+   ============================================= */
+@import url("style.css");
+
+/* --- Base --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+    margin: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+
+/* --- Button Hover Effect (matches main.html) --- */
+.btn-hover {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+.btn-hover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease-out;
+    z-index: -1;
+}
+.btn-hover:hover::before {
+    transform: scaleX(1);
+}
+
+/* --- Role Badges --- */
+.role-admin       { background-color: #0b1b36; color: white; }
+.role-coordinator { background-color: #e62429; color: white; }
+.role-volunteer   { background-color: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+
+/* --- Status dots --- */
+.status-active   { background-color: #22c55e; }
+.status-inactive { background-color: #94a3b8; }
+.status-pending  { background-color: #f59e0b; }
+
+/* --- Chatbot Window Transition --- */
+#chatWindow {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: bottom right;
+}
+.chat-expanded {
+    width: 85vw !important;
+    height: 85vh !important;
+    max-width: 1000px !important;
+    max-height: 800px !important;
+}
+
+/* --- Sidebar active nav item --- */
+.nav-link.active {
+    background-color: rgba(230, 36, 41, 0.1);
+    color: #e62429;
+    font-weight: 600;
+}
+
+/* --- Stat card hover --- */
+.stat-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -4px rgba(0,0,0,0.1);
+}
+
