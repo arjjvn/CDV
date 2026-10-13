@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from Backend.routers import health,volunteers
 from Backend.auth import routes as auth_routes
+from Backend.auth import protected
 
 app=FastAPI(
     title="Community Disaster Volunteer Hub",
@@ -18,3 +19,4 @@ def home():
 app.include_router(health.router)
 app.include_router(volunteers.router)
 app.include_router(auth_routes.router)
+app.include_router(protected.router)
