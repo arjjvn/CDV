@@ -36,7 +36,7 @@ def ingest_doc():
         print("no doc found")
         return
     clien=chromadb.persistentClient(path=VECTOR_DIR)
-    embend_fun=embedding_functions.SentenceTransformerEmbeddingFunction(model_name="")
+    embend_fun=ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
     collecion=client.get_or_create_collection(name="disaster_guidlines", embedding_function=embend_fun)
     collection.add(documents=docs, metadatas=metadata, ids=id)
 
