@@ -3,14 +3,14 @@ import chromadb
 import chromadb.utils.embedding_functions as ef
 import ollama
 
-VECTOR_DIR="D:\code\CDV\RAG\vectorstore"
+VECTOR_DIR=r"D:\code\CDV\RAG\vectorstore"
 
 def rag(user_question):
     client=chromadb.PersistentClient(path=VECTOR_DIR)
     embed=ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
-    collection=client.get_collection(name="disaster_guidlines", embedding_function=embed)
+    collection=client.get_collection(name="disaster_guidelines", embedding_function=embed)
     result=collection.query(query_texts=[user_question], n_results=3)
-    retrieved_chunks= result["Documents"][0]
+    retrieved_chunks= result["documents"][0]
     context="/n/n".join(retrieved_chunks)
 
     system_prompt = (
@@ -23,11 +23,15 @@ def rag(user_question):
         f"Context:\n{context}"
     )
 
-    response = ollama.chat(model="deepseek-r1:32b", messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_question}])
-    return response.choices[0].message.content
+    response = ollama.chat(model="qwen3:4b-instruct", messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_question}])
+    return response.message.content
 
 if __name__=="__main__":
-    user_question = ""
-    print("Enter your question:")
+    user_question = input("Enter your question: ").strip()
 
-    answer = rag(user_question)
+    if user_question:
+        answer = rag(user_question)
+        print("\nCDVH Disaster Assistant:")
+        print(answer)
+    else:
+        print("Please enter a question.")

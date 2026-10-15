@@ -3,8 +3,8 @@ import chromadb
 import chromadb.utils.embedding_functions as ef
 from pypdf import PdfReader
 
-DOCS_DIR="D:\code\CDV\RAG\documents"
-VECTOR_DIR="D:\code\CDV\RAG\vectorstore"
+DOCS_DIR=r"D:\code\CDV\RAG\documents"
+VECTOR_DIR=r"D:\code\CDV\RAG\vectorstore"
 
 def chunk_text(text, chunk_size=1000, overlap=200):
     chunk=[]
@@ -35,10 +35,10 @@ def ingest_doc():
     if not docs:
         print("no doc found")
         return
-    clien=chromadb.persistentClient(path=VECTOR_DIR)
+    client=chromadb.PersistentClient(path=VECTOR_DIR)
     embend_fun=ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
-    collecion=client.get_or_create_collection(name="disaster_guidlines", embedding_function=embend_fun)
+    collection=client.get_or_create_collection(name="disaster_guidelines", embedding_function=embend_fun)
     collection.add(documents=docs, metadatas=metadata, ids=id)
 
-    if __name__=="__main__":
-        ingest_doc()
+if __name__=="__main__":
+    ingest_doc()
