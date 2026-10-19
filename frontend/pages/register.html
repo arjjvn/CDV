@@ -320,35 +320,55 @@
                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
                                     <label for="regPhone">Phone</label>
                                 </div>
-                                <div class="input-group">
-                                    <input type="text" id="regCity" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="regCity">City</label>
+                                <!-- Kerala District Dropdown -->
+                                <div>
+                                    <label for="regDistrict" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                        District
+                                    </label>
+                                    <select id="regDistrict" name="district"
+                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                        <option value="">Select district</option>
+                                        <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                                        <option value="Kollam">Kollam</option>
+                                        <option value="Pathanamthitta">Pathanamthitta</option>
+                                        <option value="Alappuzha">Alappuzha</option>
+                                        <option value="Kottayam">Kottayam</option>
+                                        <option value="Idukki">Idukki</option>
+                                        <option value="Ernakulam">Ernakulam</option>
+                                        <option value="Thrissur">Thrissur</option>
+                                        <option value="Palakkad">Palakkad</option>
+                                        <option value="Malappuram">Malappuram</option>
+                                        <option value="Kozhikode">Kozhikode</option>
+                                        <option value="Wayanad">Wayanad</option>
+                                        <option value="Kannur">Kannur</option>
+                                        <option value="Kasaragod">Kasaragod</option>
+                                    </select>
                                 </div>
                                 <div class="input-group sm:col-span-2">
                                     <input type="text" id="regAddress" placeholder=" "
                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
                                     <label for="regAddress">Address</label>
                                 </div>
-                                <div class="input-group">
-                                    <input type="text" id="regState" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="regState">State</label>
+                                <!-- Dependent Place / Town Dropdown -->
+                                <div>
+                                    <label for="regPlace" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                        Place / Town
+                                    </label>
+                                    <select id="regPlace" name="place" disabled
+                                            class="w-full px-4 py-3.5 bg-gray-100 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition disabled:cursor-not-allowed disabled:opacity-70">
+                                        <option value="">Select a district first</option>
+                                    </select>
                                 </div>
                                 <div class="input-group">
                                     <input type="text" id="regPincode" placeholder=" "
                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
                                     <label for="regPincode">Pincode</label>
                                 </div>
-                                <div class="input-group mt-2">
-                                    <input type="text" id="aadhaar" placeholder=" "
+                                <!-- Aadhaar Number (Required for Volunteer and Coordinator, not Admin) -->
+                                <div class="input-group sm:col-span-2" id="aadhaarFieldGroup">
+                                    <input type="text" id="aadhaar" placeholder=" " maxlength="12" pattern="\d{12}" inputmode="numeric"
                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="aadhaar">Aadhaar Number</label>
-                                </div>
-                                <div class="mt-2">
-                                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Aadhaar Document</label>
-                                    <input type="file" id="aadhaarDoc" accept=".jpg,.jpeg,.png,.pdf"
-                                           class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-navy file:text-white hover:file:bg-[#152e59]">
+                                    <label for="aadhaar">Aadhaar Number (12 Digits)</label>
                                 </div>
                             </div>
 
@@ -637,30 +657,99 @@
             }
         }
 
+        // Kerala district -> commonly used places/towns.
+        // These are common localities, not a complete ward/street-level directory.
+        const keralaPlacesByDistrict = {
+            "Thiruvananthapuram": ["Thiruvananthapuram City", "Neyyattinkara", "Nedumangad", "Attingal", "Varkala", "Kazhakkoottam", "Vizhinjam", "Kovalam", "Kattakada", "Balaramapuram", "Poovar", "Parassala", "Venjaramoodu", "Kilimanoor", "Other / nearby locality"],
+            "Kollam": ["Kollam City", "Punalur", "Karunagappally", "Kottarakkara", "Paravur", "Anchal", "Kundara", "Chathannoor", "Sasthamkotta", "Oachira", "Pathanapuram", "Other / nearby locality"],
+            "Pathanamthitta": ["Pathanamthitta", "Thiruvalla", "Adoor", "Ranni", "Kozhencherry", "Pandalam", "Konni", "Mallappally", "Aranmula", "Perunad", "Sabarimala", "Other / nearby locality"],
+            "Alappuzha": ["Alappuzha", "Cherthala", "Kayamkulam", "Haripad", "Mavelikkara", "Chengannur", "Ambalappuzha", "Kuttanad", "Thanneermukkom", "Aroor", "Mannar", "Edathua", "Other / nearby locality"],
+            "Kottayam": ["Kottayam", "Changanassery", "Pala", "Vaikom", "Ettumanoor", "Kanjirappally", "Erattupetta", "Mundakayam", "Ponkunnam", "Kuravilangad", "Kumarakom", "Uzhavoor", "Other / nearby locality"],
+            "Idukki": ["Painavu", "Thodupuzha", "Munnar", "Adimali", "Kattappana", "Kumily", "Nedumkandam", "Peermade", "Vandiperiyar", "Marayoor", "Rajakkad", "Vazhathope", "Devikulam", "Other / nearby locality"],
+            "Ernakulam": ["Kochi", "Kakkanad", "Aluva", "Angamaly", "Perumbavoor", "Muvattupuzha", "Kothamangalam", "North Paravur", "Thrippunithura", "Kalamassery", "Edappally", "Fort Kochi", "Mattancherry", "Vypin", "Eloor", "Piravom", "Other / nearby locality"],
+            "Thrissur": ["Thrissur", "Chalakudy", "Kodungallur", "Irinjalakuda", "Guruvayur", "Kunnamkulam", "Wadakkanchery", "Chavakkad", "Chelakkara", "Anthikad", "Ollur", "Mala", "Other / nearby locality"],
+            "Palakkad": ["Palakkad", "Ottapalam", "Shoranur", "Chittur", "Mannarkkad", "Pattambi", "Alathur", "Cherpulassery", "Nenmara", "Kollengode", "Kozhinjampara", "Vadakkencherry", "Other / nearby locality"],
+            "Malappuram": ["Malappuram", "Manjeri", "Tirur", "Ponnani", "Perinthalmanna", "Kottakkal", "Nilambur", "Kondotty", "Parappanangadi", "Tanur", "Tirurangadi", "Areekode", "Wandoor", "Edappal", "Other / nearby locality"],
+            "Kozhikode": ["Kozhikode", "Vadakara", "Koyilandy", "Feroke", "Ramanattukara", "Kunnamangalam", "Mukkam", "Thamarassery", "Balussery", "Perambra", "Beypore", "Elathur", "Koduvally", "Other / nearby locality"],
+            "Wayanad": ["Kalpetta", "Sulthan Bathery", "Mananthavady", "Vythiri", "Meppadi", "Pulpally", "Panamaram", "Ambalavayal", "Thirunelly", "Pozhuthana", "Muttil", "Padinjarathara", "Other / nearby locality"],
+            "Kannur": ["Kannur", "Thalassery", "Payyannur", "Taliparamba", "Mattannur", "Iritty", "Koothuparamba", "Sreekandapuram", "Panoor", "Azhikode", "Dharmadam", "Other / nearby locality"],
+            "Kasaragod": ["Kasaragod", "Kanhangad", "Nileshwaram", "Uppala", "Manjeshwar", "Cheruvathur", "Trikaripur", "Bekal", "Periya", "Udma", "Mulleria", "Badiadka", "Other / nearby locality"]
+        };
+
+        // Keep the place dropdown dependent on the selected district.
+        const regDistrict = document.getElementById('regDistrict');
+        const regPlace = document.getElementById('regPlace');
+
+        if (regDistrict && regPlace) {
+            regDistrict.addEventListener('change', function () {
+                const district = this.value;
+                regPlace.replaceChildren();
+
+                if (!district) {
+                    regPlace.add(new Option('Select a district first', ''));
+                    regPlace.disabled = true;
+                    regPlace.classList.add('bg-gray-100');
+                    regPlace.classList.remove('bg-white');
+                    return;
+                }
+
+                regPlace.add(new Option('Select place / town', ''));
+                (keralaPlacesByDistrict[district] || []).forEach(place => {
+                    regPlace.add(new Option(place, place));
+                });
+
+                regPlace.disabled = false;
+                regPlace.classList.remove('bg-gray-100');
+                regPlace.classList.add('bg-white');
+            });
+        }
+
         // Initialize in register mode on load
         document.addEventListener('DOMContentLoaded', () => {
             switchMode('register');
+            const selectedRole = document.querySelector('input[name="role"]:checked')?.value || 'volunteer';
+            updateRoleFields(selectedRole);
         });
 
+        function updateRoleFields(role) {
+            const volFields = document.getElementById('volunteerFields');
+            const coordFields = document.getElementById('coordinatorFields');
+            const adminFields = document.getElementById('adminFields');
+            const aadhaarGroup = document.getElementById('aadhaarFieldGroup');
+            
+            if (volFields && coordFields && adminFields) {
+                volFields.classList.add('hidden');
+                coordFields.classList.add('hidden');
+                adminFields.classList.add('hidden');
+                
+                if (role === 'volunteer') {
+                    volFields.classList.remove('hidden');
+                    if (aadhaarGroup) aadhaarGroup.classList.remove('hidden');
+                } else if (role === 'coordinator') {
+                    coordFields.classList.remove('hidden');
+                    if (aadhaarGroup) aadhaarGroup.classList.remove('hidden');
+                } else if (role === 'admin') {
+                    adminFields.classList.remove('hidden');
+                    // Admin does not need to submit Aadhaar
+                    if (aadhaarGroup) aadhaarGroup.classList.add('hidden');
+                }
+            }
+        }
 
         // Listen for role changes to show specific fields
         document.querySelectorAll('input[name="role"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
-                const volFields = document.getElementById('volunteerFields');
-                const coordFields = document.getElementById('coordinatorFields');
-                const adminFields = document.getElementById('adminFields');
-                
-                if(volFields && coordFields && adminFields) {
-                    volFields.classList.add('hidden');
-                    coordFields.classList.add('hidden');
-                    adminFields.classList.add('hidden');
-                    
-                    if (e.target.value === 'volunteer') volFields.classList.remove('hidden');
-                    if (e.target.value === 'coordinator') coordFields.classList.remove('hidden');
-                    if (e.target.value === 'admin') adminFields.classList.remove('hidden');
-                }
+                updateRoleFields(e.target.value);
             });
         });
+
+        // Ensure Aadhaar number input only allows 12 digits
+        const aadhaarInput = document.getElementById('aadhaar');
+        if (aadhaarInput) {
+            aadhaarInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 12);
+            });
+        }
 
         function togglePassword() {
             const input = document.getElementById('password');

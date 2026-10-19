@@ -23,7 +23,7 @@ def rag(user_question):
         f"Context:\n{context}"
     )
 
-    response = ollama.chat(model="qwen3:4b-instruct", messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_question}])
+    response = ollama.chat(model="qwen3.5", messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_question}])
     return response.message.content
 
 if __name__=="__main__":

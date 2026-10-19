@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CDVH | Community Disaster Volunteer Hub</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +12,6 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Tailwind Configuration matching the reference image -->
     <script>
         tailwind.config = {
             theme: {
@@ -39,7 +37,6 @@
         }
     </script>
 
-    <!-- === CSS SECTION === -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-white text-brand-textDark flex flex-col min-h-screen">
@@ -106,7 +103,6 @@
                     Donate / Support
                 </a>
 
-                <!-- Login Button -->
                 <a href="pages/login.html"
                 class="btn-hover relative overflow-hidden
                         border-2 border-brand-navy text-brand-navy
@@ -148,10 +144,64 @@
                     Report an Emergency
                 </h3>
                 <form id="heroEmergencyForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Incident Location</label>
-                        <input type="text" id="incidentLoc" placeholder="e.g., Main Street, Chengannur" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                    </div>
+                    <!-- Kerala Location: District + Place Dropdowns -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+    <!-- District Dropdown -->
+    <div>
+        <label for="incidentDistrict"
+               class="block text-xs font-medium text-gray-500 mb-1">
+            District
+        </label>
+
+        <select
+            id="incidentDistrict"
+            name="district"
+            required
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200
+                   rounded text-sm focus:outline-none focus:border-brand-navy
+                   focus:ring-1 focus:ring-brand-navy transition">
+
+            <option value="">Select district</option>
+            <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+            <option value="Kollam">Kollam</option>
+            <option value="Pathanamthitta">Pathanamthitta</option>
+            <option value="Alappuzha">Alappuzha</option>
+            <option value="Kottayam">Kottayam</option>
+            <option value="Idukki">Idukki</option>
+            <option value="Ernakulam">Ernakulam</option>
+            <option value="Thrissur">Thrissur</option>
+            <option value="Palakkad">Palakkad</option>
+            <option value="Malappuram">Malappuram</option>
+            <option value="Kozhikode">Kozhikode</option>
+            <option value="Wayanad">Wayanad</option>
+            <option value="Kannur">Kannur</option>
+            <option value="Kasaragod">Kasaragod</option>
+        </select>
+    </div>
+
+    <!-- Place Dropdown -->
+    <div>
+        <label for="incidentPlace"
+               class="block text-xs font-medium text-gray-500 mb-1">
+            Place / Town
+        </label>
+
+        <select
+            id="incidentPlace"
+            name="place"
+            required
+            disabled
+            class="w-full px-4 py-2.5 bg-gray-100 border border-gray-200
+                   rounded text-sm focus:outline-none focus:border-brand-navy
+                   focus:ring-1 focus:ring-brand-navy transition
+                   disabled:cursor-not-allowed disabled:opacity-70">
+
+            <option value="">Select a district first</option>
+        </select>
+    </div>
+
+</div>
                     <div>
                         <label class="block text-xs font-medium text-gray-500 mb-1">Emergency Details</label>
                         <textarea id="incidentDesc" rows="3" placeholder="Describe the required help (e.g., medical, food, rescue)..." required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition resize-none"></textarea>
@@ -533,27 +583,25 @@
         </div>
     </footer>
 
-    <!-- Floating RAG Chatbot Widget -->
+    
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         
         <!-- Chat Window -->
-        <div id="chatWindow" class="bg-white w-80 md:w-96 rounded-lg shadow-2xl border border-gray-200 mb-4 hidden flex-col overflow-hidden animate-slide-up h-[400px]">
-            
-            <!-- Header -->
-            <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
-                    </div>
-                    <div>
+        <div id="chatWindow" class="bg-white w-[calc(100vw-2rem)] sm:w-[50vw] lg:w-[45vw] max-w-2xl h-[75vh] min-h-[350px] max-h-[80vh] rounded-xl shadow-2xl border border-gray-200 mb-4 hidden flex-col overflow-hidden animate-slide-up">            
+                <!-- Header -->
+                <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
+                        </div>
+                        <div>
                         <h4 class="font-semibold text-sm">CDVH Assistant</h4>
                         <p class="text-[10px] text-gray-300 uppercase tracking-widest">RAG Knowledge Base</p>
+                        </div>
                     </div>
-                </div>
-                <button onclick="toggleChat()" class="text-gray-300 hover:text-white transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button id="chatCloseButton" type="button" class="text-gray-300 hover:text-white transition"><svg class="w-5 h-5"fill="none"stroke="currentColor"viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
-            </div>
+                </div>
             
             <!-- Messages Area -->
             <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
@@ -572,9 +620,20 @@
         </div>
         
         <!-- Toggle Button -->
-        <button onclick="toggleChat()" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 border-2 border-white">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-        </button>
+       <button id="chatToggleButton"
+        type="button"
+        class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 border-2 border-white">
+    <svg class="w-6 h-6"
+         fill="none"
+         stroke="currentColor"
+         viewBox="0 0 24 24">
+        <path stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
+        </path>
+    </svg>
+</button>
     </div>
 
     <script>
@@ -619,77 +678,379 @@
                 
             }, 1500);
         });
+        // ================================================
+// KERALA DISTRICT -> PLACE DROPDOWN DATA
+// ================================================
 
-        // --- RAG Chatbot Logic ---
-        let isChatOpen = false;
-        
-        function toggleChat() {
-            const window = document.getElementById('chatWindow');
-            isChatOpen = !isChatOpen;
-            
-            if(isChatOpen) {
-                window.classList.remove('hidden');
-                window.classList.add('flex');
-            } else {
-                window.classList.add('hidden');
-                window.classList.remove('flex');
-            }
+const keralaPlacesByDistrict = {
+    "Thiruvananthapuram": [
+        "Thiruvananthapuram City",
+        "Neyyattinkara",
+        "Nedumangad",
+        "Attingal",
+        "Varkala",
+        "Kazhakkoottam",
+        "Vizhinjam",
+        "Kovalam",
+        "Kattakada",
+        "Balaramapuram",
+        "Poovar",
+        "Parassala",
+        "Venjaramoodu",
+        "Kilimanoor",
+        "Other / nearby locality"
+    ],
+
+    "Kollam": [
+        "Kollam City",
+        "Punalur",
+        "Karunagappally",
+        "Kottarakkara",
+        "Paravur",
+        "Anchal",
+        "Kundara",
+        "Chathannoor",
+        "Sasthamkotta",
+        "Oachira",
+        "Pathanapuram",
+        "Other / nearby locality"
+    ],
+
+    "Pathanamthitta": [
+        "Pathanamthitta",
+        "Thiruvalla",
+        "Adoor",
+        "Ranni",
+        "Kozhencherry",
+        "Pandalam",
+        "Konni",
+        "Mallappally",
+        "Aranmula",
+        "Perunad",
+        "Sabarimala",
+        "Other / nearby locality"
+    ],
+
+    "Alappuzha": [
+        "Alappuzha",
+        "Cherthala",
+        "Kayamkulam",
+        "Haripad",
+        "Mavelikkara",
+        "Chengannur",
+        "Ambalappuzha",
+        "Kuttanad",
+        "Thanneermukkom",
+        "Aroor",
+        "Mannar",
+        "Edathua",
+        "Other / nearby locality"
+    ],
+
+    "Kottayam": [
+        "Kottayam",
+        "Changanassery",
+        "Pala",
+        "Vaikom",
+        "Ettumanoor",
+        "Kanjirappally",
+        "Erattupetta",
+        "Mundakayam",
+        "Ponkunnam",
+        "Kuravilangad",
+        "Kumarakom",
+        "Uzhavoor",
+        "Other / nearby locality"
+    ],
+
+    "Idukki": [
+        "Painavu",
+        "Thodupuzha",
+        "Munnar",
+        "Adimali",
+        "Kattappana",
+        "Kumily",
+        "Nedumkandam",
+        "Peermade",
+        "Vandiperiyar",
+        "Marayoor",
+        "Rajakkad",
+        "Vazhathope",
+        "Devikulam",
+        "Other / nearby locality"
+    ],
+
+    "Ernakulam": [
+        "Kochi",
+        "Kakkanad",
+        "Aluva",
+        "Angamaly",
+        "Perumbavoor",
+        "Muvattupuzha",
+        "Kothamangalam",
+        "North Paravur",
+        "Thrippunithura",
+        "Kalamassery",
+        "Edappally",
+        "Fort Kochi",
+        "Mattancherry",
+        "Vypin",
+        "Eloor",
+        "Piravom",
+        "Other / nearby locality"
+    ],
+
+    "Thrissur": [
+        "Thrissur",
+        "Chalakudy",
+        "Kodungallur",
+        "Irinjalakuda",
+        "Guruvayur",
+        "Kunnamkulam",
+        "Wadakkanchery",
+        "Chavakkad",
+        "Chelakkara",
+        "Anthikad",
+        "Ollur",
+        "Mala",
+        "Other / nearby locality"
+    ],
+
+    "Palakkad": [
+        "Palakkad",
+        "Ottapalam",
+        "Shoranur",
+        "Chittur",
+        "Mannarkkad",
+        "Pattambi",
+        "Alathur",
+        "Cherpulassery",
+        "Nenmara",
+        "Kollengode",
+        "Kozhinjampara",
+        "Vadakkencherry",
+        "Other / nearby locality"
+    ],
+
+    "Malappuram": [
+        "Malappuram",
+        "Manjeri",
+        "Tirur",
+        "Ponnani",
+        "Perinthalmanna",
+        "Kottakkal",
+        "Nilambur",
+        "Kondotty",
+        "Parappanangadi",
+        "Tanur",
+        "Tirurangadi",
+        "Areekode",
+        "Wandoor",
+        "Edappal",
+        "Other / nearby locality"
+    ],
+
+    "Kozhikode": [
+        "Kozhikode",
+        "Vadakara",
+        "Koyilandy",
+        "Feroke",
+        "Ramanattukara",
+        "Kunnamangalam",
+        "Mukkam",
+        "Thamarassery",
+        "Balussery",
+        "Perambra",
+        "Beypore",
+        "Elathur",
+        "Koduvally",
+        "Other / nearby locality"
+    ],
+
+    "Wayanad": [
+        "Kalpetta",
+        "Sulthan Bathery",
+        "Mananthavady",
+        "Vythiri",
+        "Meppadi",
+        "Pulpally",
+        "Panamaram",
+        "Ambalavayal",
+        "Thirunelly",
+        "Pozhuthana",
+        "Muttil",
+        "Padinjarathara",
+        "Other / nearby locality"
+    ],
+
+    "Kannur": [
+        "Kannur",
+        "Thalassery",
+        "Payyannur",
+        "Taliparamba",
+        "Mattannur",
+        "Iritty",
+        "Koothuparamba",
+        "Sreekandapuram",
+        "Panoor",
+        "Azhikode",
+        "Dharmadam",
+        "Other / nearby locality"
+    ],
+
+    "Kasaragod": [
+        "Kasaragod",
+        "Kanhangad",
+        "Nileshwaram",
+        "Uppala",
+        "Manjeshwar",
+        "Cheruvathur",
+        "Trikaripur",
+        "Bekal",
+        "Periya",
+        "Udma",
+        "Mulleria",
+        "Badiadka",
+        "Other / nearby locality"
+    ]
+};
+
+
+// ================================================
+// DISTRICT AND PLACE DROPDOWN LOGIC
+// ================================================
+
+const districtSelect = document.getElementById("incidentDistrict");
+const placeSelect = document.getElementById("incidentPlace");
+
+districtSelect.addEventListener("change", function () {
+    const selectedDistrict = this.value;
+
+    // Clear the previous place options.
+    placeSelect.innerHTML = "";
+
+    // Reset the place dropdown if no district is selected.
+    if (!selectedDistrict) {
+        placeSelect.add(new Option("Select a district first", ""));
+        placeSelect.disabled = true;
+
+        placeSelect.classList.add("bg-gray-100");
+        placeSelect.classList.remove("bg-gray-50");
+        return;
+    }
+
+    // Add the placeholder option.
+    placeSelect.add(new Option("Select place / town", ""));
+
+    // Load places for the selected district.
+    const places = keralaPlacesByDistrict[selectedDistrict] || [];
+
+    places.forEach(function (place) {
+        placeSelect.add(new Option(place, place));
+    });
+
+    // Enable the place dropdown.
+    placeSelect.disabled = false;
+
+    placeSelect.classList.remove("bg-gray-100");
+    placeSelect.classList.add("bg-gray-50");
+});
+
+
+// ================================================
+// EMERGENCY FORM SUBMISSION
+// ================================================
+
+document
+    .getElementById("heroEmergencyForm")
+    .addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const district = districtSelect.value;
+        const place = placeSelect.value;
+        const description = document
+            .getElementById("incidentDesc")
+            .value
+            .trim()
+            .toLowerCase();
+
+        // Build the complete incident location.
+        const location = `${place}, ${district}, Kerala`;
+
+        const alertBox = document.getElementById("heroAlertStatus");
+        const alertText = document.getElementById("heroAlertText");
+
+        const button = this.querySelector('button[type="submit"]');
+        const originalButtonText = button.innerHTML;
+
+        // Basic NLP intent classification demo.
+        let intent = "General Request";
+
+        if (
+            description.includes("injur") ||
+            description.includes("medic") ||
+            description.includes("bleed")
+        ) {
+            intent = "Medical Emergency";
+        } else if (
+            description.includes("food") ||
+            description.includes("water")
+        ) {
+            intent = "Relief Supplies";
+        } else if (
+            description.includes("trapped") ||
+            description.includes("rescue")
+        ) {
+            intent = "Search & Rescue";
+        } else if (
+            description.includes("flood") ||
+            description.includes("water rising")
+        ) {
+            intent = "Flood Emergency";
+        } else if (
+            description.includes("landslide") ||
+            description.includes("mudslide")
+        ) {
+            intent = "Landslide Emergency";
+        } else if (
+            description.includes("fire") ||
+            description.includes("smoke")
+        ) {
+            intent = "Fire Emergency";
         }
 
-        // Simulated Vector Database for RAG
-        const ragDatabase = {
-            "flood": "In a flood scenario, move to higher ground immediately. Do not walk or drive through floodwaters. Disconnect electrical appliances if safe to do so.",
-            "fire": "If there is a fire, evacuate immediately. Stay low to the ground to avoid inhaling smoke. Call emergency services and do not re-enter the building.",
-            "medical": "Ensure the scene is safe first. If someone is bleeding, apply direct firm pressure. If unconscious but breathing normally, place in the recovery position.",
-            "volunteer": "As a volunteer, always report to your designated coordinator first. Do not self-deploy to danger zones. Keep your ID and protective gear on at all times."
-        };
+        // Show processing state.
+        button.disabled = true;
+        button.textContent = "Processing emergency...";
 
-        document.getElementById('chatForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const input = document.getElementById('chatInput');
-            const msg = input.value.trim();
-            if(!msg) return;
+        setTimeout(function () {
+            alertBox.classList.remove("hidden");
 
-            // Add user message
-            addChatMessage(msg, 'user');
-            input.value = '';
+            // Use textContent instead of interpolating user input into HTML.
+            alertText.textContent =
+                `Incident location: ${location}. ` +
+                `Detected intent: ${intent}. ` +
+                "This is a frontend demonstration; the emergency has not " +
+                "been sent to the FastAPI backend.";
 
-            // Simulate RAG Retrieval & LLM Generation delay
-            setTimeout(() => {
-                let reply = "Searching vector database... Based on general guidelines, please stay calm and await instructions from local authorities.";
-                
-                const lowerMsg = msg.toLowerCase();
-                for (const [key, context] of Object.entries(ragDatabase)) {
-                    if (lowerMsg.includes(key)) {
-                        reply = `<strong class="text-brand-navy text-[10px] uppercase tracking-widest block mb-1">[Context Retrieved via FAISS]</strong>${context}`;
-                        break;
-                    }
-                }
-                
-                addChatMessage(reply, 'bot');
-            }, 800);
-        });
+            button.innerHTML = originalButtonText;
+            button.disabled = false;
 
-        function addChatMessage(text, sender) {
-            const chatArea = document.getElementById('chatMessages');
-            const div = document.createElement('div');
-            
-            if (sender === 'user') {
-                div.className = "bg-brand-navy text-white p-3 rounded-lg rounded-tr-none text-sm self-end max-w-[85%] shadow-sm";
-            } else {
-                div.className = "bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm";
-            }
-            
-            div.innerHTML = text;
-            chatArea.appendChild(div);
-            
-            // Scroll to bottom
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }
+            // Reset the district and place dropdowns.
+            districtSelect.value = "";
+            placeSelect.innerHTML =
+                '<option value="">Select a district first</option>';
+            placeSelect.disabled = true;
 
-        /* === JAVASCRIPT SECTION === */
+            placeSelect.classList.add("bg-gray-100");
+            placeSelect.classList.remove("bg-gray-50");
+
+            document.getElementById("incidentDesc").value = "";
+        }, 700);
+    });
+
     </script>
-    <!-- Professional Animations & Effects Engine -->
+    <script type="module" src="assets/js/chatbot.js"></script>
     <script src="assets/js/animations.js"></script>
 </body>
 </html>
