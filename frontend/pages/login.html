@@ -207,14 +207,14 @@
                 </a>
 
                 <!-- Register Button -->
-                <a href="Register.html"
+                <button type="button" onclick="switchMode('register')"
                    class="btn-hover relative overflow-hidden bg-brand-navy text-white border-2 border-brand-navy
                           hover:bg-[#152e59] hover:border-[#152e59]
                           px-6 py-2.5 rounded text-sm font-semibold
                           transition-all duration-300 shadow-md hover:shadow-lg
                           hover:-translate-y-0.5">
                     Register
-                </a>
+                </button>
 
             </div>
 
@@ -581,7 +581,7 @@
                     <li><a href="ai-platform.html" class="hover:text-white transition">ML Volunteer Matching</a></li>
                     <li><a href="ai-platform.html" class="hover:text-white transition">DL Intent Detection</a></li>
                     <li><a href="ai-platform.html" class="hover:text-white transition">RAG Architecture</a></li>
-                    <li><a href="Register.html" class="hover:text-white transition">Security (JWT)</a></li>
+                    <li><a href="login.html?mode=register" class="hover:text-white transition">Create Account (Register)</a></li>
                 </ul>
             </div>
             <div>
@@ -704,11 +704,27 @@
             });
         }
 
-        // Initialize in login mode on load for login.html
+        // Initialize mode based on URL query (?mode=register) or hash (#register), defaulting to login
+        function getInitialMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const modeParam = (urlParams.get('mode') || urlParams.get('tab') || '').toLowerCase();
+            const hashMode = window.location.hash.toLowerCase().includes('register') ? 'register' : '';
+            return (modeParam === 'register' || hashMode === 'register') ? 'register' : 'login';
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            switchMode('login');
+            switchMode(getInitialMode());
             const selectedRole = document.querySelector('input[name="role"]:checked')?.value || 'volunteer';
             updateRoleFields(selectedRole);
+        });
+
+        // Listen for hash changes to switch mode without page refresh
+        window.addEventListener('hashchange', () => {
+            if (window.location.hash.toLowerCase().includes('register')) {
+                switchMode('register');
+            } else if (window.location.hash.toLowerCase().includes('login')) {
+                switchMode('login');
+            }
         });
 
         function updateRoleFields(role) {
