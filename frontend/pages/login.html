@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDVH | Login</title>
+    <title>CDVH | Register</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,13 +44,13 @@
             min-height: 100vh;
         }
 
-        /* Login page layout */
-        .login-main {
+        /* Register page layout */
+        .Register-main {
             min-height: calc(100vh - 138px);
         }
 
         @media (max-width: 767px) {
-            .login-main {
+            .Register-main {
                 min-height: auto;
             }
         }
@@ -206,14 +206,14 @@
                     Donate / Support
                 </a>
 
-                <!-- Login Button -->
-                <a href="login.html"
+                <!-- Register Button -->
+                <a href="Register.html"
                    class="btn-hover relative overflow-hidden bg-brand-navy text-white border-2 border-brand-navy
                           hover:bg-[#152e59] hover:border-[#152e59]
                           px-6 py-2.5 rounded text-sm font-semibold
                           transition-all duration-300 shadow-md hover:shadow-lg
                           hover:-translate-y-0.5">
-                    Login
+                    Register
                 </a>
 
             </div>
@@ -231,7 +231,7 @@
 
 
     <!-- Professional Centered Authentication Page -->
-    <main class="login-main flex items-center justify-center px-4 py-12 sm:px-6 relative">
+    <main class="Register-main flex items-center justify-center px-4 py-12 sm:px-6 relative">
         <!-- Authentication Card -->
         <div class="w-full max-w-lg">
             <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
@@ -270,12 +270,12 @@
 
                     <!-- Tabs: Sign In / Sign Up -->
                     <div class="flex border-b border-gray-200 mb-8">
-                        <button onclick="switchMode('login')" id="tabLogin"
-                                class="flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition">
+                        <button type="button" onclick="switchMode('login')" id="tabLogin"
+                                class="flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
                             Sign In
                         </button>
-                        <button onclick="switchMode('register')" id="tabRegister"
-                                class="flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
+                        <button type="button" onclick="switchMode('register')" id="tabRegister"
+                                class="flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition">
                             Create Account
                         </button>
                     </div>
@@ -320,25 +320,55 @@
                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
                                     <label for="regPhone">Phone</label>
                                 </div>
-                                <div class="input-group">
-                                    <input type="text" id="regCity" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="regCity">City</label>
+                                <!-- Kerala District Dropdown -->
+                                <div>
+                                    <label for="regDistrict" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                        District
+                                    </label>
+                                    <select id="regDistrict" name="district"
+                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                        <option value="">Select district</option>
+                                        <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                                        <option value="Kollam">Kollam</option>
+                                        <option value="Pathanamthitta">Pathanamthitta</option>
+                                        <option value="Alappuzha">Alappuzha</option>
+                                        <option value="Kottayam">Kottayam</option>
+                                        <option value="Idukki">Idukki</option>
+                                        <option value="Ernakulam">Ernakulam</option>
+                                        <option value="Thrissur">Thrissur</option>
+                                        <option value="Palakkad">Palakkad</option>
+                                        <option value="Malappuram">Malappuram</option>
+                                        <option value="Kozhikode">Kozhikode</option>
+                                        <option value="Wayanad">Wayanad</option>
+                                        <option value="Kannur">Kannur</option>
+                                        <option value="Kasaragod">Kasaragod</option>
+                                    </select>
                                 </div>
                                 <div class="input-group sm:col-span-2">
                                     <input type="text" id="regAddress" placeholder=" "
                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
                                     <label for="regAddress">Address</label>
                                 </div>
-                                <div class="input-group">
-                                    <input type="text" id="regState" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="regState">State</label>
+                                <!-- Dependent Place / Town Dropdown -->
+                                <div>
+                                    <label for="regPlace" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                        Place / Town
+                                    </label>
+                                    <select id="regPlace" name="place" disabled
+                                            class="w-full px-4 py-3.5 bg-gray-100 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition disabled:cursor-not-allowed disabled:opacity-70">
+                                        <option value="">Select a district first</option>
+                                    </select>
                                 </div>
                                 <div class="input-group">
                                     <input type="text" id="regPincode" placeholder=" "
                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
                                     <label for="regPincode">Pincode</label>
+                                </div>
+                                <!-- Aadhaar Number (Required for Volunteer and Coordinator, not Admin) -->
+                                <div class="input-group sm:col-span-2" id="aadhaarFieldGroup">
+                                    <input type="text" id="aadhaar" placeholder=" " maxlength="12" pattern="\d{12}" inputmode="numeric"
+                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <label for="aadhaar">Aadhaar Number (12 Digits)</label>
                                 </div>
                             </div>
 
@@ -366,11 +396,6 @@
                                         <option>AB+</option><option>AB-</option>
                                         <option>O+</option><option>O-</option>
                                     </select>
-                                </div>
-                                <div class="input-group mt-6">
-                                    <input type="text" id="aadhaar" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="aadhaar">Aadhaar Number</label>
                                 </div>
                                 <div class="input-group mt-2">
                                     <input type="text" id="skill1" placeholder=" "
@@ -466,7 +491,7 @@
                         </div>
 
                         <!-- Form Utilities -->
-                        <div id="loginUtils" class="flex items-center justify-between mt-2">
+                        <div id="RegisterUtils" class="flex items-center justify-between mt-2">
                             <label class="flex items-center gap-2 cursor-pointer group">
                                 <div class="relative flex items-center justify-center w-4 h-4">
                                     <input type="checkbox"
@@ -504,7 +529,7 @@
                         <div class="flex-1 h-px bg-gray-200"></div>
                     </div>
 
-                    <!-- Social Logins -->
+                    <!-- Social Registers -->
                     <div class="mt-6 grid grid-cols-2 gap-4">
                         <button type="button"
                                 class="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg
@@ -556,7 +581,7 @@
                     <li><a href="ai-platform.html" class="hover:text-white transition">ML Volunteer Matching</a></li>
                     <li><a href="ai-platform.html" class="hover:text-white transition">DL Intent Detection</a></li>
                     <li><a href="ai-platform.html" class="hover:text-white transition">RAG Architecture</a></li>
-                    <li><a href="login.html" class="hover:text-white transition">Security (JWT)</a></li>
+                    <li><a href="Register.html" class="hover:text-white transition">Security (JWT)</a></li>
                 </ul>
             </div>
             <div>
@@ -596,7 +621,7 @@
     </div>
 
     <script>
-        let currentMode = 'login';
+        let currentMode = 'register';
 
         function switchMode(mode) {
             currentMode = mode;
@@ -605,11 +630,10 @@
             const title = document.getElementById('formTitle');
             const subtitle = document.getElementById('formSubtitle');
             const registerFields = document.getElementById('registerFields');
-            const loginUtils = document.getElementById('loginUtils');
+            const RegisterUtils = document.getElementById('RegisterUtils');
             const btnSpan = document.querySelector('#submitBtn span');
 
             if (mode === 'login') {
-                // UI Updates for Login
                 tabLogin.className = "flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition";
                 tabRegister.className = "flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
                 
@@ -618,10 +642,9 @@
                 btnSpan.textContent = "Sign In";
                 
                 registerFields.classList.add('hidden');
-                loginUtils.classList.remove('hidden');
+                RegisterUtils.classList.remove('hidden');
 
             } else {
-                // UI Updates for Register
                 tabRegister.className = "flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition";
                 tabLogin.className = "flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
                 
@@ -630,28 +653,107 @@
                 btnSpan.textContent = "Register Profile";
                 
                 registerFields.classList.remove('hidden');
-                loginUtils.classList.add('hidden');
+                RegisterUtils.classList.add('hidden');
+            }
+        }
+
+        // Kerala district -> commonly used places/towns.
+        // These are common localities, not a complete ward/street-level directory.
+        const keralaPlacesByDistrict = {
+            "Thiruvananthapuram": ["Thiruvananthapuram City", "Neyyattinkara", "Nedumangad", "Attingal", "Varkala", "Kazhakkoottam", "Vizhinjam", "Kovalam", "Kattakada", "Balaramapuram", "Poovar", "Parassala", "Venjaramoodu", "Kilimanoor", "Other / nearby locality"],
+            "Kollam": ["Kollam City", "Punalur", "Karunagappally", "Kottarakkara", "Paravur", "Anchal", "Kundara", "Chathannoor", "Sasthamkotta", "Oachira", "Pathanapuram", "Other / nearby locality"],
+            "Pathanamthitta": ["Pathanamthitta", "Thiruvalla", "Adoor", "Ranni", "Kozhencherry", "Pandalam", "Konni", "Mallappally", "Aranmula", "Perunad", "Sabarimala", "Other / nearby locality"],
+            "Alappuzha": ["Alappuzha", "Cherthala", "Kayamkulam", "Haripad", "Mavelikkara", "Chengannur", "Ambalappuzha", "Kuttanad", "Thanneermukkom", "Aroor", "Mannar", "Edathua", "Other / nearby locality"],
+            "Kottayam": ["Kottayam", "Changanassery", "Pala", "Vaikom", "Ettumanoor", "Kanjirappally", "Erattupetta", "Mundakayam", "Ponkunnam", "Kuravilangad", "Kumarakom", "Uzhavoor", "Other / nearby locality"],
+            "Idukki": ["Painavu", "Thodupuzha", "Munnar", "Adimali", "Kattappana", "Kumily", "Nedumkandam", "Peermade", "Vandiperiyar", "Marayoor", "Rajakkad", "Vazhathope", "Devikulam", "Other / nearby locality"],
+            "Ernakulam": ["Kochi", "Kakkanad", "Aluva", "Angamaly", "Perumbavoor", "Muvattupuzha", "Kothamangalam", "North Paravur", "Thrippunithura", "Kalamassery", "Edappally", "Fort Kochi", "Mattancherry", "Vypin", "Eloor", "Piravom", "Other / nearby locality"],
+            "Thrissur": ["Thrissur", "Chalakudy", "Kodungallur", "Irinjalakuda", "Guruvayur", "Kunnamkulam", "Wadakkanchery", "Chavakkad", "Chelakkara", "Anthikad", "Ollur", "Mala", "Other / nearby locality"],
+            "Palakkad": ["Palakkad", "Ottapalam", "Shoranur", "Chittur", "Mannarkkad", "Pattambi", "Alathur", "Cherpulassery", "Nenmara", "Kollengode", "Kozhinjampara", "Vadakkencherry", "Other / nearby locality"],
+            "Malappuram": ["Malappuram", "Manjeri", "Tirur", "Ponnani", "Perinthalmanna", "Kottakkal", "Nilambur", "Kondotty", "Parappanangadi", "Tanur", "Tirurangadi", "Areekode", "Wandoor", "Edappal", "Other / nearby locality"],
+            "Kozhikode": ["Kozhikode", "Vadakara", "Koyilandy", "Feroke", "Ramanattukara", "Kunnamangalam", "Mukkam", "Thamarassery", "Balussery", "Perambra", "Beypore", "Elathur", "Koduvally", "Other / nearby locality"],
+            "Wayanad": ["Kalpetta", "Sulthan Bathery", "Mananthavady", "Vythiri", "Meppadi", "Pulpally", "Panamaram", "Ambalavayal", "Thirunelly", "Pozhuthana", "Muttil", "Padinjarathara", "Other / nearby locality"],
+            "Kannur": ["Kannur", "Thalassery", "Payyannur", "Taliparamba", "Mattannur", "Iritty", "Koothuparamba", "Sreekandapuram", "Panoor", "Azhikode", "Dharmadam", "Other / nearby locality"],
+            "Kasaragod": ["Kasaragod", "Kanhangad", "Nileshwaram", "Uppala", "Manjeshwar", "Cheruvathur", "Trikaripur", "Bekal", "Periya", "Udma", "Mulleria", "Badiadka", "Other / nearby locality"]
+        };
+
+        // Keep the place dropdown dependent on the selected district.
+        const regDistrict = document.getElementById('regDistrict');
+        const regPlace = document.getElementById('regPlace');
+
+        if (regDistrict && regPlace) {
+            regDistrict.addEventListener('change', function () {
+                const district = this.value;
+                regPlace.replaceChildren();
+
+                if (!district) {
+                    regPlace.add(new Option('Select a district first', ''));
+                    regPlace.disabled = true;
+                    regPlace.classList.add('bg-gray-100');
+                    regPlace.classList.remove('bg-white');
+                    return;
+                }
+
+                regPlace.add(new Option('Select place / town', ''));
+                (keralaPlacesByDistrict[district] || []).forEach(place => {
+                    regPlace.add(new Option(place, place));
+                });
+
+                regPlace.disabled = false;
+                regPlace.classList.remove('bg-gray-100');
+                regPlace.classList.add('bg-white');
+            });
+        }
+
+        // Initialize in login mode on load for login.html
+        document.addEventListener('DOMContentLoaded', () => {
+            switchMode('login');
+            const selectedRole = document.querySelector('input[name="role"]:checked')?.value || 'volunteer';
+            updateRoleFields(selectedRole);
+        });
+
+        function updateRoleFields(role) {
+            const volFields = document.getElementById('volunteerFields');
+            const coordFields = document.getElementById('coordinatorFields');
+            const adminFields = document.getElementById('adminFields');
+            const aadhaarGroup = document.getElementById('aadhaarFieldGroup');
+            const aadhaarInput = document.getElementById('aadhaar');
+            
+            if (volFields && coordFields && adminFields) {
+                volFields.classList.add('hidden');
+                coordFields.classList.add('hidden');
+                adminFields.classList.add('hidden');
+                
+                if (role === 'volunteer') {
+                    volFields.classList.remove('hidden');
+                    if (aadhaarGroup) aadhaarGroup.classList.remove('hidden');
+                    if (aadhaarInput) aadhaarInput.disabled = false;
+                } else if (role === 'coordinator') {
+                    coordFields.classList.remove('hidden');
+                    if (aadhaarGroup) aadhaarGroup.classList.remove('hidden');
+                    if (aadhaarInput) aadhaarInput.disabled = false;
+                } else if (role === 'admin') {
+                    adminFields.classList.remove('hidden');
+                    // Admin does not need to submit Aadhaar
+                    if (aadhaarGroup) aadhaarGroup.classList.add('hidden');
+                    if (aadhaarInput) aadhaarInput.disabled = true;
+                }
             }
         }
 
         // Listen for role changes to show specific fields
         document.querySelectorAll('input[name="role"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
-                const volFields = document.getElementById('volunteerFields');
-                const coordFields = document.getElementById('coordinatorFields');
-                const adminFields = document.getElementById('adminFields');
-                
-                if(volFields && coordFields && adminFields) {
-                    volFields.classList.add('hidden');
-                    coordFields.classList.add('hidden');
-                    adminFields.classList.add('hidden');
-                    
-                    if (e.target.value === 'volunteer') volFields.classList.remove('hidden');
-                    if (e.target.value === 'coordinator') coordFields.classList.remove('hidden');
-                    if (e.target.value === 'admin') adminFields.classList.remove('hidden');
-                }
+                updateRoleFields(e.target.value);
             });
         });
+
+        // Ensure Aadhaar number input only allows 12 digits
+        const aadhaarInput = document.getElementById('aadhaar');
+        if (aadhaarInput) {
+            aadhaarInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 12);
+            });
+        }
 
         function togglePassword() {
             const input = document.getElementById('password');

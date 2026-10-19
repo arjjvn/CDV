@@ -716,6 +716,7 @@
             const coordFields = document.getElementById('coordinatorFields');
             const adminFields = document.getElementById('adminFields');
             const aadhaarGroup = document.getElementById('aadhaarFieldGroup');
+            const aadhaarInput = document.getElementById('aadhaar');
             
             if (volFields && coordFields && adminFields) {
                 volFields.classList.add('hidden');
@@ -725,13 +726,16 @@
                 if (role === 'volunteer') {
                     volFields.classList.remove('hidden');
                     if (aadhaarGroup) aadhaarGroup.classList.remove('hidden');
+                    if (aadhaarInput) aadhaarInput.disabled = false;
                 } else if (role === 'coordinator') {
                     coordFields.classList.remove('hidden');
                     if (aadhaarGroup) aadhaarGroup.classList.remove('hidden');
+                    if (aadhaarInput) aadhaarInput.disabled = false;
                 } else if (role === 'admin') {
                     adminFields.classList.remove('hidden');
                     // Admin does not need to submit Aadhaar
                     if (aadhaarGroup) aadhaarGroup.classList.add('hidden');
+                    if (aadhaarInput) aadhaarInput.disabled = true;
                 }
             }
         }
@@ -784,7 +788,7 @@
                 
                 // Show Success Toast
                 const toast = document.getElementById('toast');
-                document.getElementById('toastTitle').textContent = currentMode === 'Register' ? 'Register Successful' : 'Registration Complete';
+                document.getElementById('toastTitle').textContent = currentMode === 'login' ? 'Login Successful' : 'Registration Complete';
                 document.getElementById('toastMessage').textContent = `Authenticated as ${role.charAt(0).toUpperCase() + role.slice(1)}. Redirecting...`;
                 
                 toast.classList.remove('hidden');
