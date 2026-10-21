@@ -3,32 +3,59 @@ import chromadb
 import chromadb.utils.embedding_functions as ef
 import ollama
 
-VECTOR_DIR=r"D:\code\CDV\RAG\vectorstore"
+VECTOR_DIR = r"D:\code\CDV\RAG\vectorstore"
+client = chromadb.PersistentClient(path=VECTOR_DIR)
+embed = ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
+collection = client.get_collection(name="disaster_guidelines", embedding_function=embed)
+
+def search_database(query: str) -> str:
+    result = collection.query(query_texts=[query], n_results=3)
+    if not result["documents"] or not result["documents"][0]:
+        return "No relevant information found."
+    return "\n\n".join(result["documents"][0])
 
 def rag(user_question):
-    client=chromadb.PersistentClient(path=VECTOR_DIR)
-    embed=ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
-    collection=client.get_collection(name="disaster_guidelines", embedding_function=embed)
-    result=collection.query(query_texts=[user_question], n_results=3)
-    retrieved_chunks= result["documents"][0]
-    context="/n/n".join(retrieved_chunks)
-
     system_prompt = (
         "You are an AI assistant for the Community Disaster Volunteer Hub. "
-        "Use the following pieces of retrieved context from official disaster guidelines "
-        "to answer the volunteer's question accurately. "
-        "If you don't know the answer or the information is not in the context, "
-        "state that you do not know and advise them to contact their Coordinator. "
-        "Do not hallucinate or make up emergency procedures.\n\n"
-        f"Context:\n{context}"
+        "Use your search_database tool to look up procedures before answering disaster questions. "
+        "If the tool returns no information, say you don't know and advise contacting a Coordinator. "
+        "If the user is just saying hello, answer directly without searching."
     )
 
-    response = ollama.chat(model="qwen3.5", messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_question}])
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_question}
+    ]
+
+    response = ollama.chat(
+        model="qwen2.5", 
+        messages=messages,
+        tools=[search_database]
+    )
+
+    if response.message.tool_calls:
+        messages.append(response.message)
+        
+        for tool_call in response.message.tool_calls:
+            if tool_call.function.name == "search_database":
+                search_query = tool_call.function.arguments.get("query")
+                
+                retrieved_context = search_database(search_query)
+                
+                messages.append({
+                    "role": "tool",
+                    "content": retrieved_context,
+                    "name": tool_call.function.name
+                })
+        
+        final_response = ollama.chat(model="qwen2.5", messages=messages)
+        return final_response.message.content
+
     return response.message.content
 
-if __name__=="__main__":
+if __name__ == "__main__":
     user_question = input("Enter your question: ").strip()
-
+    
     if user_question:
         answer = rag(user_question)
         print("\nCDVH Disaster Assistant:")
