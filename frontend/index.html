@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -1186,36 +1186,7 @@ document.getElementById('heroEmergencyForm').addEventListener('submit', function
     }, 1200);
 });
 
-// ── Chatbot toggle ────────────────────────────────────────────
-const chatWindow = document.getElementById('chatWindow');
-document.getElementById('chatToggleButton').addEventListener('click', () => {
-    chatWindow.classList.toggle('hidden');
-    chatWindow.classList.toggle('flex');
-});
-document.getElementById('chatCloseButton').addEventListener('click', () => {
-    chatWindow.classList.add('hidden');
-    chatWindow.classList.remove('flex');
-});
-document.getElementById('chatForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const inp = document.getElementById('chatInput');
-    const msg = inp.value.trim();
-    if (!msg) return;
-    const msgs = document.getElementById('chatMessages');
-    const ub = document.createElement('div');
-    ub.className = 'bg-brand-navy text-white p-3 rounded-lg rounded-tr-none text-sm self-end max-w-[85%] shadow-sm';
-    ub.textContent = msg;
-    msgs.appendChild(ub);
-    inp.value = '';
-    setTimeout(() => {
-        const bb = document.createElement('div');
-        bb.className = 'bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm';
-        bb.textContent = 'This is a frontend demo. Connect the FastAPI RAG backend to get real answers from official disaster guidelines.';
-        msgs.appendChild(bb);
-        msgs.scrollTop = msgs.scrollHeight;
-    }, 800);
-    msgs.scrollTop = msgs.scrollHeight;
-});
+
 </script>
 
 <script type="module" src="assets/js/chatbot.js"></script>

@@ -28,7 +28,7 @@ def rag(user_question):
     ]
 
     response = ollama.chat(
-        model="qwen2.5", 
+        model="qwen3.5", 
         messages=messages,
         tools=[search_database]
     )
@@ -48,7 +48,7 @@ def rag(user_question):
                     "name": tool_call.function.name
                 })
         
-        final_response = ollama.chat(model="qwen2.5", messages=messages)
+        final_response = ollama.chat(model="qwen3.5", messages=messages)
         return final_response.message.content
 
     return response.message.content
