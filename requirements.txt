@@ -1,3 +1,4 @@
+
 fastapi
 uvicorn
 streamlit
@@ -6,3 +7,6 @@ email-validator
 pwdlib[argon2]
 PyJWT
 python-multipart
+psycopg[binary]
+sqlalchemy
+python-dotenv

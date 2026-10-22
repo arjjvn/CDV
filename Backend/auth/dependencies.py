@@ -2,7 +2,7 @@ from fastapi import Depends,HTTPException
 from fastapi.security import HTTPBearer,HTTPAuthorizationCredentials
 import jwt
 
-from Backend.auth.routes import SECRET_KEY,ALGORITHM
+from Backend.auth.config import SECRET_KEY,ALGORITHM
 
 security=HTTPBearer()
 
