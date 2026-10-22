@@ -1,0 +1,235 @@
+/* =============================================
+   CDVH | Global Professional Animation & Style System
+   Matches main.html brand identity (#0b1b36, #e62429)
+   ============================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* --- Professional Scroll Reveal Animations --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-scale.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-left.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-right.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Stagger Delay Utilities */
+.delay-100 { transition-delay: 0.1s !important; }
+.delay-150 { transition-delay: 0.15s !important; }
+.delay-200 { transition-delay: 0.2s !important; }
+.delay-300 { transition-delay: 0.3s !important; }
+.delay-400 { transition-delay: 0.4s !important; }
+.delay-500 { transition-delay: 0.5s !important; }
+
+/* --- Button Hover & Fill Effects --- */
+.btn-hover {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-hover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.14);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: -1;
+}
+
+.btn-hover:hover::before {
+    transform: scaleX(1);
+}
+
+/* --- Click Ripple Effect --- */
+.ripple-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: rippleAnimation 0.6s cubic-bezier(0, 0, 0.2, 1);
+    background-color: rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+}
+
+.ripple-dark {
+    background-color: rgba(11, 27, 54, 0.15);
+}
+
+@keyframes rippleAnimation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* --- Sticky Navbar Scrolled Dynamic State --- */
+header.nav-scrolled {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    box-shadow: 0 4px 20px -2px rgba(11, 27, 54, 0.08);
+    border-color: rgba(229, 231, 235, 0.8) !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* --- Card Elevation & Micro-Interactions --- */
+.hover-lift {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px -6px rgba(11, 27, 54, 0.1);
+}
+
+/* --- Stat Counter Formatting --- */
+.counter {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+/* --- Progress Bar Smooth Easing --- */
+.progress-bar-animated {
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    will-change: width;
+}
+
+/* --- Pulse & Glow Utilities --- */
+@keyframes pulseGlow {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.75;
+    }
+}
+
+.pulse-badge {
+    animation: pulseGlow 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes pulseRing {
+    0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(230, 36, 41, 0.5); }
+    70%  { transform: scale(1);    box-shadow: 0 0 0 8px rgba(230, 36, 41, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(230, 36, 41, 0); }
+}
+
+.alert-pulse {
+    animation: pulseRing 2s infinite;
+}
+
+/* --- Slide Up & Fade Keyframes --- */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-up {
+    animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-clip {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}

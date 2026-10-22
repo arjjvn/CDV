@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDVH | Volunteer Dashboard</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy:      '#0b1b36',
+                            red:       '#e62429',
+                            blue:      '#2a7bbd',
+                            yellow:    '#f0c040',
+                            beige:     '#f8f5f0',
+                            textDark:  '#1a1a1a',
+                            textMuted: '#6b7280'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0,0,0,0.05)',
+                        'card': '0 2px 10px -1px rgba(0, 0, 0, 0.04)',
+                        'float': '0 10px 40px -10px rgba(0,0,0,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Volunteer Dashboard Styles -->
+    <link rel="stylesheet" href="../assets/css/volunteer.css">
+</head>
+<body class="bg-[#f8f9fa] text-brand-textDark flex flex-col min-h-screen overflow-x-hidden">
+
+    <!-- Top Bar (From Main Theme) -->
+    <div class="bg-brand-navy text-white text-xs py-2 px-6 flex justify-between items-center hidden md:flex">
+        <div class="flex gap-6">
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                info@cdvh.org
+            </span>
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Chengannur, Kerala
+            </span>
+            <span class="flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                030-123-4567
+            </span>
+        </div>
+        <div class="flex gap-4">
+            <span class="flex items-center gap-2 text-green-400 font-semibold bg-green-400/10 px-2 py-0.5 rounded">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Network Active
+            </span>
+        </div>
+    </div>
+
+    <!-- Main Navigation (From Main Theme, adapted for Dashboard) -->
+    <!-- Main Navigation (Adapted for Dashboard) -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="../index.html" class="flex items-center gap-2 group">
+                <div class="flex flex-col transform group-hover:scale-105 transition">
+                    <div class="flex items-center gap-1">
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-1">
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                    </div>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-brand-navy ml-2">CDVH<span class="text-brand-red">.</span></span>
+                <span class="text-2xl font-display font-bold tracking-tight text-brand-navy ml-2">CDVH<span class="text-brand-red">.</span></span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-textDark">
+                <a href="#" class="text-brand-red">My Dashboard</a>
+                <a href="#" class="text-brand-red font-semibold">My Dashboard</a>
+                <a href="#" class="hover:text-brand-red transition flex items-center gap-1">Deployments <span class="bg-brand-red text-white text-[10px] px-1.5 py-0.5 rounded-full">1</span></a>
+                <a href="#" class="hover:text-brand-red transition">Field Guidelines</a>
+                <a href="#" class="hover:text-brand-red transition">Settings</a>
+            </nav>
+
+            <!-- Profile CTA -->
+            <div class="flex items-center gap-4 border-l border-gray-200 pl-6">
+                <div class="text-right hidden sm:block">
+                    <div class="text-sm font-bold text-brand-navy leading-tight">Anjana S.</div>
+                    <div class="text-[10px] font-medium text-brand-red uppercase tracking-wider">Medical Specialist</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-brand-navy border-2 border-white shadow-sm overflow-hidden cursor-pointer hover:ring-2 hover:ring-brand-red transition-all">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=100&q=80" alt="Profile" class="w-full h-full object-cover">
+                </div>
+                <button class="md:hidden text-brand-navy ml-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="flex-1 pb-12">
+        
+        <!-- Welcome Hero (Reference Image Style — full width like main.html) -->
+        <div class="w-full animate-fade-in">
+            <div class="relative w-full flex flex-col md:flex-row min-h-[520px] overflow-hidden">
+                <!-- Navy Left -->
+                <div class="bg-brand-navy text-white w-full md:w-[55%] px-6 py-16 md:py-24 md:pl-16 lg:pl-32 flex flex-col justify-center z-10">
+                    <span class="text-brand-red font-bold text-sm tracking-widest uppercase mb-4 block">Volunteer Portal</span>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Ready to Respond, Anjana.</h1>
+                    <h1 class="text-4xl md:text-5xl font-display font-bold uppercase mb-6 leading-tight">Ready to Respond, <span class="text-brand-yellow">Anjana.</span></h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed max-w-md mb-8">
+                        Your skills are essential. Our AI matching system is actively monitoring disaster reports and will alert you instantly when your specific expertise is needed on the ground.
+                        Your skills are essential. Our response coordination system is actively monitoring disaster reports and will alert you instantly when your specific expertise is needed on the ground.
+                    </p>
+                    <button class="bg-brand-red hover:bg-red-700 text-white px-8 py-3.5 text-sm font-bold transition shadow-md inline-flex items-center gap-2">
+                        Update Availability
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                    <div>
+                        <button class="bg-brand-red hover:bg-red-700 text-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider transition shadow-md inline-flex items-center gap-2">
+                            Update Availability
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                <!-- Red Right with Overlapping Image -->
+                <div class="bg-brand-red w-full md:w-[45%] relative hidden md:block">
+                    <div class="absolute top-1/2 -translate-y-1/2 -left-24 w-[120%] z-20 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1593113565694-c6c21e649d21?auto=format&fit=crop&w=800&q=80" alt="Volunteer" class="w-full h-auto object-cover border-8 border-white">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Red Stats Strip -->
+            <div class="bg-brand-red text-white border-t border-red-500/30">
+                <div class="max-w-7xl mx-auto py-8 px-6">
+                    <div class="grid grid-cols-3 divide-x divide-white/20 text-center max-w-2xl">
+                        <div>
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">12</div>
+                            <div class="text-[10px] sm:text-xs uppercase tracking-wider text-red-100 font-medium">Missions</div>
+                            <div class="text-4xl lg:text-5xl font-display font-bold mb-1">12</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Missions</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">94%</div>
+                            <div class="text-[10px] sm:text-xs uppercase tracking-wider text-red-100 font-medium">Match Score</div>
+                            <div class="text-4xl lg:text-5xl font-display font-bold mb-1">94%</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Match Score</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl lg:text-4xl font-bold mb-1">82</div>
+                            <div class="text-[10px] sm:text-xs uppercase tracking-wider text-red-100 font-medium">Hours Logged</div>
+                            <div class="text-4xl lg:text-5xl font-display font-bold mb-1">82</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Hours Logged</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 space-y-16 mt-16 animate-fade-in">
+            
+            <!-- Urgent Job Role Request Hero (Styled like reference content block) -->
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <!-- Left: Text & Actions -->
+                <div class="flex-1">
+                    <!-- Geometric Logo Accent -->
+                    <div class="flex items-center gap-1 mb-6">
+                        <div class="w-6 h-6 bg-brand-red"></div>
+                        <div class="w-6 h-6 bg-brand-navy -ml-2 mt-3"></div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-brand-navy font-bold text-sm tracking-widest uppercase">Urgent Match Alert</span>
+                        <span class="text-xs font-bold text-brand-red bg-red-50 px-2 py-0.5 rounded border border-red-100 animate-pulse">Score: 94%</span>
+                        <span class="text-xs font-bold text-brand-red bg-red-50 px-2.5 py-0.5 rounded border border-red-100 animate-pulse">Score: 94%</span>
+                    </div>
+                    
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-navy mb-4 leading-tight">Lead Paramedic<br>Required.</h2>
+                    <h2 class="text-3xl md:text-5xl font-display font-bold uppercase text-brand-navy mb-4 leading-tight">Lead Paramedic<br><span class="text-brand-red">Required.</span></h2>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-8 max-w-lg">
+                        Our AI system has matched your profile to an urgent deployment. Sector 4 Relief Camp requires immediate medical coordination. You will be responsible for triage and coordinating with incoming ambulances.
+                        Our response coordination system has matched your profile to an urgent deployment. Sector 4 Relief Camp requires immediate medical coordination. You will be responsible for triage and coordinating with incoming ambulances.
+                    </p>
+
+                    <!-- Feature Cards styling -->
+                    <div class="grid grid-cols-2 gap-4 mb-8 max-w-lg">
+                        <div class="border border-gray-100 p-5 shadow-sm bg-white hover:shadow-md transition rounded">
+                            <div class="w-8 h-8 rounded-full bg-red-50 text-brand-red flex items-center justify-center mb-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <h4 class="font-bold text-brand-navy text-sm mb-1">Sector 4 Camp</h4>
+                            <h4 class="font-display font-bold text-brand-navy text-sm mb-1 uppercase tracking-tight">Sector 4 Camp</h4>
+                            <p class="text-xs text-gray-500">Main Highway (2.4 km)</p>
+                        </div>
+                        <div class="border border-gray-100 p-5 shadow-sm bg-white hover:shadow-md transition rounded">
+                            <div class="w-8 h-8 rounded-full bg-red-50 text-brand-red flex items-center justify-center mb-3">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <h4 class="font-bold text-brand-navy text-sm mb-1">Est. 6 Hours</h4>
+                            <h4 class="font-display font-bold text-brand-navy text-sm mb-1 uppercase tracking-tight">Est. 6 Hours</h4>
+                            <p class="text-xs text-gray-500">Coordinator: Arjun P.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="acceptRoleBtn" onclick="acceptJobRole()" class="bg-brand-navy hover:bg-[#152e59] text-white px-8 py-3.5 text-sm font-bold transition shadow-md flex items-center justify-center gap-2 w-full sm:w-auto">
+                        <button id="acceptRoleBtn" onclick="acceptJobRole()" class="bg-brand-navy hover:bg-[#152e59] text-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 w-full sm:w-auto">
+                            Accept Deployment
+                        </button>
+                        <button class="px-8 py-3.5 bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 text-sm font-semibold transition shadow-sm w-full sm:w-auto">
+                        <button class="px-8 py-3.5 bg-white border border-gray-300 text-gray-600 hover:bg-gray-50 text-sm font-semibold uppercase tracking-wider transition shadow-sm w-full sm:w-auto">
+                            Decline Task
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Image -->
+                <div class="w-full md:w-[45%]">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80" alt="Medical Task" class="w-full h-[400px] object-cover shadow-lg rounded-sm">
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 border-t border-gray-200 pt-16">
+                
+                <!-- Emergency Box 2 -->
+                <div class="bg-white rounded-sm shadow-card border border-gray-100 p-8">
+                        <div class="flex items-center gap-3">
+                <!-- My Capabilities Card -->
+                <div class="bg-white rounded-sm shadow-card border border-gray-100 p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                <svg class="w-5 h-5 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-brand-navy">My Capabilities</h3>
+                                <p class="text-xs text-gray-500">Update skills to improve ML matching accuracy.</p>
+                                <h3 class="text-xl font-display font-bold uppercase text-brand-navy">My Capabilities</h3>
+                                <p class="text-xs text-gray-500">Update verified emergency skills to improve response match accuracy.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Skills -->
+                    <div class="mb-8">
+                        <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-3">Approved Skills</label>
+                        <div class="flex flex-wrap gap-2" id="skillTags">
+                            <span class="bg-brand-navy text-white px-3 py-1.5 rounded text-xs font-medium flex items-center gap-2">First Aid <button class="hover:text-red-400">&times;</button></span>
+                            <span class="bg-brand-navy text-white px-3 py-1.5 rounded text-xs font-medium flex items-center gap-2">CPR Certified <button class="hover:text-red-400">&times;</button></span>
+                            <span class="bg-brand-navy text-white px-3 py-1.5 rounded text-xs font-medium flex items-center gap-2">Triage <button class="hover:text-red-400">&times;</button></span>
+                        <!-- Current Skills -->
+                        <div class="mb-8">
+                            <label class="block text-xs font-bold text-brand-navy uppercase tracking-wider mb-3">Approved Skills</label>
+                            <div class="flex flex-wrap gap-2" id="skillTags">
+                                <span class="bg-brand-navy text-white px-3 py-1.5 rounded text-xs font-medium flex items-center gap-2">First Aid <button class="hover:text-red-400">&times;</button></span>
+                                <span class="bg-brand-navy text-white px-3 py-1.5 rounded text-xs font-medium flex items-center gap-2">CPR Certified <button class="hover:text-red-400">&times;</button></span>
+                                <span class="bg-brand-navy text-white px-3 py-1.5 rounded text-xs font-medium flex items-center gap-2">Triage <button class="hover:text-red-400">&times;</button></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add New Skill Form -->
+                    <form id="addSkillForm" class="space-y-4 bg-gray-50 p-5 rounded-lg border border-gray-200 mt-auto">
+                        <label class="block text-sm font-semibold text-brand-navy mb-2">Add Additional Skill</label>
+                    <form id="addSkillForm" class="space-y-4 bg-gray-50 p-5 rounded-lg border border-gray-200 mt-4">
+                        <label class="block text-sm font-semibold text-brand-navy">Add Additional Skill</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <input type="text" id="newSkillName" placeholder="Skill Name (e.g., Logistics)" required class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                                <input type="text" id="newSkillName" placeholder="Skill Name (e.g., Water Rescue)" required class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                            </div>
+                            <div>
+                                <select id="newSkillLevel" required class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                                    <option value="" disabled selected>Proficiency Level</option>
+                                    <option>Beginner</option>
+                                    <option>Intermediate</option>
+                                    <option>Expert</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <textarea id="newSkillDetails" rows="2" placeholder="Brief details about your experience with this skill..." required class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:border-brand-navy transition resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-brand-navy py-2.5 rounded text-sm font-semibold transition flex justify-center items-center gap-2 shadow-sm">
+                        <button type="submit" class="w-full bg-brand-navy hover:bg-[#152e59] text-white py-2.5 rounded text-sm font-semibold transition flex justify-center items-center gap-2 shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Add to Profile
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Emergency Readiness & Deployments Card -->
+                <div class="bg-white rounded-sm shadow-card border border-gray-100 p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-display font-bold uppercase text-brand-navy">Emergency Readiness</h3>
+                                <p class="text-xs text-gray-500">Real-time status in Kerala Disaster Operations Network.</p>
+                            </div>
+                        </div>
+
+                        <!-- Status Pill List -->
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-center justify-between p-3.5 bg-gray-50 border border-gray-100 rounded">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+                                    <div>
+                                        <div class="text-xs font-bold text-brand-navy uppercase">Availability Status</div>
+                                        <div class="text-[11px] text-gray-500">Active & Ready for Immediate Deployment</div>
+                                    </div>
+                                </div>
+                                <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded">On Call</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3.5 bg-gray-50 border border-gray-100 rounded">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded bg-brand-navy text-white text-xs flex items-center justify-center font-bold">KL</div>
+                                    <div>
+                                        <div class="text-xs font-bold text-brand-navy uppercase">Registered District</div>
+                                        <div class="text-[11px] text-gray-500">Alappuzha · Chengannur Sector</div>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-semibold text-brand-blue">Sector 4</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3.5 bg-gray-50 border border-gray-100 rounded">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded bg-red-500 text-white text-xs flex items-center justify-center font-bold">O+</div>
+                                    <div>
+                                        <div class="text-xs font-bold text-brand-navy uppercase">Blood Donorship</div>
+                                        <div class="text-[11px] text-gray-500">Donor Registry Verified</div>
+                                    </div>
+                                </div>
+                                <span class="bg-red-50 text-brand-red text-xs font-semibold px-2.5 py-1 rounded">Eligible</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Action -->
+                    <div class="bg-brand-navy text-white p-5 rounded-lg flex items-center justify-between mt-4">
+                        <div>
+                            <div class="text-xs font-semibold uppercase tracking-wider text-red-300">Emergency Hotline</div>
+                            <div class="text-lg font-display font-bold text-white">Call 112 (Disaster Response)</div>
+                        </div>
+                        <a href="tel:112" class="bg-brand-red hover:bg-red-700 text-white px-4 py-2 rounded text-xs font-bold uppercase tracking-wider transition">Call Now</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Deep Footer (Navy) -->
+    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10 mt-auto">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            <div>
+                <span class="text-xl font-bold tracking-tight text-white block mb-4">CDVH<span class="text-brand-red">.</span></span>
+                <p class="text-gray-400 mb-4 leading-relaxed">Community Disaster Volunteer Hub. AI-Assisted platform for rapid response coordination.</p>
+                <span class="text-2xl font-display font-bold tracking-tight text-white block mb-4">CDVH<span class="text-brand-red">.</span></span>
+                <p class="text-gray-400 mb-4 leading-relaxed">Community Disaster Volunteer Hub. Real-time platform for rapid emergency response and volunteer coordination.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Platform</h4>
+                <h4 class="font-display font-bold text-white mb-4 uppercase tracking-wider text-sm">Platform</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">ML Volunteer Matching</a></li>
+                    <li><a href="#" class="hover:text-white transition">DL Intent Detection</a></li>
+                    <li><a href="#" class="hover:text-white transition">RAG Architecture</a></li>
+                    <li><a href="#" class="hover:text-white transition">Security (JWT)</a></li>
+                    <li><a href="#" class="hover:text-white transition">Volunteer Matching</a></li>
+                    <li><a href="#" class="hover:text-white transition">Emergency Response</a></li>
+                    <li><a href="#" class="hover:text-white transition">Resource Deployment</a></li>
+                    <li><a href="login.html?mode=register" class="hover:text-white transition">Register Volunteer</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Resources</h4>
+                <h4 class="font-display font-bold text-white mb-4 uppercase tracking-wider text-sm">Resources</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">Coordinator Dashboard</a></li>
+                    <li><a href="coordinator-dashboard.html" class="hover:text-white transition">Coordinator Dashboard</a></li>
+                    <li><a href="#" class="hover:text-white transition">Disaster Guidelines</a></li>
+                    <li><a href="#" class="hover:text-white transition">API Documentation</a></li>
+                    <li><a href="#" class="hover:text-white transition">GitHub Repo</a></li>
+                    <li><a href="#" class="hover:text-white transition">Sector Safety SOPs</a></li>
+                    <li><a href="#" class="hover:text-white transition">Volunteer Code of Conduct</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Contact</h4>
+                <h4 class="font-display font-bold text-white mb-4 uppercase tracking-wider text-sm">Emergency Contact</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> 112 Emergency Line</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg> 030-123-4567 (Hub)</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> support@cdvh.org</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Kerala, India</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> 112 Emergency Line</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg> 030-123-4567 (Hub)</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> support@cdvh.org</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Kerala, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-12 pt-6 border-t border-white/10 text-center text-xs text-gray-500">
+
+        <!-- Bottom Contact Info Bar (moved from above nav) -->
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-16 mt-10 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+            <div class="flex flex-wrap items-center gap-6">
+                <span>info@cdvh.org</span>
+                <span>Chengannur, Kerala</span>
+                <span class="text-white font-semibold">112 · Emergency Hotline</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-xs uppercase tracking-wider text-gray-500 mr-1">Follow:</span>
+                <a href="#" class="hover:text-brand-yellow transition">Facebook</a>
+                <a href="#" class="hover:text-brand-yellow transition">Twitter</a>
+                <a href="#" class="hover:text-brand-yellow transition">Instagram</a>
+                <a href="#" class="hover:text-brand-yellow transition">LinkedIn</a>
+            </div>
+        </div>
+
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-6 pt-6 border-t border-white/5 text-center text-xs text-gray-500">
+            &copy; 2026 Community Disaster Volunteer Hub. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Floating RAG Chatbot -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+        
+        <!-- Chat Window -->
+        <div id="chatWindow" class="bg-white w-80 md:w-96 rounded-xl shadow-float border border-gray-200 mb-4 hidden flex-col overflow-hidden h-[420px] pointer-events-auto">
+            
+            <!-- Header -->
+            <div class="bg-brand-navy p-4 flex justify-between items-center text-white shadow relative">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center shadow-inner">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm">CDVH Assistant</h4>
+                        <p class="text-[10px] text-gray-300 uppercase tracking-widest">RAG Knowledge Base</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1">
+                    <!-- Expand/Shrink Button -->
+                    <button onclick="toggleChatSize()" id="chatResizeBtn" class="text-gray-300 hover:text-white transition p-1 focus:outline-none" title="Maximize">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                    </button>
+                    <!-- Close Button -->
+                    <button onclick="toggleChat()" class="text-gray-300 hover:text-white transition p-1 focus:outline-none" title="Close">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Messages Area -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
+                <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm leading-relaxed">
+                    Hello Anjana! I am the CDVH AI Assistant. You can ask me about official disaster guidelines or task protocols while you are in the field.
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <form id="chatForm" class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" id="chatInput" placeholder="Ask a question..." required autocomplete="off" class="flex-1 px-3 py-2.5 bg-gray-100 border border-transparent rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                <button type="submit" class="bg-brand-red hover:bg-red-700 text-white px-4 py-2.5 rounded-lg transition shadow-sm focus:outline-none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Toggle Button -->
+        <button onclick="toggleChat()" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-float transition-transform hover:scale-105 border-2 border-white focus:outline-none pointer-events-auto">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        </button>
+    </div>
+
+    <!-- Global Animations & Effects -->
+    <script src="../assets/js/animations.js"></script>
+    <!-- Volunteer Dashboard Logic -->
+    <script src="../assets/js/volunteer.js"></script>
+</body>
+</html>

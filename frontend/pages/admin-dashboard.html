@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDVH | Admin Dashboard</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy:      '#0b1b36',
+                            red:       '#e62429',
+                            blue:      '#2a7bbd',
+                            yellow:    '#f0c040',
+                            beige:     '#f8f5f0',
+                            textDark:  '#1a1a1a',
+                            textMuted: '#6b7280'
+                        }
+                    },
+                    boxShadow: {
+                        'soft':  '0 4px 20px -2px rgba(0,0,0,0.05)',
+                        'card':  '0 2px 10px -1px rgba(0,0,0,0.04)',
+                        'float': '0 10px 40px -10px rgba(0,0,0,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Admin Dashboard Styles -->
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body class="bg-[#f3f4f6] text-brand-textDark flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="../index.html" class="flex items-center gap-2 group">
+                <div class="flex flex-col transform group-hover:scale-105 transition">
+                    <div class="flex items-center gap-1">
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-1">
+                        <div class="w-4 h-4 bg-brand-navy"></div>
+                        <div class="w-4 h-4 bg-brand-red"></div>
+                    </div>
+                </div>
+                <span class="text-2xl font-display font-bold tracking-tight text-brand-navy ml-2">CDVH<span class="text-brand-red">.</span></span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-textDark">
+                <a href="#" class="text-brand-red font-semibold">Overview</a>
+                <a href="#" class="hover:text-brand-red transition">User Management</a>
+                <a href="#" class="hover:text-brand-red transition flex items-center gap-1">
+                    System Alerts <span class="bg-brand-red text-white text-[10px] px-1.5 py-0.5 rounded-full">5</span>
+                </a>
+                <a href="#" class="hover:text-brand-red transition">ML/AI Config</a>
+                <a href="#" class="hover:text-brand-red transition">Settings</a>
+            </nav>
+
+            <!-- Profile CTA -->
+            <div class="flex items-center gap-4 border-l border-gray-200 pl-6">
+                <div class="text-right hidden sm:block">
+                    <div class="text-sm font-bold text-brand-navy leading-tight">Super Admin</div>
+                    <div class="text-[10px] font-medium text-brand-red uppercase tracking-wider">Full Access</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-brand-navy border-2 border-brand-red shadow-sm overflow-hidden cursor-pointer hover:ring-2 hover:ring-brand-red transition-all flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
+                <button class="md:hidden text-brand-navy ml-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 pb-12">
+
+        <!-- Admin Hero (Full width Save Lives style) -->
+        <div class="w-full animate-fade-in">
+            <div class="relative w-full flex flex-col md:flex-row min-h-[520px] overflow-hidden">
+                <!-- Navy Left -->
+                <div class="bg-brand-navy text-white w-full md:w-[58%] px-6 py-16 md:py-24 md:pl-16 lg:pl-32 flex flex-col justify-center z-10">
+                    <span class="text-brand-red font-bold text-sm tracking-widest uppercase mb-4 block">Admin Control Center</span>
+                    <h1 class="text-4xl md:text-5xl font-display font-bold uppercase mb-6 leading-tight">Platform<br><span class="text-brand-yellow">Command Hub.</span></h1>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed max-w-md mb-8">
+                        Full system visibility. Manage <strong class="text-white">1,547 volunteers</strong>, <strong class="text-white">12 coordinators</strong>, and the response coordination network from one secure dashboard.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button class="bg-brand-red hover:bg-red-700 text-white px-8 py-3.5 text-sm font-bold uppercase tracking-wider transition shadow-md inline-flex items-center gap-2">
+                            Manage Users
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                        <button class="px-8 py-3.5 border border-white/30 text-white hover:bg-white/10 text-sm font-semibold uppercase tracking-wider transition inline-flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            System Settings
+                        </button>
+                    </div>
+                </div>
+                <!-- Red Right with Overlapping Image -->
+                <div class="bg-brand-red w-full md:w-[42%] relative hidden md:block">
+                    <div class="absolute top-1/2 -translate-y-1/2 -left-24 w-[120%] z-20 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="Admin Command Operations" class="w-full h-auto object-cover border-8 border-white">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar (Red stats bar — full width) -->
+            <div class="bg-brand-red text-white border-t border-red-500/30">
+                <div class="max-w-[1600px] w-full mx-auto py-8 px-6 lg:px-16">
+                    <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/20 text-center">
+                        <div class="px-4">
+                            <div class="text-4xl lg:text-5xl font-display font-bold mb-1">1,547</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Total Volunteers</div>
+                        </div>
+                        <div class="px-4">
+                            <div class="text-4xl lg:text-5xl font-display font-bold mb-1">12</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Coordinators</div>
+                        </div>
+                        <div class="px-4">
+                            <div class="text-4xl lg:text-5xl font-display font-bold mb-1">94%</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Response Match Score</div>
+                        </div>
+                        <div class="px-4">
+                            <div class="text-4xl lg:text-5xl font-display font-bold mb-1">99.9%</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">System Uptime</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-16 space-y-12 animate-fade-in">
+
+            <!-- System Stat Cards (styled like main.html about section feature cards) -->
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-6 h-6 bg-brand-red"></div>
+                    <div class="w-6 h-6 bg-brand-navy -ml-2 mt-3"></div>
+                    <span class="text-brand-red font-bold text-sm tracking-widest uppercase ml-2">Platform Health</span>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-display font-bold uppercase text-brand-navy mb-8">System Overview</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                    <div class="stat-card bg-white p-6 rounded shadow-card border border-gray-100 border-l-4 border-l-brand-red">
+                        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <div class="text-3xl font-display font-bold text-brand-navy mb-1">1,559</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Total Users</div>
+                        <div class="mt-3 text-xs text-green-600 font-semibold flex items-center gap-1">
+                            <span>↑ 12 this week</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded shadow-card border border-gray-100 border-l-4 border-l-brand-navy">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <div class="text-3xl font-display font-bold text-brand-navy mb-1">847</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">ML Matches Made</div>
+                        <div class="mt-3 text-xs text-green-600 font-semibold">94% Avg Accuracy</div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded shadow-card border border-gray-100 border-l-4 border-l-yellow-400">
+                        <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <div class="text-3xl font-display font-bold text-brand-navy mb-1">5</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Pending Alerts</div>
+                        <div class="mt-3 text-xs text-yellow-600 font-semibold">Requires attention</div>
+                    </div>
+
+                    <div class="stat-card bg-white p-6 rounded shadow-card border border-gray-100 border-l-4 border-l-green-500">
+                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center mb-4">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        </div>
+                        <div class="text-3xl font-display font-bold text-brand-navy mb-1">98%</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider font-semibold">System Uptime</div>
+                        <div class="mt-3 text-xs text-green-600 font-semibold">All services nominal</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- User Management Table -->
+            <div class="bg-white rounded shadow-card border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-xl font-display font-bold uppercase text-brand-navy">User Management</h3>
+                        <p class="text-xs text-gray-500 mt-1">Manage roles, approve volunteers, and remove users.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <input id="userSearch" type="text" placeholder="Search users..." class="px-4 py-2 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition w-48">
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 border-b border-gray-100">
+                            <tr>
+                                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
+                                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Skills</th>
+                                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">Status</th>
+                                <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">ML Score</th>
+                                <th class="px-6 py-3"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+
+                            <!-- User Row 1 -->
+                            <tr id="user-row-1" class="user-row hover:bg-gray-50 transition" data-name="anjana s">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=60&q=80" alt="User" class="w-9 h-9 rounded-full object-cover">
+                                        <div>
+                                            <div class="font-semibold text-brand-navy">Anjana S.</div>
+                                            <div class="text-[10px] text-gray-400">anjana@cdvh.org</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span id="role-1" class="role-volunteer px-2 py-0.5 rounded text-xs font-bold">Volunteer</span>
+                                </td>
+                                <td class="px-6 py-4 hidden md:table-cell">
+                                    <div class="flex gap-1 flex-wrap">
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">First Aid</span>
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">CPR</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="flex items-center gap-1.5 text-xs font-semibold text-green-600">
+                                        <span class="w-2 h-2 rounded-full status-active inline-block"></span> Active
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="font-bold text-brand-navy">94%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2 justify-end">
+                                        <button onclick="updateUserRole(1,'coordinator')" class="text-brand-navy hover:text-brand-red transition text-xs font-semibold">Promote</button>
+                                        <button onclick="confirmDelete(1,'Anjana S.')" class="text-gray-400 hover:text-brand-red transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- User Row 2 -->
+                            <tr id="user-row-2" class="user-row hover:bg-gray-50 transition" data-name="arjun p">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=60&q=80" alt="User" class="w-9 h-9 rounded-full object-cover">
+                                        <div>
+                                            <div class="font-semibold text-brand-navy">Arjun P.</div>
+                                            <div class="text-[10px] text-gray-400">arjun@cdvh.org</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span id="role-2" class="role-coordinator px-2 py-0.5 rounded text-xs font-bold">Coordinator</span>
+                                </td>
+                                <td class="px-6 py-4 hidden md:table-cell">
+                                    <div class="flex gap-1 flex-wrap">
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">Search & Rescue</span>
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">Navigation</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="flex items-center gap-1.5 text-xs font-semibold text-green-600">
+                                        <span class="w-2 h-2 rounded-full status-active inline-block"></span> Active
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="font-bold text-brand-navy">89%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2 justify-end">
+                                        <button onclick="updateUserRole(2,'admin')" class="text-brand-navy hover:text-brand-red transition text-xs font-semibold">Promote</button>
+                                        <button onclick="confirmDelete(2,'Arjun P.')" class="text-gray-400 hover:text-brand-red transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- User Row 3 -->
+                            <tr id="user-row-3" class="user-row hover:bg-gray-50 transition" data-name="vishnu k">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=60&q=80" alt="User" class="w-9 h-9 rounded-full object-cover">
+                                        <div>
+                                            <div class="font-semibold text-brand-navy">Vishnu K.</div>
+                                            <div class="text-[10px] text-gray-400">vishnu@cdvh.org</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span id="role-3" class="role-volunteer px-2 py-0.5 rounded text-xs font-bold">Volunteer</span>
+                                </td>
+                                <td class="px-6 py-4 hidden md:table-cell">
+                                    <div class="flex gap-1 flex-wrap">
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">First Aid</span>
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">Logistics</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="flex items-center gap-1.5 text-xs font-semibold text-yellow-600">
+                                        <span class="w-2 h-2 rounded-full status-pending inline-block"></span> Pending
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="font-bold text-brand-navy">88%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2 justify-end">
+                                        <button onclick="updateUserRole(3,'coordinator')" class="text-brand-navy hover:text-brand-red transition text-xs font-semibold">Promote</button>
+                                        <button onclick="confirmDelete(3,'Vishnu K.')" class="text-gray-400 hover:text-brand-red transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- User Row 4 -->
+                            <tr id="user-row-4" class="user-row hover:bg-gray-50 transition" data-name="jomol m">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=60&q=80" alt="User" class="w-9 h-9 rounded-full object-cover">
+                                        <div>
+                                            <div class="font-semibold text-brand-navy">Jomol M.</div>
+                                            <div class="text-[10px] text-gray-400">jomol@cdvh.org</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span id="role-4" class="role-volunteer px-2 py-0.5 rounded text-xs font-bold">Volunteer</span>
+                                </td>
+                                <td class="px-6 py-4 hidden md:table-cell">
+                                    <div class="flex gap-1 flex-wrap">
+                                        <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-medium">General Relief</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="flex items-center gap-1.5 text-xs font-semibold text-gray-500">
+                                        <span class="w-2 h-2 rounded-full status-inactive inline-block"></span> Inactive
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell">
+                                    <span class="font-bold text-brand-navy">72%</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2 justify-end">
+                                        <button onclick="updateUserRole(4,'coordinator')" class="text-brand-navy hover:text-brand-red transition text-xs font-semibold">Promote</button>
+                                        <button onclick="confirmDelete(4,'Jomol M.')" class="text-gray-400 hover:text-brand-red transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 border-t border-gray-100 text-right">
+                    <button class="text-sm text-brand-red hover:underline font-semibold">View All 1,559 Users →</button>
+                </div>
+            </div>
+
+            <!-- System Settings + AI Config -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                <!-- Settings Form -->
+                <div class="bg-white rounded shadow-card border border-gray-100 p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-display font-bold uppercase text-brand-navy">System Configuration</h3>
+                            <p class="text-xs text-gray-500">Platform-wide settings and thresholds</p>
+                        </div>
+                    </div>
+                    <form id="settingsForm" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">ML Match Threshold</label>
+                                <input type="number" value="80" min="50" max="100" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Max Distance (km)</label>
+                                <input type="number" value="15" min="1" max="100" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wider">Alert Notification Mode</label>
+                            <select class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy transition">
+                                <option>Email + In-App</option>
+                                <option>In-App Only</option>
+                                <option>Email Only</option>
+                                <option>All Channels (SMS + Email + App)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider">Feature Flags</label>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
+                                <div>
+                                    <div class="text-sm font-medium text-brand-navy">Auto-Assignment Pipeline</div>
+                                    <div class="text-xs text-gray-500">Automatically assign top-scored volunteers</div>
+                                </div>
+                                <div class="relative">
+                                    <input type="checkbox" class="sr-only" id="toggle-ml" checked>
+                                    <label for="toggle-ml" class="flex items-center cursor-pointer">
+                                        <div class="w-10 h-5 bg-brand-navy rounded-full relative">
+                                            <div class="absolute top-0.5 left-5 w-4 h-4 bg-white rounded-full shadow transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200">
+                                <div>
+                                    <div class="text-sm font-medium text-brand-navy">Knowledge Base Assistant</div>
+                                    <div class="text-xs text-gray-500">Enable field assistant for all users</div>
+                                </div>
+                                <div class="relative">
+                                    <input type="checkbox" class="sr-only" id="toggle-rag" checked>
+                                    <label for="toggle-rag" class="flex items-center cursor-pointer">
+                                        <div class="w-10 h-5 bg-brand-navy rounded-full relative">
+                                            <div class="absolute top-0.5 left-5 w-4 h-4 bg-white rounded-full shadow transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-sm font-bold uppercase tracking-wider transition shadow-md flex justify-center items-center gap-2">
+                            Save Configuration
+                        </button>
+                    </form>
+                </div>
+
+                <!-- AI Pipeline Status (matching main.html NLP card style) -->
+                <div class="bg-white rounded shadow-card border border-gray-100 p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-display font-bold uppercase text-brand-navy">Pipeline Status</h3>
+                            <p class="text-xs text-gray-500">Real-time health of matching & notification services</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <div>
+                                    <div class="text-sm font-semibold text-brand-navy">ML Matching (Scikit-learn)</div>
+                                    <div class="text-xs text-gray-400">KNN + Random Forest · 94% accuracy</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">ONLINE</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <div>
+                                    <div class="text-sm font-semibold text-brand-navy">DL Intent Detection (TensorFlow)</div>
+                                    <div class="text-xs text-gray-400">LSTM + Softmax · 91% accuracy</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">ONLINE</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <div>
+                                    <div class="text-sm font-semibold text-brand-navy">RAG Chatbot (FAISS / Chroma)</div>
+                                    <div class="text-xs text-gray-400">Vector DB · 2,340 docs indexed</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">ONLINE</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                <div>
+                                    <div class="text-sm font-semibold text-brand-navy">FastAPI Backend (JWT Auth)</div>
+                                    <div class="text-xs text-gray-400">PostgreSQL · 98% uptime · v2.3.1</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">ONLINE</span>
+                        </div>
+
+                        <div class="border-t border-gray-100 pt-4 grid grid-cols-3 gap-3 text-center">
+                            <div class="bg-brand-beige p-3 rounded">
+                                <div class="text-lg font-bold text-brand-navy">2,340</div>
+                                <div class="text-[10px] text-gray-400 uppercase tracking-wider">Docs Indexed</div>
+                            </div>
+                            <div class="bg-brand-beige p-3 rounded">
+                                <div class="text-lg font-bold text-brand-navy">847</div>
+                                <div class="text-[10px] text-gray-400 uppercase tracking-wider">Queries Today</div>
+                            </div>
+                            <div class="bg-brand-beige p-3 rounded">
+                                <div class="text-lg font-bold text-brand-navy">12ms</div>
+                                <div class="text-[10px] text-gray-400 uppercase tracking-wider">Avg Response</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded shadow-2xl w-full max-w-sm">
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-brand-navy mb-2">Remove User?</h3>
+                <p class="text-sm text-gray-500 mb-6">Are you sure you want to remove <strong id="deleteUserName" class="text-brand-navy"></strong>? This action cannot be undone.</p>
+                <div class="flex gap-3">
+                    <button id="confirmDeleteBtn" class="flex-1 btn-hover bg-brand-red text-white py-2.5 rounded text-sm font-bold transition">Remove</button>
+                    <button onclick="closeDeleteModal()" class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded text-sm font-semibold hover:bg-gray-50 transition">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-24 right-6 z-50 px-5 py-3 rounded shadow-lg text-white text-sm font-semibold flex items-center gap-2 translate-y-20 opacity-0 transition-all duration-300">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Footer (Matching Save Lives theme) -->
+    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10 mt-auto">
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            <div>
+                <span class="text-2xl font-display font-bold tracking-tight text-white block mb-4">CDVH<span class="text-brand-red">.</span></span>
+                <p class="text-gray-400 mb-4 leading-relaxed">Community Disaster Volunteer Hub. Real-time platform for rapid emergency response and volunteer coordination.</p>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-white mb-4 uppercase tracking-wider text-sm">Platform</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">Volunteer Matching</a></li>
+                    <li><a href="#" class="hover:text-white transition">Emergency Response</a></li>
+                    <li><a href="#" class="hover:text-white transition">Resource Deployment</a></li>
+                    <li><a href="login.html?mode=register" class="hover:text-white transition">Register Volunteer</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-white mb-4 uppercase tracking-wider text-sm">Admin Resources</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="coordinator-dashboard.html" class="hover:text-white transition">Coordinator Dashboard</a></li>
+                    <li><a href="volunteer-dashboard.html" class="hover:text-white transition">Volunteer Dashboard</a></li>
+                    <li><a href="#" class="hover:text-white transition">System Audit Logs</a></li>
+                    <li><a href="#" class="hover:text-white transition">FastAPI OpenAPI Docs</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-white mb-4 uppercase tracking-wider text-sm">Emergency Contact</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> 112 Emergency Line</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg> 030-123-4567 (Hub)</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> admin@cdvh.org</li>
+                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Kerala, India</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Contact Info Bar (moved from above nav) -->
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-16 mt-10 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+            <div class="flex flex-wrap items-center gap-6">
+                <span>info@cdvh.org</span>
+                <span>Chengannur, Kerala</span>
+                <span class="text-white font-semibold">112 · Emergency Hotline</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-xs uppercase tracking-wider text-gray-500 mr-1">Follow:</span>
+                <a href="#" class="hover:text-brand-yellow transition">Facebook</a>
+                <a href="#" class="hover:text-brand-yellow transition">Twitter</a>
+                <a href="#" class="hover:text-brand-yellow transition">Instagram</a>
+                <a href="#" class="hover:text-brand-yellow transition">LinkedIn</a>
+            </div>
+        </div>
+
+        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-6 pt-6 border-t border-white/5 text-center text-xs text-gray-500">
+            &copy; 2026 Community Disaster Volunteer Hub. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Floating RAG Chatbot -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+        <!-- Chat Window -->
+        <div id="chatWindow" class="bg-white w-80 md:w-96 rounded-xl shadow-float border border-gray-200 mb-4 hidden flex-col overflow-hidden h-[420px] pointer-events-auto">
+            <!-- Header -->
+            <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm">CDVH Admin Assistant</h4>
+                        <p class="text-[10px] text-gray-300 uppercase tracking-widest">Admin RAG Knowledge</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-gray-300 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <!-- Messages -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
+                <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm leading-relaxed">
+                    Hello Admin! I have full knowledge base access. Ask me about system configuration, ML pipeline, user management, or disaster protocols.
+                </div>
+            </div>
+            <!-- Input -->
+            <form id="chatForm" class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" id="chatInput" placeholder="Ask about the system..." required autocomplete="off" class="flex-1 px-3 py-2.5 bg-gray-100 border border-transparent rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                <button type="submit" class="bg-brand-red hover:bg-red-700 text-white px-4 py-2.5 rounded-lg transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </form>
+        </div>
+        <!-- Toggle Button -->
+        <button onclick="toggleChat()" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-float transition-transform hover:scale-105 border-2 border-white pointer-events-auto">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        </button>
+    </div>
+
+    <!-- Global Animations & Effects -->
+    <script src="../assets/js/animations.js"></script>
+    <!-- Admin Dashboard Logic -->
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>
+

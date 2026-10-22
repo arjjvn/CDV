@@ -1,0 +1,77 @@
+/* =============================================
+   CDVH | Volunteer Dashboard Styles
+   Matches main.html brand identity
+   ============================================= */
+@import url("style.css");
+
+/* --- Base --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+    margin: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+
+/* --- Button Hover Effect (matches main.html) --- */
+.btn-hover {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+.btn-hover::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.15);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s ease-out;
+    z-index: -1;
+}
+.btn-hover:hover::before {
+    transform: scaleY(1);
+}
+
+/* --- Sidebar nav active state --- */
+.nav-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid #e62429;
+    color: white;
+}
+
+/* --- Chatbot Window Transition --- */
+#chatWindow {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: bottom right;
+}
+
+/* --- Chatbot Expanded (maximized) State --- */
+.chat-expanded {
+    width: 85vw !important;
+    height: 85vh !important;
+    max-width: 1000px !important;
+    max-height: 800px !important;
+    bottom: 24px !important;
+    right: 24px !important;
+}
+

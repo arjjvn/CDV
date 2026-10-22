@@ -10,3 +10,5 @@ python-multipart
 psycopg[binary]
 sqlalchemy
 python-dotenv
+chromadb
+ollama
