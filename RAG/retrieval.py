@@ -3,13 +3,16 @@ import chromadb
 import chromadb.utils.embedding_functions as ef
 import ollama
 
-VECTOR_DIR = r"D:\code\CDV\RAG\vectorstore"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VECTOR_DIR = os.path.join(BASE_DIR, "RAG", "vectorstore")
+os.makedirs(VECTOR_DIR, exist_ok=True)
+
 client = chromadb.PersistentClient(path=VECTOR_DIR)
 embed = ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
 collection = client.get_collection(name="disaster_guidelines", embedding_function=embed)
 
 def search_database(query: str) -> str:
-    result = collection.query(query_texts=[query], n_results=3)
+    result = collection.query(query_texts=[query], n_results=3)n
     if not result["documents"] or not result["documents"][0]:
         return "No relevant information found."
     return "\n\n".join(result["documents"][0])

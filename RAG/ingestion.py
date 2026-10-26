@@ -3,8 +3,9 @@ import chromadb
 import chromadb.utils.embedding_functions as ef
 from pypdf import PdfReader
 
-DOCS_DIR=r"D:\code\CDV\RAG\documents"
-VECTOR_DIR=r"D:\code\CDV\RAG\vectorstore"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VECTOR_DIR = os.path.join(BASE_DIR, "RAG", "vectorstore")
+DOCS_DIR = os.path.join(BASE_DIR, "RAG", "documents")
 
 def chunk_text(text, chunk_size=1000, overlap=200):
     chunk=[]
