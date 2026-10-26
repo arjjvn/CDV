@@ -12,7 +12,7 @@ embed = ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
 collection = client.get_collection(name="disaster_guidelines", embedding_function=embed)
 
 def search_database(query: str) -> str:
-    result = collection.query(query_texts=[query], n_results=3)n
+    result = collection.query(query_texts=[query], n_results=3)
     if not result["documents"] or not result["documents"][0]:
         return "No relevant information found."
     return "\n\n".join(result["documents"][0])
