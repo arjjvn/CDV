@@ -1,6 +1,7 @@
 from fastapi import APIRouter,HTTPException
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
+import re
 
 
 from RAG.retrieval import rag
@@ -8,6 +9,8 @@ router = APIRouter(prefix="/chatbot", tags=["chatbot"])
 
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=1000)
+
+
 
 @router.post("/chat")
 async def chat(request: ChatRequest):

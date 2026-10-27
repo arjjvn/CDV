@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleButton = document.getElementById("chatToggleButton");
     const closeButton = document.getElementById("chatCloseButton");
 
-    // This page might not contain the chatbot.
     if (
         !chatWindow ||
         !chatForm ||
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const sendButton = chatForm.querySelector('button[type="submit"]');
 
-    // Open or close the chat window.
     function setChatOpen(open) {
         chatWindow.classList.toggle("hidden", !open);
         chatWindow.classList.toggle("flex", open);
@@ -42,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setChatOpen(false);
     });
 
-    // Display a message in the chat window.
     function addChatMessage(text, sender) {
         const message = document.createElement("div");
 
@@ -59,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 "whitespace-pre-wrap break-words";
         }
 
-        // Render the content as text rather than HTML.
         message.textContent = text;
 
         chatMessages.appendChild(message);
@@ -68,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return message;
     }
 
-    // Send the user's question to FastAPI.
     chatForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
@@ -88,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const loadingMessage = addChatMessage(
-            "Searching disaster-management guidelines...",
+            "Searching guidelines...",
             "bot"
         );
 
@@ -111,8 +106,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
             }
 
-            loadingMessage.textContent =
-                data.answer || "No answer was returned.";
+            const answer = data.answer || "No answer was returned.";
+
+            if (window.marked && window.DOMPurify) {
+                loadingMessage.classList.remove("whitespace-pre-wrap");
+                loadingMessage.classList.add("bot-markdown");
+
+                loadingMessage.innerHTML = window.DOMPurify.sanitize(
+                    window.marked.parse(answer)
+                );
+            } else {
+                loadingMessage.textContent = answer;
+            }
 
         } catch (error) {
             console.error("CDVH RAG chatbot error:", error);

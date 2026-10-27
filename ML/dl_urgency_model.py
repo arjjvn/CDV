@@ -1,18 +1,4 @@
-"""
-DL part of the Community Disaster Volunteer Hub
------------------------------------------------
-The coordinator fills TWO fields:
-    1) Location  -> chosen from a drop-down list (handled in hub_pipeline.py)
-    2) Message   -> free text, e.g. "there is a medical emergency, need volunteers"
-                                    "there is a flood"
 
-This file reads the MESSAGE and predicts 3 things with neural networks:
-    skill     -> Medical / Rescue / Ambulance / Driving / Food Supply / Unknown
-    urgency   -> high / medium / low        (medium when nothing is said)
-    disaster  -> flood / landslide / fire / accident / Unknown
-
-Run (training):   python dl_urgency_model.py
-"""
 import os
 import random
 import warnings

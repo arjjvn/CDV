@@ -233,3 +233,76 @@ header.nav-scrolled {
 .hero-clip {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
+/* CDVH chatbot response styling */
+.bot-markdown {
+    line-height: 1.65;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.bot-markdown p {
+    margin: 6px 0 10px;
+}
+
+.bot-markdown h1,
+.bot-markdown h2,
+.bot-markdown h3 {
+    color: #0b1b36;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 14px 0 8px;
+}
+
+.bot-markdown h1 {
+    font-size: 1.3rem;
+}
+
+.bot-markdown h2 {
+    font-size: 1.2rem;
+}
+
+.bot-markdown h3 {
+    font-size: 1.1rem;
+}
+
+.bot-markdown p > strong:only-child {
+    display: block;
+    color: #0b1b36;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 14px 0 6px;
+}
+
+.bot-markdown strong {
+    font-weight: 700;
+}
+
+.bot-markdown ul,
+.bot-markdown ol {
+    margin: 8px 0 12px;
+    padding-left: 22px;
+}
+
+.bot-markdown ul {
+    list-style-type: disc;
+}
+
+.bot-markdown ol {
+    list-style-type: decimal;
+}
+
+.bot-markdown li {
+    margin: 5px 0;
+}
+
+.bot-markdown a {
+    color: #2a7bbd;
+    text-decoration: underline;
+}
+
+.bot-markdown blockquote {
+    border-left: 3px solid #e62429;
+    margin: 10px 0;
+    padding-left: 12px;
+    color: #4b5563;
+}

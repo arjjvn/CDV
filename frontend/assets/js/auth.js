@@ -111,7 +111,6 @@ function switchMode(mode) {
 }
 
 
-// Kerala districts and commonly used towns
 const keralaPlacesByDistrict = {
     "Thiruvananthapuram": [
         "Thiruvananthapuram City", "Neyyattinkara", "Nedumangad",
@@ -217,7 +216,6 @@ const keralaPlacesByDistrict = {
 };
 
 
-// Update place dropdown based on district
 function setupDistrictDropdown() {
     const districtSelect = document.getElementById("regDistrict");
     const placeSelect = document.getElementById("regPlace");
@@ -250,7 +248,6 @@ function setupDistrictDropdown() {
 }
 
 
-// Show fields based on selected role
 function updateRoleFields(role) {
     const volunteerFields = document.getElementById("volunteerFields");
     const coordinatorFields = document.getElementById("coordinatorFields");
@@ -349,7 +346,6 @@ async function handleAuth(event) {
             pincode: getOptionalValue("regPincode")
         };
 
-        // Volunteer-specific fields
         if (role === "volunteer") {
             const years = getOptionalValue("yoe");
 
@@ -370,13 +366,11 @@ async function handleAuth(event) {
             payload.languages = getOptionalValue("langs");
         }
 
-        // Coordinator-specific fields
         if (role === "coordinator") {
             payload.organization = getOptionalValue("org");
             payload.region = getOptionalValue("region");
         }
 
-        // Aadhaar is deliberately not sent to the backend.
 
     } else {
         endpoint = `${API_URL}/login`;
@@ -498,7 +492,6 @@ function getInitialMode() {
 }
 
 
-// Initialize page
 document.addEventListener("DOMContentLoaded", () => {
     setupDistrictDropdown();
 
@@ -512,7 +505,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// Handle links such as #register and #login
 window.addEventListener("hashchange", () => {
     const hash = window.location.hash.toLowerCase();
 

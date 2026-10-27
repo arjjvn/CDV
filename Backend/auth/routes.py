@@ -10,11 +10,7 @@ from sqlalchemy.orm import Session
 
 from Backend.models import User
 from Backend.database_dependency import get_db
-from Backend.auth.config import (
-    SECRET_KEY,
-    ALGORITHM,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-)
+from Backend.auth.config import (SECRET_KEY,ALGORITHM,ACCESS_TOKEN_EXPIRE_MINUTES)
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -24,7 +20,6 @@ password_hash = PasswordHash.recommended()
 Role = Literal["admin", "volunteer", "coordinator"]
 
 
-# Registration accepts volunteers and coordinators only.
 class UserRegister(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
@@ -120,7 +115,6 @@ def register_user(
             detail="An account with this email already exists.",
         )
 
-    # Generate username from first and last names
     base_username = (
     f"{user.first_name.strip()}_{user.last_name.strip()}"
     ).lower()
@@ -128,7 +122,6 @@ def register_user(
     username = base_username[:50]
     counter = 1
 
-    # Ensure username is unique
     while db.query(User).filter(
         User.username == username
     ).first():
@@ -136,7 +129,6 @@ def register_user(
         username = f"{base_username[:50 - len(suffix)]}{suffix}"
         counter += 1
 
-    # Prepare registration data
     data = user.model_dump(
         exclude={"email", "password", "role"}
     )
