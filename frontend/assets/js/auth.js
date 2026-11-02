@@ -19,8 +19,16 @@ function showAuthToast(title, message) {
         return;
     }
 
-    document.getElementById("toastTitle").textContent = title;
-    document.getElementById("toastMessage").textContent = message;
+    const toastTitle = document.getElementById("toastTitle");
+    const toastMessage = document.getElementById("toastMessage");
+
+    if (toastTitle) {
+        toastTitle.textContent = title;
+    }
+
+    if (toastMessage) {
+        toastMessage.textContent = message;
+    }
 
     toast.classList.remove("hidden");
     toast.classList.add("flex", "toast-enter");
@@ -35,6 +43,10 @@ function showAuthToast(title, message) {
     }, 5000);
 }
 
+
+// --------------------------------------------------
+// SWITCH BETWEEN LOGIN AND REGISTRATION
+// --------------------------------------------------
 
 function switchMode(mode) {
     currentMode = mode === "register" ? "register" : "login";
@@ -51,6 +63,17 @@ function switchMode(mode) {
     const adminLabel = document.querySelector('label[for="roleAdmin"]');
     const volunteerRadio = document.getElementById("roleVolunteer");
 
+    if (
+        !tabLogin ||
+        !tabRegister ||
+        !title ||
+        !subtitle ||
+        !registerFields ||
+        !registerUtils
+    ) {
+        return;
+    }
+
     if (currentMode === "login") {
         tabLogin.className =
             "flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition";
@@ -59,6 +82,7 @@ function switchMode(mode) {
             "flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
 
         title.textContent = "Welcome back";
+
         subtitle.textContent =
             "Enter your credentials to access the CDVH dashboard.";
 
@@ -69,8 +93,13 @@ function switchMode(mode) {
         registerFields.classList.add("hidden");
         registerUtils.classList.remove("hidden");
 
-        if (adminRadio) adminRadio.disabled = false;
-        if (adminLabel) adminLabel.style.display = "";
+        if (adminRadio) {
+            adminRadio.disabled = false;
+        }
+
+        if (adminLabel) {
+            adminLabel.style.display = "";
+        }
 
     } else {
         tabRegister.className =
@@ -80,6 +109,7 @@ function switchMode(mode) {
             "flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
 
         title.textContent = "Create an Account";
+
         subtitle.textContent =
             "Join the CDVH community and support disaster response.";
 
@@ -90,6 +120,7 @@ function switchMode(mode) {
         registerFields.classList.remove("hidden");
         registerUtils.classList.add("hidden");
 
+        // Public registration is not allowed for admin accounts.
         if (adminRadio) {
             adminRadio.disabled = true;
 
@@ -111,131 +142,274 @@ function switchMode(mode) {
 }
 
 
+// --------------------------------------------------
+// KERALA DISTRICTS AND PLACES
+// --------------------------------------------------
+
 const keralaPlacesByDistrict = {
     "Thiruvananthapuram": [
-        "Thiruvananthapuram City", "Neyyattinkara", "Nedumangad",
-        "Attingal", "Varkala", "Kazhakkoottam", "Vizhinjam",
-        "Kovalam", "Kattakada", "Balaramapuram", "Poovar",
-        "Parassala", "Venjaramoodu", "Kilimanoor",
+        "Thiruvananthapuram City",
+        "Neyyattinkara",
+        "Nedumangad",
+        "Attingal",
+        "Varkala",
+        "Kazhakkoottam",
+        "Vizhinjam",
+        "Kovalam",
+        "Kattakada",
+        "Balaramapuram",
+        "Poovar",
+        "Parassala",
+        "Venjaramoodu",
+        "Kilimanoor",
         "Other / nearby locality"
     ],
 
     "Kollam": [
-        "Kollam City", "Punalur", "Karunagappally",
-        "Kottarakkara", "Paravur", "Anchal", "Kundara",
-        "Chathannoor", "Sasthamkotta", "Oachira",
-        "Pathanapuram", "Other / nearby locality"
+        "Kollam City",
+        "Punalur",
+        "Karunagappally",
+        "Kottarakkara",
+        "Paravur",
+        "Anchal",
+        "Kundara",
+        "Chathannoor",
+        "Sasthamkotta",
+        "Oachira",
+        "Pathanapuram",
+        "Other / nearby locality"
     ],
 
     "Pathanamthitta": [
-        "Pathanamthitta", "Thiruvalla", "Adoor", "Ranni",
-        "Kozhencherry", "Pandalam", "Konni", "Mallappally",
-        "Aranmula", "Perunad", "Sabarimala",
+        "Pathanamthitta",
+        "Thiruvalla",
+        "Adoor",
+        "Ranni",
+        "Kozhencherry",
+        "Pandalam",
+        "Konni",
+        "Mallappally",
+        "Aranmula",
+        "Perunad",
+        "Sabarimala",
         "Other / nearby locality"
     ],
 
     "Alappuzha": [
-        "Alappuzha", "Cherthala", "Kayamkulam", "Haripad",
-        "Mavelikkara", "Chengannur", "Ambalappuzha",
-        "Kuttanad", "Thanneermukkom", "Aroor", "Mannar",
-        "Edathua", "Other / nearby locality"
+        "Alappuzha",
+        "Cherthala",
+        "Kayamkulam",
+        "Haripad",
+        "Mavelikkara",
+        "Chengannur",
+        "Ambalappuzha",
+        "Kuttanad",
+        "Thanneermukkom",
+        "Aroor",
+        "Mannar",
+        "Edathua",
+        "Other / nearby locality"
     ],
 
     "Kottayam": [
-        "Kottayam", "Changanassery", "Pala", "Vaikom",
-        "Ettumanoor", "Kanjirappally", "Erattupetta",
-        "Mundakayam", "Ponkunnam", "Kuravilangad",
-        "Kumarakom", "Uzhavoor", "Other / nearby locality"
+        "Kottayam",
+        "Changanassery",
+        "Pala",
+        "Vaikom",
+        "Ettumanoor",
+        "Kanjirappally",
+        "Erattupetta",
+        "Mundakayam",
+        "Ponkunnam",
+        "Kuravilangad",
+        "Kumarakom",
+        "Uzhavoor",
+        "Other / nearby locality"
     ],
 
     "Idukki": [
-        "Painavu", "Thodupuzha", "Munnar", "Adimali",
-        "Kattappana", "Kumily", "Nedumkandam", "Peermade",
-        "Vandiperiyar", "Marayoor", "Rajakkad", "Vazhathope",
-        "Devikulam", "Other / nearby locality"
+        "Painavu",
+        "Thodupuzha",
+        "Munnar",
+        "Adimali",
+        "Kattappana",
+        "Kumily",
+        "Nedumkandam",
+        "Peermade",
+        "Vandiperiyar",
+        "Marayoor",
+        "Rajakkad",
+        "Vazhathope",
+        "Devikulam",
+        "Other / nearby locality"
     ],
 
     "Ernakulam": [
-        "Kochi", "Kakkanad", "Aluva", "Angamaly",
-        "Perumbavoor", "Muvattupuzha", "Kothamangalam",
-        "North Paravur", "Thrippunithura", "Kalamassery",
-        "Edappally", "Fort Kochi", "Mattancherry", "Vypin",
-        "Eloor", "Piravom", "Other / nearby locality"
+        "Kochi",
+        "Kakkanad",
+        "Aluva",
+        "Angamaly",
+        "Perumbavoor",
+        "Muvattupuzha",
+        "Kothamangalam",
+        "North Paravur",
+        "Thrippunithura",
+        "Kalamassery",
+        "Edappally",
+        "Fort Kochi",
+        "Mattancherry",
+        "Vypin",
+        "Eloor",
+        "Piravom",
+        "Other / nearby locality"
     ],
 
     "Thrissur": [
-        "Thrissur", "Chalakudy", "Kodungallur",
-        "Irinjalakuda", "Guruvayur", "Kunnamkulam",
-        "Wadakkanchery", "Chavakkad", "Chelakkara",
-        "Anthikad", "Ollur", "Mala",
+        "Thrissur",
+        "Chalakudy",
+        "Kodungallur",
+        "Irinjalakuda",
+        "Guruvayur",
+        "Kunnamkulam",
+        "Wadakkanchery",
+        "Chavakkad",
+        "Chelakkara",
+        "Anthikad",
+        "Ollur",
+        "Mala",
         "Other / nearby locality"
     ],
 
     "Palakkad": [
-        "Palakkad", "Ottapalam", "Shoranur", "Chittur",
-        "Mannarkkad", "Pattambi", "Alathur", "Cherpulassery",
-        "Nenmara", "Kollengode", "Kozhinjampara",
-        "Vadakkencherry", "Other / nearby locality"
+        "Palakkad",
+        "Ottapalam",
+        "Shoranur",
+        "Chittur",
+        "Mannarkkad",
+        "Pattambi",
+        "Alathur",
+        "Cherpulassery",
+        "Nenmara",
+        "Kollengode",
+        "Kozhinjampara",
+        "Vadakkencherry",
+        "Other / nearby locality"
     ],
 
     "Malappuram": [
-        "Malappuram", "Manjeri", "Tirur", "Ponnani",
-        "Perinthalmanna", "Kottakkal", "Nilambur",
-        "Kondotty", "Parappanangadi", "Tanur",
-        "Tirurangadi", "Areekode", "Wandoor", "Edappal",
+        "Malappuram",
+        "Manjeri",
+        "Tirur",
+        "Ponnani",
+        "Perinthalmanna",
+        "Kottakkal",
+        "Nilambur",
+        "Kondotty",
+        "Parappanangadi",
+        "Tanur",
+        "Tirurangadi",
+        "Areekode",
+        "Wandoor",
+        "Edappal",
         "Other / nearby locality"
     ],
 
     "Kozhikode": [
-        "Kozhikode", "Vadakara", "Koyilandy", "Feroke",
-        "Ramanattukara", "Kunnamangalam", "Mukkam",
-        "Thamarassery", "Balussery", "Perambra", "Beypore",
-        "Elathur", "Koduvally", "Other / nearby locality"
+        "Kozhikode",
+        "Vadakara",
+        "Koyilandy",
+        "Feroke",
+        "Ramanattukara",
+        "Kunnamangalam",
+        "Mukkam",
+        "Thamarassery",
+        "Balussery",
+        "Perambra",
+        "Beypore",
+        "Elathur",
+        "Koduvally",
+        "Other / nearby locality"
     ],
 
     "Wayanad": [
-        "Kalpetta", "Sulthan Bathery", "Mananthavady",
-        "Vythiri", "Meppadi", "Pulpally", "Panamaram",
-        "Ambalavayal", "Thirunelly", "Pozhuthana", "Muttil",
-        "Padinjarathara", "Other / nearby locality"
+        "Kalpetta",
+        "Sulthan Bathery",
+        "Mananthavady",
+        "Vythiri",
+        "Meppadi",
+        "Pulpally",
+        "Panamaram",
+        "Ambalavayal",
+        "Thirunelly",
+        "Pozhuthana",
+        "Muttil",
+        "Padinjarathara",
+        "Other / nearby locality"
     ],
 
     "Kannur": [
-        "Kannur", "Thalassery", "Payyannur", "Taliparamba",
-        "Mattannur", "Iritty", "Koothuparamba",
-        "Sreekandapuram", "Panoor", "Azhikode", "Dharmadam",
+        "Kannur",
+        "Thalassery",
+        "Payyannur",
+        "Taliparamba",
+        "Mattannur",
+        "Iritty",
+        "Koothuparamba",
+        "Sreekandapuram",
+        "Panoor",
+        "Azhikode",
+        "Dharmadam",
         "Other / nearby locality"
     ],
 
     "Kasaragod": [
-        "Kasaragod", "Kanhangad", "Nileshwaram", "Uppala",
-        "Manjeshwar", "Cheruvathur", "Trikaripur", "Bekal",
-        "Periya", "Udma", "Mulleria", "Badiadka",
+        "Kasaragod",
+        "Kanhangad",
+        "Nileshwaram",
+        "Uppala",
+        "Manjeshwar",
+        "Cheruvathur",
+        "Trikaripur",
+        "Bekal",
+        "Periya",
+        "Udma",
+        "Mulleria",
+        "Badiadka",
         "Other / nearby locality"
     ]
 };
 
 
+// --------------------------------------------------
+// DISTRICT AND PLACE DROPDOWN
+// --------------------------------------------------
+
 function setupDistrictDropdown() {
     const districtSelect = document.getElementById("regDistrict");
     const placeSelect = document.getElementById("regPlace");
 
-    if (!districtSelect || !placeSelect) return;
+    if (!districtSelect || !placeSelect) {
+        return;
+    }
 
-    districtSelect.addEventListener("change", function () {
-        const district = this.value;
-
+    function populatePlaces(district) {
         placeSelect.replaceChildren();
 
         if (!district) {
-            placeSelect.add(new Option("Select a district first", ""));
+            placeSelect.add(
+                new Option("Select a district first", "")
+            );
+
             placeSelect.disabled = true;
             placeSelect.classList.add("bg-gray-100");
             placeSelect.classList.remove("bg-white");
+
             return;
         }
 
-        placeSelect.add(new Option("Select place / town", ""));
+        placeSelect.add(
+            new Option("Select place / town", "")
+        );
 
         (keralaPlacesByDistrict[district] || []).forEach(place => {
             placeSelect.add(new Option(place, place));
@@ -244,9 +418,28 @@ function setupDistrictDropdown() {
         placeSelect.disabled = false;
         placeSelect.classList.remove("bg-gray-100");
         placeSelect.classList.add("bg-white");
+    }
+
+    districtSelect.addEventListener("change", function () {
+        populatePlaces(this.value);
     });
+
+    // Populate places if a district is already selected.
+    if (districtSelect.value) {
+        populatePlaces(districtSelect.value);
+    } else {
+        placeSelect.replaceChildren(
+            new Option("Select a district first", "")
+        );
+
+        placeSelect.disabled = true;
+    }
 }
 
+
+// --------------------------------------------------
+// SHOW FIELDS BASED ON ROLE
+// --------------------------------------------------
 
 function updateRoleFields(role) {
     const volunteerFields = document.getElementById("volunteerFields");
@@ -269,12 +462,17 @@ function updateRoleFields(role) {
 }
 
 
-// Show or hide password
+// --------------------------------------------------
+// SHOW OR HIDE PASSWORD
+// --------------------------------------------------
+
 function togglePassword() {
     const input = document.getElementById("password");
     const icon = document.getElementById("eyeIcon");
 
-    if (!input || !icon) return;
+    if (!input || !icon) {
+        return;
+    }
 
     if (input.type === "password") {
         input.type = "text";
@@ -284,32 +482,59 @@ function togglePassword() {
 }
 
 
-// Registration and login API function
+// --------------------------------------------------
+// REGISTRATION AND LOGIN
+// --------------------------------------------------
+
 async function handleAuth(event) {
     event.preventDefault();
 
     const button = document.getElementById("submitBtn");
+
+    if (!button) {
+        showAuthToast(
+            "Error",
+            "The authentication button could not be found."
+        );
+        return;
+    }
+
     const originalContent = button.innerHTML;
 
     const role =
         document.querySelector('input[name="role"]:checked')?.value
         || "volunteer";
 
-    const email = document.getElementById("email")
-        .value.trim().toLowerCase();
+    const emailElement = document.getElementById("email");
+    const passwordElement = document.getElementById("password");
 
-    const password = document.getElementById("password").value;
+    if (!emailElement || !passwordElement) {
+        showAuthToast(
+            "Error",
+            "The email or password field could not be found."
+        );
+        return;
+    }
+
+    const email = emailElement.value.trim().toLowerCase();
+    const password = passwordElement.value;
 
     if (!email || !password) {
-        showAuthToast("Missing Details", "Enter your email and password.");
+        showAuthToast(
+            "Missing Details",
+            "Enter your email and password."
+        );
         return;
     }
 
     let endpoint;
     let payload;
 
-    if (currentMode === "register") {
+    // ----------------------------------------------
+    // REGISTRATION
+    // ----------------------------------------------
 
+    if (currentMode === "register") {
         if (role === "admin") {
             showAuthToast(
                 "Registration Not Allowed",
@@ -371,8 +596,11 @@ async function handleAuth(event) {
             payload.region = getOptionalValue("region");
         }
 
-
     } else {
+        // ------------------------------------------
+        // LOGIN
+        // ------------------------------------------
+
         endpoint = `${API_URL}/login`;
 
         payload = {
@@ -388,9 +616,15 @@ async function handleAuth(event) {
     try {
         const response = await fetch(endpoint, {
             method: "POST",
+
+            // Required for browser cookie authentication.
+            credentials: "same-origin",
+
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             },
+
             body: JSON.stringify(payload)
         });
 
@@ -400,26 +634,41 @@ async function handleAuth(event) {
             const detail = result.detail;
 
             const message = Array.isArray(detail)
-                ? detail.map(item => item.msg || "Invalid field").join("; ")
+                ? detail
+                    .map(item => item.msg || "Invalid field")
+                    .join("; ")
                 : detail || "The request failed. Please try again.";
 
             throw new Error(message);
         }
 
-        // Registration successful
+        // ------------------------------------------
+        // REGISTRATION SUCCESS
+        // ------------------------------------------
+
         if (currentMode === "register") {
             showAuthToast(
                 "Registration Complete",
                 result.message || "Your registration was submitted."
             );
 
-            document.getElementById("password").value = "";
+            passwordElement.value = "";
 
             switchMode("login");
+
             return;
         }
 
-        // Successful login: save returned token and user details
+        // ------------------------------------------
+        // LOGIN SUCCESS
+        // ------------------------------------------
+
+        if (!result.access_token || !result.user) {
+            throw new Error(
+                "The server returned incomplete account details."
+            );
+        }
+
         localStorage.setItem(
             "cdvh_access_token",
             result.access_token
@@ -435,23 +684,34 @@ async function handleAuth(event) {
             JSON.stringify(result.user)
         );
 
+        // These are FastAPI dashboard routes that render
+        // the Jinja2 templates on the backend.
+        const dashboards = {
+            volunteer: "/volunteers/dashboard",
+            coordinator: "/coordinator/dashboard",
+            admin: "/admin/dashboard"
+        };
+
+        const dashboardUrl = dashboards[result.user.role];
+
+        if (!dashboardUrl) {
+            throw new Error(
+                "No dashboard is configured for this account role."
+            );
+        }
+
         showAuthToast(
             "Login Successful",
             "Redirecting to your dashboard..."
         );
 
-        const dashboards = {
-            admin: "/pages/admin-dashboard.html",
-            volunteer: "/pages/volunteer-dashboard.html",
-            coordinator: "/pages/coordinator-dashboard.html"
-        };
-
         setTimeout(() => {
-            window.location.href =
-                dashboards[result.user.role] || "/";
+            window.location.replace(dashboardUrl);
         }, 900);
 
     } catch (error) {
+        console.error("Authentication error:", error);
+
         showAuthToast(
             "Authentication Failed",
             error.message || "Unable to connect to the server."
@@ -473,7 +733,10 @@ async function handleAuth(event) {
 }
 
 
-// Set initial login or registration page
+// --------------------------------------------------
+// INITIAL LOGIN OR REGISTRATION MODE
+// --------------------------------------------------
+
 function getInitialMode() {
     const params = new URLSearchParams(window.location.search);
 
@@ -492,18 +755,28 @@ function getInitialMode() {
 }
 
 
+// --------------------------------------------------
+// PAGE INITIALIZATION
+// --------------------------------------------------
+
 document.addEventListener("DOMContentLoaded", () => {
     setupDistrictDropdown();
 
-    document.querySelectorAll('input[name="role"]').forEach(radio => {
-        radio.addEventListener("change", event => {
-            updateRoleFields(event.target.value);
+    document
+        .querySelectorAll('input[name="role"]')
+        .forEach(radio => {
+            radio.addEventListener("change", event => {
+                updateRoleFields(event.target.value);
+            });
         });
-    });
 
     switchMode(getInitialMode());
 });
 
+
+// --------------------------------------------------
+// HANDLE LOGIN / REGISTER URL HASHES
+// --------------------------------------------------
 
 window.addEventListener("hashchange", () => {
     const hash = window.location.hash.toLowerCase();

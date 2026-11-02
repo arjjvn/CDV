@@ -2,7 +2,10 @@ from datetime import date, time, datetime, timedelta, timezone
 from typing import Literal, Optional
 
 import jwt
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response, Request
+from fastapi.responses import RedirectResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 from pwdlib import PasswordHash
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.exc import IntegrityError
@@ -10,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from Backend.models import User
 from Backend.database_dependency import get_db
-from Backend.auth.config import (SECRET_KEY,ALGORITHM,ACCESS_TOKEN_EXPIRE_MINUTES)
+from Backend.auth.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -41,9 +44,7 @@ class UserRegister(BaseModel):
     skill1: Optional[str] = None
     skill2: Optional[str] = None
     skill3: Optional[str] = None
-    years_experience: Optional[int] = Field(
-        default=None, ge=0, le=100
-    )
+    years_experience: Optional[int] = Field(default=None, ge=0, le=100)
     previous_experience: Optional[str] = None
 
     available_from: Optional[time] = None
@@ -95,6 +96,7 @@ def user_response(user: User) -> dict:
         "last_name": user.last_name,
         "role": user.role,
         "is_approved": user.is_approved,
+        "profile_image": user.profile_image,
     }
 
 
@@ -105,9 +107,9 @@ def register_user(
 ):
     normalized_email = str(user.email).strip().lower()
 
-    existing_user = db.query(User).filter(
-        User.email.ilike(normalized_email)
-    ).first()
+    existing_user = (
+        db.query(User).filter(User.email.ilike(normalized_email)).first()
+    )
 
     if existing_user:
         raise HTTPException(
@@ -116,22 +118,18 @@ def register_user(
         )
 
     base_username = (
-    f"{user.first_name.strip()}_{user.last_name.strip()}"
+        f"{user.first_name.strip()}_{user.last_name.strip()}"
     ).lower()
 
     username = base_username[:50]
     counter = 1
 
-    while db.query(User).filter(
-        User.username == username
-    ).first():
+    while db.query(User).filter(User.username == username).first():
         suffix = str(counter)
         username = f"{base_username[:50 - len(suffix)]}{suffix}"
         counter += 1
 
-    data = user.model_dump(
-        exclude={"email", "password", "role"}
-    )
+    data = user.model_dump(exclude={"email", "password", "role"})
 
     new_user = User(
         username=username,
@@ -150,8 +148,7 @@ def register_user(
     except IntegrityError:
         db.rollback()
         raise HTTPException(
-            status_code=409,
-            detail="A user with these details already exists."
+            status_code=409, detail="A user with these details already exists."
         )
 
     message = (
@@ -169,13 +166,12 @@ def register_user(
 @router.post("/login")
 def login_user(
     credentials: UserLogin,
+    response: Response,
     db: Session = Depends(get_db),
 ):
     normalized_email = str(credentials.email).strip().lower()
 
-    user = db.query(User).filter(
-        User.email.ilike(normalized_email)
-    ).first()
+    user = db.query(User).filter(User.email.ilike(normalized_email)).first()
 
     if user is None or not verify_password(
         credentials.password,
@@ -184,7 +180,6 @@ def login_user(
         raise HTTPException(
             status_code=401,
             detail="Invalid email or password.",
-            headers={"WWW-Authenticate": "Bearer"},
         )
 
     if credentials.role and user.role != credentials.role:
@@ -193,7 +188,9 @@ def login_user(
             detail="Selected role does not match this account.",
         )
 
-    if not user.is_approved:
+    # Volunteers can log in without admin approval.
+    # Coordinators and admins require approval.
+    if user.role in ("coordinator", "admin") and not user.is_approved:
         raise HTTPException(
             status_code=403,
             detail="Account not approved. Please contact an administrator.",
@@ -201,10 +198,103 @@ def login_user(
 
     access_token = create_access_token(user)
 
+    # The dashboard routes authenticate using this cookie.
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False,  # Set True when deployed with HTTPS.
+        samesite="lax",
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
+    )
+
     return {
         "message": "Login successful",
         "access_token": access_token,
         "token_type": "bearer",
         "expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         "user": user_response(user),
+    }
+
+
+@router.get("/logout")
+@router.post("/logout")
+def logout_user(response: Response):
+    res = RedirectResponse(url="/pages/login.html", status_code=303)
+    res.delete_cookie(
+        key="access_token",
+        path="/",
+        httponly=True,
+        samesite="lax",
+    )
+    return res
+
+
+@router.get("/me")
+def get_my_profile(
+    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    db: Session = Depends(get_db),
+):
+    token = credentials.credentials
+
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM],
+        )
+
+        user_id = int(payload["sub"])
+
+    except (
+        jwt.PyJWTError,
+        ValueError,
+        TypeError,
+        KeyError,
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired token.",
+        )
+
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User profile not found.",
+        )
+
+    return {
+        "id": user.id,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "role": user.role,
+        "phone": user.phone,
+        "district": user.district,
+        "place": user.place,
+        "address": user.address,
+        "pincode": user.pincode,
+        "date_of_birth": user.date_of_birth,
+        "gender": user.gender,
+        "blood_group": user.blood_group,
+        "skill1": user.skill1,
+        "skill2": user.skill2,
+        "skill3": user.skill3,
+        "years_experience": user.years_experience,
+        "previous_experience": user.previous_experience,
+        "available_from": (
+            user.available_from.strftime("%H:%M") if user.available_from else None
+        ),
+        "available_to": (
+            user.available_to.strftime("%H:%M") if user.available_to else None
+        ),
+        "languages": user.languages,
+        "organization": user.organization,
+        "region": user.region,
+        "is_approved": user.is_approved,
+        "profile_image": user.profile_image,
     }

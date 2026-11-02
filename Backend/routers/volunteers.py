@@ -1,10 +1,10 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field, EmailStr
 from sqlalchemy.orm import Session
 
 from Backend.database_dependency import get_db
 from Backend.models import Volunteer
+
 
 router = APIRouter(prefix="/volunteers", tags=["Volunteers"])
 
@@ -21,7 +21,7 @@ def register_volunteer(
     volunteer: VolunteerCreate,
     db: Session = Depends(get_db),
 ):
-    normalized_email = str(volunteer.email).lower()
+    normalized_email = str(volunteer.email).strip().lower()
 
     existing_volunteer = (
         db.query(Volunteer)
@@ -32,7 +32,7 @@ def register_volunteer(
     if existing_volunteer:
         raise HTTPException(
             status_code=409,
-            detail="A volunteer with this email already exists",
+            detail="A volunteer with this email already exists.",
         )
 
     new_volunteer = Volunteer(
@@ -61,6 +61,7 @@ def register_volunteer(
             "location": new_volunteer.location,
         },
     }
+
 
 @router.get("/")
 def list_volunteers(db: Session = Depends(get_db)):

@@ -233,76 +233,242 @@ header.nav-scrolled {
 .hero-clip {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
-/* CDVH chatbot response styling */
-.bot-markdown {
-    line-height: 1.65;
-    white-space: normal;
+/* =========================================
+   CDVH PROFESSIONAL CHATBOT
+   ========================================= */
+
+/* Chat window */
+#chatWindow {
+    width: min(540px, calc(100vw - 24px)) !important;
+    height: min(76vh, 720px) !important;
+    min-height: 400px !important;
+    max-height: 85vh !important;
+    border: 1px solid #dce4ee !important;
+    border-radius: 18px !important;
+    background: #ffffff !important;
+    box-shadow: 0 20px 60px rgba(11, 27, 54, 0.22) !important;
+}
+
+/* Header */
+#chatWindow > div:first-child {
+    min-height: 76px;
+    padding: 15px 18px !important;
+    background: #0b1b36 !important;
+    border-bottom: 3px solid #e62429;
+}
+
+/* Message area */
+#chatMessages {
+    background: #f4f7fb !important;
+    padding: 16px !important;
+    gap: 12px !important;
+    scroll-behavior: smooth;
+}
+
+/* All message bubbles */
+#chatMessages > div {
+    max-width: 90% !important;
+    padding: 11px 14px !important;
+    border-radius: 14px !important;
+    font-size: 14px !important;
+    line-height: 1.55 !important;
     overflow-wrap: anywhere;
+    box-shadow: 0 2px 5px rgba(11, 27, 54, 0.04);
+}
+
+/* User messages */
+#chatMessages > .self-end {
+    background: #0b1b36 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 14px 14px 4px 14px !important;
+}
+
+/* Bot messages */
+#chatMessages > .self-start {
+    background: #ffffff !important;
+    color: #263449 !important;
+    border: 1px solid #e1e7ef !important;
+    border-radius: 4px 14px 14px 14px !important;
+}
+
+/* Markdown response */
+.bot-markdown {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    line-height: 1.5 !important;
+    color: #263449;
 }
 
 .bot-markdown p {
-    margin: 6px 0 10px;
+    margin: 3px 0 7px !important;
 }
 
+/* Main headings */
 .bot-markdown h1,
 .bot-markdown h2,
 .bot-markdown h3 {
     color: #0b1b36;
     font-weight: 700;
-    line-height: 1.4;
-    margin: 14px 0 8px;
+    line-height: 1.35;
+    margin: 10px 0 5px;
 }
 
 .bot-markdown h1 {
-    font-size: 1.3rem;
+    font-size: 21px;
 }
 
 .bot-markdown h2 {
-    font-size: 1.2rem;
+    font-size: 18px;
 }
 
 .bot-markdown h3 {
-    font-size: 1.1rem;
+    font-size: 16px;
 }
 
+/* Bold standalone headings from the LLM */
 .bot-markdown p > strong:only-child {
     display: block;
     color: #0b1b36;
-    font-size: 1.1rem;
+    font-size: 16px;
     font-weight: 700;
-    margin: 14px 0 6px;
+    margin: 9px 0 4px;
 }
 
 .bot-markdown strong {
     font-weight: 700;
+    color: #172d4a;
 }
 
+/* Lists */
 .bot-markdown ul,
 .bot-markdown ol {
-    margin: 8px 0 12px;
-    padding-left: 22px;
+    padding-left: 21px;
+    margin: 4px 0 8px;
 }
 
 .bot-markdown ul {
-    list-style-type: disc;
+    list-style: disc;
 }
 
 .bot-markdown ol {
-    list-style-type: decimal;
+    list-style: decimal;
 }
 
 .bot-markdown li {
-    margin: 5px 0;
+    margin: 3px 0;
+    padding-left: 2px;
 }
 
+/* Links */
 .bot-markdown a {
-    color: #2a7bbd;
+    color: #2169a6;
     text-decoration: underline;
+    overflow-wrap: anywhere;
 }
 
-.bot-markdown blockquote {
-    border-left: 3px solid #e62429;
-    margin: 10px 0;
-    padding-left: 12px;
-    color: #4b5563;
+/* Input area */
+#chatForm {
+    padding: 12px 14px !important;
+    gap: 9px !important;
+    background: #ffffff !important;
+    border-top: 1px solid #e1e7ef !important;
+    align-items: center;
+}
+
+/* Chat input */
+#chatInput {
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 13px !important;
+    border: 1px solid #d5deea !important;
+    border-radius: 11px !important;
+    background: #f8fafc !important;
+    color: #0b1b36 !important;
+    font-size: 14px !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#chatInput:focus {
+    border-color: #2a7bbd !important;
+    box-shadow: 0 0 0 3px rgba(42, 123, 189, 0.12);
+}
+
+/* Send button */
+#chatForm button[type="submit"] {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px !important;
+    transition: background 0.2s, transform 0.2s;
+}
+
+#chatForm button[type="submit"]:hover {
+    transform: translateY(-1px);
+}
+
+#chatForm button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Floating chat button */
+#chatToggleButton {
+    box-shadow: 0 8px 24px rgba(11, 27, 54, 0.25) !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#chatToggleButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(11, 27, 54, 0.3) !important;
+}
+
+/* Scrollbar inside chat */
+#chatMessages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chatMessages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#chatMessages::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+    #chatWindow {
+        width: calc(100vw - 20px) !important;
+        height: 75dvh !important;
+        min-height: 350px !important;
+        max-height: 82dvh !important;
+        border-radius: 15px !important;
+    }
+
+    #chatMessages {
+        padding: 12px !important;
+    }
+
+    #chatMessages > div {
+        max-width: 94% !important;
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+    }
+
+    .bot-markdown h1 {
+        font-size: 19px;
+    }
+
+    .bot-markdown h2 {
+        font-size: 17px;
+    }
+
+    .bot-markdown h3 {
+        font-size: 15px;
+    }
 }

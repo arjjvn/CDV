@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b1b36">
+    <title>CDVH | My Profile</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#0b1b36',
+                            red: '#e62429',
+                            blue: '#2a7bbd',
+                            dark: '#1a1a1a',
+                            yellow: '#f0c040',
+                            beige: '#f8f5f0',
+                            textDark: '#1a1a1a',
+                            textMuted: '#6b7280'
+                        }
+                    },
+                    boxShadow: {
+                        soft: '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        card: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                        float: '0 10px 40px -10px rgba(0,0,0,0.15)'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="/assets/css/volunteer.css">
+    <style>
+        .profile-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #6b7280;
+            margin-bottom: .375rem;
+        }
+        .profile-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #0b1b36;
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+<body class="bg-[#f8f9fa] text-brand-textDark font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] w-full mx-auto px-6 py-4 flex justify-between items-center gap-4">
+            <a href="/" class="flex items-center gap-2 group">
+                <div class="flex flex-col gap-0.5" aria-hidden="true">
+                    <div class="flex gap-0.5"><div class="w-3.5 h-3.5 bg-brand-red"></div><div class="w-3.5 h-3.5 bg-brand-navy"></div></div>
+                    <div class="flex gap-0.5"><div class="w-3.5 h-3.5 bg-brand-navy"></div><div class="w-3.5 h-3.5 bg-brand-red"></div></div>
+                </div>
+                <span class="text-xl font-display font-bold tracking-tight text-brand-navy ml-1 group-hover:text-brand-red transition">CDVH<span class="text-brand-red">.</span></span>
+                <span class="hidden sm:block text-[10px] uppercase tracking-widest text-gray-400 ml-1 leading-none">Disaster<br>Volunteer Hub</span>
+            </a>
+
+            <div class="flex items-center gap-4">
+                {% if user.role == 'volunteer' %}
+                    <a href="/volunteers/dashboard" class="text-sm font-semibold text-brand-navy hover:text-brand-red transition">← Back to Dashboard</a>
+                {% elif user.role == 'coordinator' %}
+                    <a href="/coordinator/dashboard" class="text-sm font-semibold text-brand-navy hover:text-brand-red transition">← Back to Dashboard</a>
+                {% else %}
+                    <a href="/admin/dashboard" class="text-sm font-semibold text-brand-navy hover:text-brand-red transition">← Back to Dashboard</a>
+                {% endif %}
+
+                <a href="/auth/logout" class="bg-white border border-gray-200 hover:border-brand-red hover:text-brand-red text-brand-navy text-xs font-semibold px-3 py-2 rounded transition">
+                    Sign out
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-[1400px] w-full mx-auto px-6 py-10">
+
+        <!-- Profile Top Banner / Photo Upload Card -->
+        <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                <!-- Avatar Display -->
+                <div class="w-24 h-24 rounded-full border-4 border-white shadow-md bg-brand-navy text-white flex items-center justify-center font-bold text-2xl overflow-hidden shrink-0">
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image }}" alt="{{ user.first_name or 'User' }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <span>{{ (((user.first_name or '')[:1]) ~ ((user.last_name or '')[:1]))|upper or 'U' }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <div class="flex items-center gap-3 justify-center sm:justify-start">
+                        <h1 class="text-2xl md:text-3xl font-display font-bold uppercase text-brand-navy">
+                            {{ user.first_name or '' }} {{ user.last_name or '' }}
+                        </h1>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded uppercase
+                            {% if user.role == 'admin' %}bg-red-100 text-brand-red
+                            {% elif user.role == 'coordinator' %}bg-amber-100 text-amber-800
+                            {% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ user.role|capitalize }}
+                        </span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-0.5">{{ user.email }} · @{{ user.username }}</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        Registered Member · {{ user.district or 'Kerala' }}{% if user.place %}, {{ user.place }}{% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Optional Photo Upload Form -->
+            <div class="border-t sm:border-t-0 sm:border-l border-gray-100 pt-4 sm:pt-0 sm:pl-6 w-full sm:w-auto">
+                <span class="text-xs font-bold text-brand-navy uppercase tracking-wider block mb-2">Profile Photo (Optional)</span>
+                <form action="/profile/upload-photo" method="post" enctype="multipart/form-data" class="flex flex-col sm:flex-row items-center gap-2">
+                    <input type="file" name="file" accept="image/*" class="text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-brand-navy hover:file:bg-gray-200 cursor-pointer" required>
+                    <button type="submit" class="w-full sm:w-auto bg-brand-navy hover:bg-[#152e59] text-white px-4 py-2 rounded text-xs font-semibold uppercase tracking-wider transition shadow-sm">
+                        Upload
+                    </button>
+                </form>
+                <span class="text-[10px] text-gray-400 mt-1 block">Supports PNG, JPG, WEBP. Max 5MB.</span>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Personal Information -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                    <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100 flex items-center justify-between">
+                        <span>Personal & Contact Information</span>
+                        <span class="text-xs text-gray-400 font-sans font-normal lowercase">id: #{{ user.id }}</span>
+                    </h2>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">First Name</div>
+                            <div class="profile-value">{{ user.first_name or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Last Name</div>
+                            <div class="profile-value">{{ user.last_name or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Email Address</div>
+                            <div class="profile-value">{{ user.email }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Phone Number</div>
+                            <div class="profile-value">{{ user.phone or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Date of Birth</div>
+                            <div class="profile-value">{{ user.date_of_birth.strftime('%Y-%m-%d') if user.date_of_birth else 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Gender</div>
+                            <div class="profile-value">{{ user.gender or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Blood Group</div>
+                            <div class="profile-value text-brand-red font-bold">{{ user.blood_group or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Languages Spoken</div>
+                            <div class="profile-value">{{ user.languages or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="sm:col-span-2 p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Residential Address</div>
+                            <div class="profile-value">{{ user.address or 'Not provided' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills & Background -->
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                    <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100">
+                        Volunteer Skills & Background
+                    </h2>
+
+                    <div class="mb-6">
+                        <div class="profile-label">Registered Competencies</div>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            {% for s in skills %}
+                                <span class="bg-brand-navy text-white text-xs font-semibold px-3 py-1.5 rounded">{{ s }}</span>
+                            {% else %}
+                                <span class="text-sm text-gray-500">No specific skills listed.</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Years of Experience</div>
+                            <div class="profile-value">
+                                {% if user.years_experience is not none %}{{ user.years_experience }} year(s){% else %}Not specified{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Organization / Affiliation</div>
+                            <div class="profile-value">{{ user.organization or 'Independent Volunteer' }}</div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                        <div class="profile-label">Prior Relief / Volunteer Experience</div>
+                        <p class="text-sm text-gray-700 whitespace-pre-wrap mt-1 leading-relaxed">{{ user.previous_experience or 'No previous deployment notes.' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Location & Status -->
+            <div class="space-y-8">
+                <!-- Location Card -->
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                    <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100">
+                        Deployment Location
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">District</div>
+                            <div class="profile-value">{{ user.district or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Town / Locality</div>
+                            <div class="profile-value">{{ user.place or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">PIN Code</div>
+                            <div class="profile-value">{{ user.pincode or 'Not provided' }}</div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Region</div>
+                            <div class="profile-value">{{ user.region or 'Kerala' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Readiness Window -->
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                    <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100">
+                        Readiness & Account
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Availability Window</div>
+                            <div class="profile-value">
+                                {% if user.available_from and user.available_to %}
+                                    {{ user.available_from.strftime('%H:%M') }} - {{ user.available_to.strftime('%H:%M') }}
+                                {% else %}
+                                    On-call / Flexible
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Approval Status</div>
+                            <div class="mt-1">
+                                {% if user.is_approved %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">✓ Verified & Approved</span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">⏳ Pending Approval</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-gray-50 rounded border border-gray-100">
+                            <div class="profile-label">Account Joined</div>
+                            <div class="profile-value">{{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'Active' }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        {% if user.role == 'volunteer' %}
+                            <a href="/volunteers/dashboard" class="block text-center w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-xs font-bold uppercase tracking-wider transition">Return to Volunteer Dashboard</a>
+                        {% elif user.role == 'coordinator' %}
+                            <a href="/coordinator/dashboard" class="block text-center w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-xs font-bold uppercase tracking-wider transition">Return to Coordinator Dashboard</a>
+                        {% else %}
+                            <a href="/admin/dashboard" class="block text-center w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-xs font-bold uppercase tracking-wider transition">Return to Admin Dashboard</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-brand-navy text-gray-400 py-6 text-center text-xs mt-auto">
+        &copy; 2026 Community Disaster Volunteer Hub. Secure Platform.
+    </footer>
+
+</body>
+</html>
+

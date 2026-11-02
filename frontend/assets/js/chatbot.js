@@ -108,16 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const answer = data.answer || "No answer was returned.";
 
-            if (window.marked && window.DOMPurify) {
-                loadingMessage.classList.remove("whitespace-pre-wrap");
-                loadingMessage.classList.add("bot-markdown");
+            // loadingMessage.classList.remove("whitespace-pre-wrap");
+            loadingMessage.classList.add("bot-markdown");
 
-                loadingMessage.innerHTML = window.DOMPurify.sanitize(
-                    window.marked.parse(answer)
-                );
-            } else {
-                loadingMessage.textContent = answer;
-            }
+            loadingMessage.innerHTML = DOMPurify.sanitize(
+                marked.parse(answer)
+            );
 
         } catch (error) {
             console.error("CDVH RAG chatbot error:", error);
