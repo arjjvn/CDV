@@ -352,6 +352,43 @@ def approve_coordinator(
 
     return RedirectResponse(url="/admin/dashboard", status_code=303)
 
+@router.post("/admin/users/{user_id}/reject")
+def reject_coordinator(
+    user_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    admin, redirect_response = get_cookie_user(request, db)
+
+    if redirect_response:
+        return redirect_response
+
+    if admin.role != "admin" or not admin.is_approved:
+        return role_redirect(admin)
+
+    coordinator = (
+        db.query(User)
+        .filter(
+            User.id == user_id,
+            User.role == "coordinator",
+            User.is_approved.is_(False),
+        )
+        .first()
+    )
+
+    if coordinator:
+        db.delete(coordinator)
+
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
+            raise
+
+    return RedirectResponse(
+        url="/admin/dashboard#approvals",
+        status_code=303,
+    )
 
 @router.post("/admin/users/{user_id}/delete")
 def delete_user(

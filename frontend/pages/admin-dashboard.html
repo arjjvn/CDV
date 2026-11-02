@@ -6,21 +6,15 @@
     <meta name="theme-color" content="#0b1b36">
 
     <title>CDVH | Admin Dashboard</title>
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet">
-
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
+        tailwind.config = {theme: {extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         display: ['Oswald', 'sans-serif']
@@ -306,14 +300,18 @@
             <!-- COORDINATOR APPROVALS -->
             <!-- ======================================= -->
 
+            <!-- ======================================= -->
+            <!-- COORDINATOR APPROVALS -->
+            <!-- ======================================= -->
+
             <section id="approvals"
-                     class="bg-white rounded border border-gray-100
+                    class="bg-white rounded border border-gray-100
                             shadow-card overflow-hidden">
 
                 <div class="p-6 md:p-8 border-b border-gray-100">
 
                     <span class="text-brand-red text-xs font-bold
-                                 uppercase tracking-widest">
+                                uppercase tracking-widest">
                         Access Control
                     </span>
 
@@ -323,20 +321,20 @@
 
                         <div>
                             <h2 class="text-2xl md:text-3xl
-                                       font-display font-bold
-                                       uppercase text-brand-navy">
+                                    font-display font-bold
+                                    uppercase text-brand-navy">
                                 Coordinator Approvals
                             </h2>
 
                             <p class="text-sm text-gray-500 mt-2">
-                                Only approve coordinator accounts after
-                                verifying their details.
+                                Review coordinator registration requests.
+                                Approve verified accounts or reject applications.
                                 Volunteers do not require approval.
                             </p>
                         </div>
 
                         <span class="px-4 py-2 rounded bg-yellow-100
-                                     text-yellow-800 text-sm font-semibold">
+                                    text-yellow-800 text-sm font-semibold">
                             Pending: {{ pending_coordinators|length }}
                         </span>
 
@@ -359,62 +357,95 @@
                                             justify-between items-start
                                             md:items-center gap-5">
 
+                                    <!-- COORDINATOR DETAILS -->
+
                                     <div class="min-w-0">
 
-                                        <h3 class="font-bold
-                                                   text-brand-navy">
-                                            {{ coordinator.first_name }}
-                                            {{ coordinator.last_name }}
+                                        <h3 class="font-bold text-brand-navy">
+                                            {{ coordinator.first_name or '' }}
+                                            {{ coordinator.last_name or '' }}
                                         </h3>
 
-                                        <p class="text-sm text-gray-500 mt-1
-                                                  break-words">
+                                        <p class="text-sm text-gray-500 mt-1 break-words">
                                             {{ coordinator.email }}
                                         </p>
 
                                         <p class="text-xs text-gray-500 mt-2">
+                                            Phone:
+                                            {{ coordinator.phone or 'Not provided' }}
+                                        </p>
+
+                                        <p class="text-xs text-gray-500 mt-1">
                                             District:
-                                            {{ coordinator.district
-                                               or 'Not provided' }}
+                                            {{ coordinator.district or 'Not provided' }}
+                                        </p>
+
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            Place:
+                                            {{ coordinator.place or 'Not provided' }}
                                         </p>
 
                                         <p class="text-xs text-gray-500 mt-1">
                                             Organization:
-                                            {{ coordinator.organization
-                                               or 'Not provided' }}
+                                            {{ coordinator.organization or 'Not provided' }}
+                                        </p>
+
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            Region:
+                                            {{ coordinator.region or 'Not provided' }}
                                         </p>
 
                                         <span class="inline-block mt-3
-                                                     px-3 py-1 rounded
-                                                     bg-yellow-100
-                                                     text-yellow-800
-                                                     text-xs font-semibold">
+                                                    px-3 py-1 rounded
+                                                    bg-yellow-100
+                                                    text-yellow-800
+                                                    text-xs font-semibold">
                                             Awaiting Approval
                                         </span>
 
                                     </div>
 
 
-                                    <!-- APPROVE COORDINATOR FORM -->
+                                    <!-- APPROVE AND REJECT ACTIONS -->
 
-                                    <form method="post"
-                                          action="/admin/users/{{ coordinator.id }}/approve"
-                                          onsubmit="return confirm('Approve this coordinator account?');">
+                                    <div class="flex flex-wrap gap-2 shrink-0">
 
-                                        <button type="submit"
-                                                class="btn-ripple
-                                                       bg-green-700
-                                                       hover:bg-green-800
-                                                       text-white
-                                                       px-5 py-3 rounded
-                                                       text-sm font-semibold
-                                                       whitespace-nowrap">
+                                        <!-- APPROVE -->
+                                        <form
+                                            method="POST"
+                                            action="/admin/users/{{ coordinator.id }}/approve"
+                                            onsubmit="return confirm('Approve this coordinator account?');"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="bg-green-700 hover:bg-green-800
+                                                    text-white px-5 py-3 rounded
+                                                    text-sm font-semibold transition
+                                                    whitespace-nowrap"
+                                            >
+                                                ✓ Approve
+                                            </button>
+                                        </form>
 
-                                            Approve Coordinator
 
-                                        </button>
+                                        <!-- REJECT -->
+                                        <form
+                                            method="POST"
+                                            action="/admin/users/{{ coordinator.id }}/reject"
+                                            onsubmit="return confirm('Are you sure you want to reject this coordinator request? The account will be permanently deleted.');"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="bg-red-600 hover:bg-red-700
+                                                    text-white px-5 py-3 rounded
+                                                    text-sm font-semibold transition
+                                                    whitespace-nowrap"
+                                            >
+                                                ✕ Reject
+                                            </button>
+                                        </form>
 
-                                    </form>
+                                    </div>
 
                                 </div>
 

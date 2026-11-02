@@ -1,6 +1,14 @@
 let currentMode = "login";
 const API_URL = "/auth";
 
+const ALLOWED_VOLUNTEER_SKILLS = [
+    "Medical",
+    "Driving",
+    "Rescue",
+    "Food Supply",
+    "Ambulance"
+];
+
 function getOptionalValue(id) {
     const element = document.getElementById(id);
 
@@ -578,14 +586,31 @@ async function handleAuth(event) {
             payload.gender = getOptionalValue("regGender");
             payload.blood_group = getOptionalValue("regBloodGroup");
 
-            payload.skill1 = getOptionalValue("skill1");
-            payload.skill2 = getOptionalValue("skill2");
-            payload.skill3 = getOptionalValue("skill3");
+            const selectedSkills = [
+                getOptionalValue("skill1"),
+                getOptionalValue("skill2"),
+                getOptionalValue("skill3")
+            ];
+
+            const invalidSkills = selectedSkills.filter(
+                skill => skill && !ALLOWED_VOLUNTEER_SKILLS.includes(skill)
+            );
+
+            if (invalidSkills.length > 0) {
+                showAuthToast(
+                    "Invalid Skill",
+                    "Choose skills only from Medical, Driving, Rescue, Food Supply, or Ambulance."
+                );
+                return;
+            }
+
+            payload.skill1 = selectedSkills[0];
+            payload.skill2 = selectedSkills[1];
+            payload.skill3 = selectedSkills[2];
 
             payload.years_experience =
                 years === null ? null : Number(years);
 
-            payload.previous_experience = getOptionalValue("prevExp");
             payload.available_from = getOptionalValue("availableFrom");
             payload.available_to = getOptionalValue("availableTo");
             payload.languages = getOptionalValue("langs");
