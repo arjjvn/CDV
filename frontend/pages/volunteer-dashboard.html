@@ -172,6 +172,15 @@
                     My Dashboard
                 </a>
 
+                <a href="#deployments" class="text-gray-700 hover:text-brand-red transition flex items-center gap-1.5">
+                    <span>Deployments</span>
+                    {% if assignments %}
+                        <span class="bg-brand-red text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+                            {{ assignments|length }}
+                        </span>
+                    {% endif %}
+                </a>
+
                 <a href="#profile" class="text-gray-700 hover:text-brand-red transition">
                     My Profile
                 </a>
@@ -180,8 +189,8 @@
                     My Skills
                 </a>
 
-                <a href="#readiness" class="text-gray-700 hover:text-brand-red transition">
-                    Readiness
+                <a href="/profile" class="text-gray-700 hover:text-brand-red transition">
+                    Edit Profile
                 </a>
             </nav>
 
@@ -314,6 +323,16 @@
 
                     <div class="px-4 py-2">
                         <div class="text-3xl lg:text-4xl font-display font-bold mb-1">
+                            {{ assignments|length }}
+                        </div>
+
+                        <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">
+                            Assigned Deployments
+                        </div>
+                    </div>
+
+                    <div class="px-4 py-2">
+                        <div class="text-3xl lg:text-4xl font-display font-bold mb-1">
                             {{ skills|length }}
                         </div>
 
@@ -321,29 +340,198 @@
                             Registered Skills
                         </div>
                     </div>
-
-                    <div class="px-4 py-2">
-                        <div class="text-3xl lg:text-4xl font-display font-bold mb-1">
-                            {% if user.available_from and user.available_to %}
-                                Set
-                            {% else %}
-                                Not Set
-                            {% endif %}
-                        </div>
-
-                        <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">
-                            Availability Window
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
 
 
-        <!-- PROFILE AND READINESS CARDS -->
         <div class="max-w-[1600px] mx-auto px-6 lg:px-16 space-y-10 mt-12">
 
-            <!-- VOLUNTEER PROFILE -->
+            <!-- FIELD DEPLOYMENTS & TASK ASSIGNMENTS -->
+            <section
+                id="deployments"
+                class="bg-white rounded border border-gray-100 shadow-card p-6 md:p-10"
+            >
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-100">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-brand-red animate-ping"></span>
+                            <span class="text-brand-red text-xs font-bold uppercase tracking-widest">
+                                Operational Dispatch
+                            </span>
+                        </div>
+
+                        <h2 class="text-2xl md:text-3xl font-display font-bold uppercase text-brand-navy mt-1">
+                            My Deployment Assignments
+                        </h2>
+
+                        <p class="text-xs text-gray-500 mt-0.5">
+                            Tasks assigned to you by emergency coordinators based on ML model capability matching.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2 self-start sm:self-auto">
+                        <span class="text-xs font-semibold px-3 py-1 rounded bg-blue-50 text-brand-navy border border-blue-100">
+                            {{ assignments|length }} Total Task(s)
+                        </span>
+                    </div>
+                </div>
+
+                {% if assignments %}
+                    <div class="space-y-6">
+                        {% for asg in assignments %}
+                            <div class="p-6 rounded-lg border-2 {% if asg.status == 'accepted' %}border-green-300 bg-green-50/20{% elif asg.status == 'pending' %}border-amber-300 bg-amber-50/20{% else %}border-gray-200 bg-gray-50/50{% endif %} transition">
+                                
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white
+                                                {% if asg.task.urgency == 'Urgent' %}bg-brand-red{% else %}bg-brand-navy{% endif %}">
+                                                {{ asg.task.urgency or 'Active' }} Priority
+                                            </span>
+                                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded
+                                                {% if asg.status == 'accepted' %}bg-green-100 text-green-800{% elif asg.status == 'pending' %}bg-amber-100 text-amber-800{% else %}bg-gray-100 text-gray-700{% endif %}">
+                                                {% if asg.status == 'accepted' %}✓ Deployment Accepted{% elif asg.status == 'pending' %}⚡ Awaiting Your Response{% else %}Declined{% endif %}
+                                            </span>
+                                            {% if asg.match_score %}
+                                                <span class="text-[10px] font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                                    🤖 {{ asg.match_score|round(1) }}% ML Match
+                                                </span>
+                                            {% endif %}
+                                        </div>
+
+                                        <h3 class="text-lg md:text-xl font-display font-bold text-brand-navy">
+                                            {{ asg.task.title }}
+                                        </h3>
+                                    </div>
+
+                                    <div class="text-xs text-gray-500 flex items-center gap-1.5 self-start md:self-auto">
+                                        <svg class="w-4 h-4 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        <strong class="text-brand-navy">{{ asg.task.location or 'Kerala' }}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="py-4 space-y-3">
+                                    <p class="text-xs md:text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                        {{ asg.task.description or 'Emergency coordination and field relief assistance required.' }}
+                                    </p>
+
+                                    <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                                        <span class="font-semibold text-brand-navy">Required Capabilities:</span>
+                                        <span class="bg-gray-100 text-gray-800 px-2 py-0.5 rounded font-medium">
+                                            {{ asg.task.skills_required or 'General Relief' }}
+                                        </span>
+                                        <span class="text-gray-400">·</span>
+                                        <span>Assigned by: <strong>{{ asg.assigner.first_name }} {{ asg.assigner.last_name }}</strong></span>
+                                    </div>
+                                </div>
+
+                                <!-- ACTION: IF PENDING RESPONSE -->
+                                {% if asg.status == 'pending' %}
+                                    <div class="mt-2 pt-4 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div class="text-xs text-amber-900 font-medium">
+                                            ⚠️ An emergency coordinator has dispatched this task to you. Please accept or decline immediately:
+                                        </div>
+
+                                        <div class="flex items-center gap-3 self-end sm:self-auto">
+                                            <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="inline m-0">
+                                                <input type="hidden" name="action" value="accept">
+                                                <button type="submit" class="btn-ripple bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase px-5 py-2.5 rounded shadow transition flex items-center gap-1.5">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                    Accept Task
+                                                </button>
+                                            </form>
+
+                                            <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="inline m-0">
+                                                <input type="hidden" name="action" value="reject">
+                                                <button type="submit" class="border border-red-300 hover:bg-red-50 text-red-600 font-semibold text-xs uppercase px-4 py-2.5 rounded transition">
+                                                    Decline
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <!-- ACTION: IF ACCEPTED (SHOW COORDINATOR CONTACT DETAILS) -->
+                                {% if asg.status == 'accepted' %}
+                                    <div class="mt-2 p-5 bg-blue-50 border-2 border-brand-blue/30 rounded-lg">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-9 h-9 rounded-full bg-brand-navy text-white flex items-center justify-center flex-shrink-0 font-bold text-base shadow-sm">
+                                                📞
+                                            </div>
+
+                                            <div class="flex-1">
+                                                <h4 class="font-display font-bold text-brand-navy text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
+                                                    Assigned Coordinator Contact Details
+                                                </h4>
+
+                                                <p class="text-xs text-gray-700 leading-relaxed mb-3">
+                                                    You have accepted this deployment. Please reach out to your assigned coordinator immediately for staging checkpoint location, protective gear, and operational instructions:
+                                                </p>
+
+                                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                                                    <div class="bg-white p-3 rounded border border-blue-100 shadow-sm">
+                                                        <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Field Coordinator</span>
+                                                        <strong class="text-brand-navy text-sm block mt-0.5">
+                                                            {{ asg.assigner.first_name }} {{ asg.assigner.last_name }}
+                                                        </strong>
+                                                        <span class="text-[10px] text-gray-500 block mt-0.5">
+                                                            {{ asg.assigner.organization or asg.assigner.department or 'Kerala Disaster Hub' }}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="bg-white p-3 rounded border border-blue-100 shadow-sm">
+                                                        <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Phone / Direct Hotline</span>
+                                                        <a href="tel:{{ asg.assigner.phone }}" class="text-brand-red font-bold text-sm hover:underline block mt-0.5">
+                                                            📞 {{ asg.assigner.phone or '+91 94000 12345 (Hub Line)' }}
+                                                        </a>
+                                                        <span class="text-[10px] text-green-600 font-semibold block mt-0.5">● Dispatch Line Active</span>
+                                                    </div>
+
+                                                    <div class="bg-white p-3 rounded border border-blue-100 shadow-sm">
+                                                        <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Official Email</span>
+                                                        <a href="mailto:{{ asg.assigner.email }}" class="text-brand-navy font-semibold hover:underline block truncate mt-0.5">
+                                                            ✉️ {{ asg.assigner.email }}
+                                                        </a>
+                                                        <span class="text-[10px] text-gray-500 block mt-0.5">Official In-System Contact</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <!-- IF REJECTED -->
+                                {% if asg.status == 'rejected' %}
+                                    <div class="mt-2 pt-3 border-t border-gray-200 text-xs text-gray-500 flex items-center justify-between">
+                                        <span>You declined this deployment assignment. The coordinator has been notified to reassign another candidate.</span>
+                                        <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="inline m-0">
+                                            <input type="hidden" name="action" value="accept">
+                                            <button type="submit" class="text-brand-blue hover:underline text-xs font-semibold">
+                                                Re-accept if available
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center text-xl">
+                            🛡️
+                        </div>
+                        <h4 class="font-display font-bold text-base text-brand-navy uppercase mb-1">
+                            No Active Deployment Dispatches
+                        </h4>
+                        <p class="text-xs text-gray-500 max-w-md mx-auto">
+                            You are active in the volunteer pool. When an incident coordinator matches a task to your skills and locality, it will appear here with instant accept/reject options and coordinator contact details.
+                        </p>
+                    </div>
+                {% endif %}
+            </section>
+
             <section
                 id="profile"
                 class="bg-white rounded border border-gray-100 shadow-card p-6 md:p-10"
@@ -393,7 +581,6 @@
                     role="alert"
                 ></p>
 
-                <!-- PERSONAL DETAILS -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
                     <div class="profile-card rounded border border-gray-100 bg-gray-50/80 p-5">
@@ -483,10 +670,8 @@
             </section>
 
 
-            <!-- SKILLS AND READINESS -->
             <section id="capabilities" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                <!-- SKILLS CARD -->
                 <div class="bg-white rounded border border-gray-100 shadow-card p-6 md:p-8 flex flex-col justify-between">
 
                     <div>
@@ -556,7 +741,6 @@
                 </div>
 
 
-                <!-- EMERGENCY READINESS -->
                 <div
                     id="readiness"
                     class="bg-white rounded border border-gray-100 shadow-card p-6 md:p-8 flex flex-col justify-between"

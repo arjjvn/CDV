@@ -80,8 +80,17 @@
             </a>
 
             <!-- Desktop Nav -->
-            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-brand-textDark">
-                <a href="#active-tasks" class="text-brand-red font-semibold">Deployments</a>
+            <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-brand-textDark">
+                <a href="#dl-alerts" class="text-brand-red font-semibold flex items-center gap-1.5 hover:opacity-90 transition">
+                    <span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
+                    <span>Emergency Alerts</span>
+                    {% if disasters %}
+                        <span class="bg-brand-red text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+                            {{ disasters|length }}
+                        </span>
+                    {% endif %}
+                </a>
+                <a href="#active-tasks" class="text-gray-700 hover:text-brand-red transition">Deployments</a>
                 <a href="#volunteer-pool" class="text-gray-700 hover:text-brand-red transition">Volunteer Pool</a>
                 <a href="#reports" class="text-gray-700 hover:text-brand-red transition">Field Reports</a>
                 <a href="/profile" class="text-gray-700 hover:text-brand-red transition">My Profile</a>
@@ -155,6 +164,10 @@
                 <div class="max-w-[1600px] mx-auto py-8 px-6 lg:px-16">
                     <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/20 text-center">
                         <div class="px-4">
+                            <div class="text-3xl lg:text-4xl font-display font-bold mb-1 text-yellow-300">{{ disasters|length }}</div>
+                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">⚡ DL Emergencies</div>
+                        </div>
+                        <div class="px-4">
                             <div class="text-3xl lg:text-4xl font-display font-bold mb-1">{{ active_tasks_count }}</div>
                             <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Active Deployments</div>
                         </div>
@@ -166,10 +179,6 @@
                             <div class="text-3xl lg:text-4xl font-display font-bold mb-1 text-yellow-300">{{ urgent_alerts_count }}</div>
                             <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Urgent Alerts</div>
                         </div>
-                        <div class="px-4">
-                            <div class="text-3xl lg:text-4xl font-display font-bold mb-1">94%</div>
-                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">ML Match Rate</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -177,6 +186,158 @@
 
         <!-- MAIN CONTENT CARDS -->
         <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-12 space-y-12">
+
+            <!-- ══════════════════════════════════════════════════════
+                 ⚡ DEEP LEARNING EMERGENCY TRIAGE & INCIDENT FEED
+            ══════════════════════════════════════════════════════ -->
+            <div id="dl-alerts" class="scroll-mt-24">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-5 h-5 bg-brand-red animate-pulse"></div>
+                    <div class="w-5 h-5 bg-brand-navy -ml-2.5 mt-2.5"></div>
+                    <span class="text-brand-red font-bold text-xs uppercase tracking-widest ml-2">Live Neural Network Triage</span>
+                </div>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-3xl md:text-4xl font-display font-bold uppercase text-brand-navy">Deep Learning Emergency Alerts</h2>
+                            {% if disasters %}
+                                <span class="bg-brand-red text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider animate-pulse">
+                                    {{ disasters|length }} Active Incident(s)
+                                </span>
+                            {% endif %}
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">
+                            Live distress messages analyzed by the Deep Learning neural network model from citizen reports on the index page, classified by disaster type, urgency level, and response skills.
+                        </p>
+                    </div>
+                </div>
+
+                {% if disasters %}
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {% for disaster in disasters %}
+                            <div class="bg-white rounded-xl border-2 {% if disaster.severity == 'Urgent' or disaster.severity == 'High' %}border-red-400 bg-red-50/15{% elif disaster.severity == 'Medium' %}border-amber-300 bg-amber-50/15{% else %}border-gray-200 bg-white{% endif %} shadow-card overflow-hidden transition flex flex-col justify-between">
+                                <div class="p-6">
+                                    <!-- Header Badges -->
+                                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded text-white
+                                                {% if disaster.severity == 'Urgent' or disaster.severity == 'High' %}bg-brand-red
+                                                {% elif disaster.severity == 'Medium' %}bg-amber-600
+                                                {% else %}bg-green-600{% endif %}">
+                                                🚨 {{ disaster.severity }} Urgency
+                                            </span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-purple-100 text-purple-900 border border-purple-200 flex items-center gap-1">
+                                                <span>🧠 DL Model:</span>
+                                                <strong>{{ disaster.disaster_type }}</strong>
+                                            </span>
+                                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded
+                                                {% if disaster.status == 'Active' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-700{% endif %}">
+                                                {{ disaster.status }}
+                                            </span>
+                                        </div>
+                                        <span class="text-xs text-gray-400 font-medium">
+                                            {{ disaster.created_at.strftime('%d %b %Y, %I:%M %p') if disaster.created_at else 'Recent' }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Title & Location -->
+                                    <h3 class="font-display font-bold text-lg text-brand-navy uppercase mb-1">
+                                        {{ disaster.title }}
+                                    </h3>
+                                    <p class="text-xs text-gray-600 mb-4 flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5 text-brand-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                        <span>Sector: <strong class="text-brand-navy">{{ disaster.place or 'Kerala Sector' }}{% if disaster.district %}, {{ disaster.district }}{% endif %}</strong></span>
+                                    </p>
+
+                                    <!-- Distress Text -->
+                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                                        <div class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1">Citizen Distress Text (Analyzed by DL Neural Net):</div>
+                                        <p class="text-xs text-gray-800 leading-relaxed italic">
+                                            “{{ disaster.description or 'No message text provided.' }}”
+                                        </p>
+                                    </div>
+
+                                    <!-- Auto-Dispatched Response Task -->
+                                    {% if disaster.tasks %}
+                                        {% set dtask = disaster.tasks[0] %}
+                                        <div class="bg-blue-50/60 p-4 rounded-lg border border-blue-200 mb-2">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="text-xs font-bold text-brand-navy uppercase tracking-wider flex items-center gap-1.5">
+                                                    <span>📋 Dispatched Task:</span>
+                                                    <span class="text-brand-blue">{{ dtask.title }}</span>
+                                                </span>
+                                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded
+                                                    {% if dtask.status == 'active' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-700{% endif %}">
+                                                    {{ dtask.status|capitalize }}
+                                                </span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                                                <div>DL Required Skill: <strong class="text-brand-navy">{{ dtask.skills_required or 'Rescue' }}</strong></div>
+                                                <div>Target Responders: <strong>{{ dtask.required_volunteer_count }} Volunteer(s)</strong></div>
+                                            </div>
+
+                                            <div class="flex items-center gap-2">
+                                                <button
+                                                    type="button"
+                                                    onclick="loadVolunteerMatches({{ dtask.id }}, {{ dtask.required_volunteer_count or 5 }})"
+                                                    class="btn-ripple flex-1 bg-brand-navy hover:bg-[#152e59] text-white py-2 text-xs font-bold uppercase tracking-wider rounded transition text-center shadow-sm flex items-center justify-center gap-1.5"
+                                                >
+                                                    <span>🎯 Find ML Responders</span>
+                                                </button>
+                                                <form action="/coordinator/tasks/{{ dtask.id }}/status" method="post" class="inline m-0">
+                                                    {% if dtask.status == 'active' %}
+                                                        <input type="hidden" name="new_status" value="resolved">
+                                                        <button type="submit" class="border border-gray-300 hover:border-gray-500 bg-white text-gray-700 py-2 px-3 text-xs font-semibold rounded transition">
+                                                            Resolve Task
+                                                        </button>
+                                                    {% else %}
+                                                        <input type="hidden" name="new_status" value="active">
+                                                        <button type="submit" class="border border-gray-300 hover:border-brand-navy bg-white text-brand-navy py-2 px-3 text-xs font-semibold rounded transition">
+                                                            Re-open Task
+                                                        </button>
+                                                    {% endif %}
+                                                </form>
+                                            </div>
+
+                                            <!-- Matches Container -->
+                                            <div id="matches-{{ dtask.id }}" class="hidden mt-4 pt-4 border-t border-blue-200">
+                                                <div class="text-xs text-brand-navy font-bold flex items-center justify-between mb-3 uppercase tracking-wider">
+                                                    <span>AI Recommended Volunteers for this Incident</span>
+                                                    <button onclick="document.getElementById('matches-{{ dtask.id }}').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 font-bold text-sm">&times; Close</button>
+                                                </div>
+                                                <div id="matches-list-{{ dtask.id }}" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                                    <span class="text-[11px] text-gray-500">Incident ID: #{{ disaster.id }}</span>
+                                    <form action="/coordinator/disasters/{{ disaster.id }}/status" method="post" class="inline m-0">
+                                        {% if disaster.status == 'Active' %}
+                                            <input type="hidden" name="new_status" value="Resolved">
+                                            <button type="submit" class="text-xs font-semibold text-gray-500 hover:text-brand-red transition">
+                                                Mark Incident Resolved →
+                                            </button>
+                                        {% else %}
+                                            <input type="hidden" name="new_status" value="Active">
+                                            <button type="submit" class="text-xs font-semibold text-brand-blue hover:underline transition">
+                                                Re-activate Incident →
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-8 bg-white border border-gray-200 rounded-xl text-center text-gray-500">
+                        <span class="text-3xl block mb-2">🟢</span>
+                        <h4 class="font-display font-bold text-brand-navy uppercase mb-1">No Active Deep Learning Emergencies</h4>
+                        <p class="text-xs text-gray-500">All emergency reports from citizens on the index page have been resolved or no distress messages are currently pending.</p>
+                    </div>
+                {% endif %}
+            </div>
 
             <!-- Active Task Management -->
             <div id="active-tasks">
@@ -216,6 +377,16 @@
                                             {{ task.urgency or task.status|capitalize }}
                                         </span>
                                     </div>
+
+                                    {% if task.disaster %}
+                                        <div class="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-purple-100 text-purple-900 border border-purple-200 text-[10px] font-bold">
+                                            <span>⚡ DL Triaged:</span>
+                                            <span class="text-brand-red font-black uppercase tracking-wider">{{ task.disaster.disaster_type }}</span>
+                                            <span class="text-gray-400">·</span>
+                                            <span>{{ task.disaster.severity }} Urgency</span>
+                                        </div>
+                                    {% endif %}
+
                                     <p class="text-xs text-gray-600 mb-4">{{ task.description or 'Active relief task deployed for emergency responders.' }}</p>
                                     <ul class="text-xs text-gray-500 space-y-2 mb-6">
                                         <li class="flex items-center gap-2">
@@ -227,6 +398,32 @@
                                             <span>Team Target: <strong>{{ task.required_volunteer_count }} Volunteer(s)</strong></span>
                                         </li>
                                     </ul>
+
+                                    <!-- AI / ML VOLUNTEER MATCHING -->
+                                    <div class="mt-5 border-t border-gray-100 pt-4">
+                                        <div class="flex flex-wrap items-center justify-between gap-3">
+                                            <div>
+                                                <h5 class="text-sm font-bold text-brand-navy">AI Recommended Volunteers</h5>
+                                                <p class="text-[11px] text-gray-500 mt-1">
+                                                    Find volunteers based on this task's required skills and location.
+                                                </p>
+                                            </div>
+                                            <button
+                                                id="match-button-{{ task.id }}"
+                                                type="button"
+                                                onclick="loadVolunteerMatches({{ task.id }}, {{ task.required_volunteer_count or 5 }})"
+                                                class="btn-ripple bg-brand-red hover:bg-red-700 text-white px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider rounded transition"
+                                            >
+                                                Find ML Matches
+                                            </button>
+                                        </div>
+
+                                        <div
+                                            id="matches-{{ task.id }}"
+                                            class="hidden mt-4 space-y-3"
+                                            aria-live="polite"
+                                        ></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="p-6 pt-0 flex gap-2">
@@ -271,8 +468,8 @@
                         </p>
                         <div class="flex gap-6 text-center">
                             <div>
-                                <div class="text-2xl font-bold font-display text-brand-yellow mb-0.5">KNN</div>
-                                <div class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Matcher</div>
+                                <div class="text-2xl font-bold font-display text-brand-yellow mb-0.5">RF</div>
+                                <div class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Random Forest</div>
                             </div>
                             <div class="w-px bg-white/20"></div>
                             <div>
@@ -477,11 +674,11 @@
                 </div>
                 <button type="button" onclick="closeAssignModal()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
             </div>
-            <div class="p-6 space-y-4">
-                <input type="hidden" id="assignTaskId" value="">
+            <form action="/coordinator/tasks/assign" method="post" class="p-6 space-y-4">
+                <input type="hidden" name="task_id" id="assignTaskId" value="">
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Available Volunteers</label>
-                    <select class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
+                    <label for="assignVolunteerSelect" class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Available Volunteers</label>
+                    <select name="volunteer_id" id="assignVolunteerSelect" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
                         {% for vol in volunteers %}
                             <option value="{{ vol.id }}">{{ vol.first_name }} {{ vol.last_name }} ({{ vol.district or 'General' }}) — Skills: {{ vol.skill1 or 'Relief' }}</option>
                         {% else %}
@@ -489,11 +686,18 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <!-- Match preview info -->
+                <div id="assignMatchNote" class="text-xs text-gray-500 bg-blue-50 p-3 rounded border border-blue-100 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-brand-blue flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Volunteers with matching skill profiles are prioritized for optimal field deployment.</span>
+                </div>
+
                 <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="alert('Assignment confirmed.'); closeAssignModal();" class="btn-ripple flex-1 bg-brand-navy text-white py-2.5 rounded text-xs font-bold uppercase tracking-wider transition">Confirm Assignment</button>
+                    <button type="submit" class="btn-ripple flex-1 bg-brand-navy text-white py-2.5 rounded text-xs font-bold uppercase tracking-wider transition">Confirm Assignment</button>
                     <button type="button" onclick="closeAssignModal()" class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded text-xs font-semibold hover:bg-gray-50 transition">Cancel</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -572,5 +776,137 @@
     <script type="module" src="/assets/js/chatbot.js?v=4"></script>
     <script src="/assets/js/animations.js"></script>
     <script src="/assets/js/coordinator.js"></script>
+
+
+    <!-- ASYNC ML VOLUNTEER MATCHING -->
+    <script>
+        function escapeMatchHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, function (character) {
+                return {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                }[character];
+            });
+        }
+
+        async function loadVolunteerMatches(taskId, topN = 5) {
+            const button = document.getElementById(`match-button-${taskId}`);
+            const container = document.getElementById(`matches-${taskId}`);
+
+            if (!container) return;
+
+            container.classList.remove("hidden");
+            container.innerHTML = `
+                <div class="flex items-center gap-2 rounded bg-blue-50 p-3 text-sm text-blue-800">
+                    <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".25"></circle>
+                        <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+                    </svg>
+                    Finding suitable volunteers...
+                </div>
+            `;
+
+            if (button) {
+                button.disabled = true;
+                button.textContent = "Finding Matches...";
+                button.classList.add("opacity-60", "cursor-not-allowed");
+            }
+
+            try {
+                const url = `/coordinator/tasks/${encodeURIComponent(taskId)}/matches?top_n=${encodeURIComponent(topN)}`;
+                const response = await fetch(url, {
+                    method: "GET",
+                    credentials: "same-origin",
+                    headers: { "Accept": "application/json" }
+                });
+
+                const contentType = response.headers.get("content-type") || "";
+                let data = {};
+
+                if (contentType.includes("application/json")) {
+                    data = await response.json();
+                } else {
+                    throw new Error(
+                        response.redirected
+                            ? "Your session may have expired. Please sign in again."
+                            : `The server returned an unexpected response (${response.status}).`
+                    );
+                }
+
+                if (!response.ok) {
+                    throw new Error(data.detail || data.message || `Request failed (${response.status}).`);
+                }
+
+                const matches = Array.isArray(data.matches) ? data.matches : [];
+
+                if (matches.length === 0) {
+                    container.innerHTML = `
+                        <div class="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                            <p class="font-semibold">No matching volunteers found.</p>
+                            <p class="mt-1 text-xs">${escapeMatchHTML(data.message || "Check the task location, required skills, and volunteer profiles.")}</p>
+                            ${data.city ? `<p class="mt-1 text-xs">Detected city: ${escapeMatchHTML(data.city)}</p>` : ""}
+                        </div>
+                    `;
+                    return;
+                }
+
+                const cards = matches.map((volunteer, index) => {
+                    const score = Number(volunteer.match_score);
+                    const scoreText = Number.isFinite(score) ? `${score.toFixed(1)}%` : "N/A";
+                    const skills = Array.isArray(volunteer.matched_skills)
+                        ? volunteer.matched_skills.map(escapeMatchHTML).join(" · ")
+                        : "Not specified";
+
+                    return `
+                        <article class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-navy text-[10px] font-bold text-white">${index + 1}</span>
+                                    <h6 class="truncate text-sm font-bold text-brand-navy">${escapeMatchHTML(volunteer.name || "Volunteer")}</h6>
+                                </div>
+                                <p class="mt-2 text-xs text-gray-600">
+                                    ${escapeMatchHTML(volunteer.city || "City unavailable")}
+                                    <span class="mx-1">·</span>
+                                    ${escapeMatchHTML(volunteer.experience ?? 0)} years experience
+                                </p>
+                                <p class="mt-1 text-xs text-gray-500">Matched skills: ${skills}</p>
+                                <p class="mt-1 text-xs text-gray-500">Available from: ${escapeMatchHTML(volunteer.available_from || "Not specified")}</p>
+                            </div>
+                            <div class="shrink-0 rounded-lg bg-green-50 px-4 py-2 text-center">
+                                <div class="text-xl font-extrabold text-green-700">${scoreText}</div>
+                                <div class="text-[9px] font-bold uppercase tracking-wider text-green-700">ML suitability</div>
+                            </div>
+                        </article>
+                    `;
+                }).join("");
+
+                container.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <p class="text-xs font-semibold text-brand-navy">${matches.length} recommended volunteer(s)</p>
+                        <p class="text-xs text-gray-500">City: ${escapeMatchHTML(data.city || "All trained cities")}</p>
+                    </div>
+                    <div class="space-y-2">${cards}</div>
+                    <p class="text-[10px] text-gray-400">Suitability scores are model predictions, not a guarantee of task completion.</p>
+                `;
+
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                        ${escapeMatchHTML(error.message || "Unable to load volunteer matches.")}
+                    </div>
+                `;
+                console.error("Volunteer matching error:", error);
+            } finally {
+                if (button) {
+                    button.disabled = false;
+                    button.textContent = "Find ML Matches";
+                    button.classList.remove("opacity-60", "cursor-not-allowed");
+                }
+            }
+        }
+    </script>
 </body>
 </html>

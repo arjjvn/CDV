@@ -188,8 +188,6 @@ def login_user(
             detail="Selected role does not match this account.",
         )
 
-    # Volunteers can log in without admin approval.
-    # Coordinators and admins require approval.
     if user.role in ("coordinator", "admin") and not user.is_approved:
         raise HTTPException(
             status_code=403,
@@ -198,12 +196,11 @@ def login_user(
 
     access_token = create_access_token(user)
 
-    # The dashboard routes authenticate using this cookie.
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  # Set True when deployed with HTTPS.
+        secure=False,
         samesite="lax",
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/",
