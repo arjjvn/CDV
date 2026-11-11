@@ -154,14 +154,11 @@
         .dp-tab b{margin-left:.4rem;font-weight:700;opacity:.55}
         .dp-tab[aria-pressed=true]{color:var(--navy)}
         .dp :is(.dp-tab,.dp-btn,.dp-toggle,.dp-link,.dp-ring):focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-        .dp-list{display:grid;gap:1.25rem;perspective:1200px}
-        .dp-card{--c:#9ca3af;--mx:50%;--my:0%;position:relative;display:block;padding:1.5rem 1.5rem 1.5rem 2rem;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#fff,#fafbfc);border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(11,27,54,.04),0 14px 30px -20px rgba(11,27,54,.3);transition:transform .5s var(--ease),box-shadow .4s,border-color .3s}
+        .dp-list{display:grid;gap:1.25rem}
+        .dp-card{--c:#9ca3af;position:relative;display:block;padding:1.5rem 1.5rem 1.5rem 2rem;border-radius:12px;overflow:hidden;background:#ffffff;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(11,27,54,.05);transition:transform .28s cubic-bezier(0.16, 1, 0.3, 1),box-shadow .28s ease,border-color .2s ease}
         .dp-pending{--c:#f59e0b}.dp-accepted{--c:#16a34a}
-        .dp-card::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 35%,#fff))}
-        .dp-pending::before{animation:dpPulse 2.6s ease-in-out infinite}
-        .dp-card::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(420px circle at var(--mx) var(--my),color-mix(in srgb,var(--c) 13%,transparent),transparent 60%)}
-        .dp-card:hover{border-color:color-mix(in srgb,var(--c) 45%,#e5e7eb);box-shadow:0 2px 4px rgba(11,27,54,.05),0 26px 44px -22px rgba(11,27,54,.38)}
-        .dp-card:hover::after{opacity:1}
+        .dp-card::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--c)}
+        .dp-card:hover{transform:translateY(-4px)!important;box-shadow:0 14px 28px -4px rgba(11,27,54,.10),0 4px 10px -2px rgba(11,27,54,.04)!important;border-color:#cbd5e1}
         .dp-rejected{background:#f9fafb}
         .dp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
         .dp-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
@@ -213,13 +210,7 @@
         .dp-empty{position:relative;padding:2.5rem 1.5rem;text-align:center;border-radius:14px;border:1px dashed #cbd5e1;background:radial-gradient(circle at 50% 0,#eaf3fb,#f8fafc 70%)}
         .dp-empty h4{font:700 1rem Oswald,sans-serif;text-transform:uppercase;color:var(--navy);margin-bottom:.35rem}
         .dp-empty p{font-size:12px;color:#6b7280;max-width:28rem;margin:0 auto}
-        .dp-radar{position:relative;width:72px;height:72px;margin:0 auto 1rem;display:grid;place-items:center;font-size:1.5rem}
-        .dp-radar i{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--blue);opacity:0;animation:dpRadar 3.2s ease-out infinite}
-        .dp-radar i:nth-child(2){animation-delay:1.05s}.dp-radar i:nth-child(3){animation-delay:2.1s}
-        @keyframes dpPulse{50%{opacity:.45}}
-        @keyframes dpSpin{to{transform:rotate(360deg)}}
-        @keyframes dpRip{to{transform:scale(1);opacity:0}}
-        @keyframes dpRadar{0%{transform:scale(.45);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+        .dp-empty-icon{width:56px;height:56px;margin:0 auto 1rem;display:grid;place-items:center;border-radius:50%;background:#eff6ff;border:1px solid #bfdbfe;font-size:1.5rem}
         @media (max-width:640px){.dp-card{padding:1.25rem 1.1rem 1.25rem 1.5rem}.dp-by{margin-left:0;width:100%}.dp-btns,.dp-btns form,.dp-btns .dp-btn{width:100%}.dp-btns .dp-btn{justify-content:center}}
         @media (prefers-reduced-motion:reduce){.dp *,.dp *::before,.dp *::after{animation:none!important;transition-duration:.01ms!important}}
     </style>
@@ -344,11 +335,11 @@
                 <!-- Left Content -->
                 <div class="text-white w-full md:w-[60%] px-6 py-14 md:py-20 md:pl-16 lg:pl-32 flex flex-col justify-center z-10">
 
-                    <span class="text-brand-red font-bold text-xs sm:text-sm tracking-widest uppercase mb-4 block">
+                    <span class="text-brand-red font-bold text-xs sm:text-sm tracking-widest uppercase mb-4 block reveal">
                         Volunteer Portal
                     </span>
 
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold uppercase mb-5 leading-tight">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold uppercase mb-5 leading-tight reveal delay-100">
                         Ready to Respond,<br>
 
                         <span id="heroName" class="text-brand-yellow">
@@ -356,13 +347,13 @@
                         </span>
                     </h1>
 
-                    <p class="text-gray-300 text-sm md:text-base leading-relaxed max-w-xl mb-7 font-light">
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed max-w-xl mb-7 font-light reveal delay-200">
                         Your skills help strengthen disaster response.
                         Keep your profile and availability up to date so
                         coordinators can identify suitable support when needed.
                     </p>
 
-                    <div class="flex flex-wrap gap-4">
+                    <div class="flex flex-wrap gap-4 reveal delay-300">
                         <a
                             href="#profile"
                             class="btn-ripple bg-brand-red hover:bg-red-700 text-white px-7 py-3.5 text-sm font-bold uppercase tracking-wider transition shadow-md inline-flex items-center gap-2 rounded"
@@ -381,7 +372,7 @@
 
                     <p
                         id="profileMessage"
-                        class="mt-5 text-xs text-gray-300"
+                        class="mt-5 text-xs text-gray-300 reveal delay-400"
                         role="status"
                         aria-live="polite"
                     >
@@ -390,7 +381,7 @@
                 </div>
 
                 <!-- Right Image -->
-                <div class="bg-brand-red w-full md:w-[40%] relative hidden md:block">
+                <div class="bg-brand-red w-full md:w-[40%] relative hidden md:block reveal-right delay-200">
                     <div class="absolute top-1/2 -translate-y-1/2 -left-20 w-[115%] z-20 shadow-2xl">
                         <img
                             src="https://images.unsplash.com/photo-1593113565694-c6c21e649d21?auto=format&fit=crop&w=800&q=80"
@@ -407,7 +398,7 @@
             <div class="bg-brand-red text-white border-t border-red-500/30">
                 <div class="max-w-[1600px] mx-auto py-8 px-6 lg:px-16 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/20 text-center gap-4 sm:gap-0">
 
-                    <div class="px-4 py-2">
+                    <div class="px-4 py-2 reveal delay-100">
                         <div
                             id="profileStatusValue"
                             class="text-3xl lg:text-4xl font-display font-bold uppercase mb-1"
@@ -420,7 +411,7 @@
                         </div>
                     </div>
 
-                    <div class="px-4 py-2">
+                    <div class="px-4 py-2 reveal delay-200">
                         <div class="text-3xl lg:text-4xl font-display font-bold mb-1">
                             {{ assignments|length }}
                         </div>
@@ -430,7 +421,7 @@
                         </div>
                     </div>
 
-                    <div class="px-4 py-2">
+                    <div class="px-4 py-2 reveal delay-300">
                         <div class="text-3xl lg:text-4xl font-display font-bold mb-1">
                             {{ skills|length }}
                         </div>
@@ -449,7 +440,7 @@
             <!-- FIELD DEPLOYMENTS & TASK ASSIGNMENTS -->
             <section
                 id="deployments"
-                class="bg-white rounded border border-gray-100 shadow-card p-6 md:p-10"
+                class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-10 reveal"
             >
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-100">
                     <div>
@@ -585,7 +576,7 @@
                     </div>
                 {% else %}
                     <div class="dp-empty">
-                        <div class="dp-radar" aria-hidden="true"><i></i><i></i><i></i><span>🛡️</span></div>
+                        <div class="dp-empty-icon" aria-hidden="true"><span>🛡️</span></div>
                         <h4>No Active Deployment Dispatches</h4>
                         <p>You are active in the volunteer pool. When an incident coordinator matches a task to your skills and locality, it will appear here with instant accept/reject options and coordinator contact details.</p>
                     </div>
@@ -1370,67 +1361,19 @@
     </div>
 
     <script>
-    /* Deployments redesign: reveal, ring counters, tilt, filter, fold, ripple */
+    /* Deployments: clean classic scroll reveal, tab filters, fold, ripple */
     (function () {
         var root = document.querySelector('#deployments .dp');
         if (!root) return;
         var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-        var EASE = 'cubic-bezier(.22,1,.36,1)';
         var cards = [].slice.call(root.querySelectorAll('.dp-card'));
         root.classList.add('dp-js');
-
-        function rise(el, delay) {
-            if (RM || !el.animate) return;
-            el.animate([{ opacity: 0, transform: 'translateY(20px) scale(.985)' }, { opacity: 1, transform: 'none' }],
-                { duration: 700, delay: delay, easing: EASE, fill: 'backwards' });
-        }
-        function countRing(card) {
-            var ring = card.querySelector('.dp-ring');
-            if (!ring || ring.dataset.done) return;
-            ring.dataset.done = '1';
-            var to = parseFloat(ring.dataset.p) || 0, label = ring.querySelector('.dp-pct'), end = label.textContent;
-            if (RM) return;
-            var t0 = performance.now();
-            (function step(t) {
-                var k = Math.min(1, (t - t0) / 1100), e = 1 - Math.pow(1 - k, 4);
-                ring.style.setProperty('--p', to * e);
-                label.textContent = k < 1 ? (to * e).toFixed(1) + '%' : end;
-                if (k < 1) requestAnimationFrame(step);
-            })(t0);
-        }
-        function reveal(card, i) { rise(card, i * 90); countRing(card); }
-
-        if ('IntersectionObserver' in window) {
-            var io = new IntersectionObserver(function (entries) {
-                var n = 0;
-                entries.forEach(function (e) {
-                    if (e.isIntersecting) { reveal(e.target, n++); io.unobserve(e.target); }
-                });
-            }, { threshold: 0.12 });
-            cards.forEach(function (c) { io.observe(c); });
-        } else {
-            cards.forEach(reveal);
-        }
-
-        if (fine && !RM) cards.forEach(function (c) {
-            var raf;
-            c.addEventListener('pointermove', function (e) {
-                var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-                cancelAnimationFrame(raf);
-                raf = requestAnimationFrame(function () {
-                    c.style.setProperty('--mx', x * 100 + '%');
-                    c.style.setProperty('--my', y * 100 + '%');
-                    c.style.transform = 'rotateX(' + ((0.5 - y) * 3) + 'deg) rotateY(' + ((x - 0.5) * 4) + 'deg)';
-                });
-            });
-            c.addEventListener('pointerleave', function () { cancelAnimationFrame(raf); c.style.transform = ''; });
-        });
 
         var tabs = [].slice.call(root.querySelectorAll('.dp-tab')),
             pill = root.querySelector('.dp-pill'),
             none = root.querySelector('.dp-none');
         function place(t) {
+            if (!pill || !t) return;
             pill.style.width = t.offsetWidth + 'px';
             pill.style.transform = 'translateX(' + t.offsetLeft + 'px)';
         }
@@ -1440,8 +1383,12 @@
             var f = t.dataset.filter, n = 0;
             cards.forEach(function (c) {
                 var show = f === 'all' || c.dataset.status === f;
-                c.hidden = !show;
-                if (show) rise(c, n++ * 70);
+                c.style.display = show ? '' : 'none';
+                if (show) {
+                    n++;
+                    c.classList.add('visible');
+                    c.classList.add('active');
+                }
             });
             if (none) none.hidden = n > 0;
         }

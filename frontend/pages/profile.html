@@ -77,43 +77,6 @@
             overflow-wrap: anywhere;
         }
     </style>
-    <style>
-        /* ===== CDVH motion & surface kit (additive; no template changes) ===== */
-        :root{--fx-ease:cubic-bezier(.22,1,.36,1)}
-        .fx-card{--c:#2a7bbd;--mx:50%;--my:0%;position:relative;transition:transform .45s var(--fx-ease),box-shadow .4s,border-color .3s}
-        .fx-card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;opacity:0;transition:opacity .3s;background:radial-gradient(380px circle at var(--mx) var(--my),color-mix(in srgb,var(--c) 12%,transparent),transparent 60%)}
-        .fx-card:hover::after{opacity:1}
-        .fx-card:hover{box-shadow:0 2px 4px rgba(11,27,54,.05),0 24px 40px -22px rgba(11,27,54,.35)!important}
-        .fx-edge::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;border-radius:4px 0 0 4px;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 35%,#fff))}
-        .fx-row{transition:background .25s}
-        .fx-row:hover{background:#f4f8fc!important}
-        .fx-row td:first-child{transition:box-shadow .25s}
-        .fx-row:hover td:first-child{box-shadow:inset 3px 0 0 #2a7bbd}
-        .fx-field{transition:transform .3s var(--fx-ease),box-shadow .3s,border-color .3s}
-        .fx-field:hover{transform:translateY(-2px);border-color:rgba(42,123,189,.45)!important;box-shadow:0 14px 24px -16px rgba(11,27,54,.3)}
-        .fx-skill{background-image:linear-gradient(135deg,#0b1b36,#1b3764);transition:transform .25s var(--fx-ease),box-shadow .25s}
-        .fx-skill:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 10px 18px -10px rgba(11,27,54,.7)}
-        .fx-rip-host{position:relative;overflow:hidden}
-        .fx-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.4);transform:scale(0);animation:fxRip .6s ease-out forwards;pointer-events:none}
-        .fx-busy{pointer-events:none;opacity:.7}
-        .fx-shake{animation:fxShake .5s var(--fx-ease)}
-        .fx-orbs{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-        .fx-orbs i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.3;animation:fxDrift 20s ease-in-out infinite alternate}
-        .fx-orbs i:nth-child(1){width:360px;height:360px;left:-80px;top:-60px;background:#2a7bbd}
-        .fx-orbs i:nth-child(2){width:300px;height:300px;right:-60px;bottom:-40px;background:#e62429;animation-delay:-7s}
-        .fx-orbs i:nth-child(3){width:220px;height:220px;left:55%;top:20%;background:#f0c040;opacity:.2;animation-delay:-13s}
-        .fx-lift{position:relative;z-index:1}
-        .Register-main :is(input,select,textarea){transition:box-shadow .25s,border-color .25s}
-        .Register-main :is(input,select,textarea):focus{box-shadow:0 0 0 4px rgba(42,123,189,.15)!important;border-color:#2a7bbd!important}
-        #volunteerSkillModal:not(.hidden){animation:fxFade .25s ease-out}
-        #volunteerSkillModal:not(.hidden)>div{animation:fxPop .5s var(--fx-ease)}
-        @keyframes fxRip{to{transform:scale(1);opacity:0}}
-        @keyframes fxShake{15%{transform:translateX(-7px)}35%{transform:translateX(6px)}55%{transform:translateX(-4px)}75%{transform:translateX(2px)}}
-        @keyframes fxDrift{to{transform:translate(60px,40px) scale(1.15)}}
-        @keyframes fxFade{from{opacity:0}}
-        @keyframes fxPop{from{opacity:0;transform:translateY(16px) scale(.96)}}
-        @media (prefers-reduced-motion:reduce){.fx-orbs i,.fx-shake,#volunteerSkillModal,#volunteerSkillModal>div{animation:none!important}.fx-card,.fx-field,.fx-skill{transition-duration:.01ms!important}}
-    </style>
 </head>
 <body class="bg-[#f8f9fa] text-brand-textDark font-sans flex flex-col min-h-screen relative">
 
@@ -150,7 +113,7 @@
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-6 py-10">
 
         <!-- Profile Top Banner / Photo Upload Card -->
-        <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 reveal">
             <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
                 <!-- Avatar Display -->
                 <div class="w-24 h-24 rounded-full border-4 border-white shadow-md bg-brand-navy text-white flex items-center justify-center font-bold text-2xl overflow-hidden shrink-0">
@@ -198,7 +161,7 @@
 
             <!-- Personal Information -->
             <div class="lg:col-span-2 space-y-8">
-                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8 reveal-left">
                     <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100 flex items-center justify-between">
                         <span>Personal & Contact Information</span>
                         <span class="text-xs text-gray-400 font-sans font-normal lowercase">id: #{{ user.id }}</span>
@@ -253,7 +216,7 @@
                 </div>
 
                 <!-- Skills & Background -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8 reveal-left delay-150">
                     <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100 flex items-center justify-between">
                         <span>Volunteer Skills & Background</span>
                         <button
@@ -301,7 +264,7 @@
             <!-- Right Column: Location & Status -->
             <div class="space-y-8">
                 <!-- Location Card -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8 reveal-right">
                     <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100">
                         Deployment Location
                     </h2>
@@ -330,7 +293,7 @@
                 </div>
 
                 <!-- Readiness Window -->
-                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8 reveal-right delay-150">
                     <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100">
                         Readiness & Account
                     </h2>
@@ -379,7 +342,7 @@
         </div>
     </main>
 
-    <footer class="bg-brand-navy text-gray-400 py-6 text-center text-xs mt-auto">
+    <footer class="bg-brand-navy text-gray-400 py-6 text-center text-xs mt-auto reveal">
         &copy; 2026 Community Disaster Volunteer Hub. Secure Platform.
     </footer>
 
@@ -501,91 +464,7 @@
             }
         });
     </script>
-    <script>
-    /* CDVH motion & surface kit: reveal, glow/tilt, counters, ripple. Config is per page. */
-    (function (cfg) {
-        var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-        var E = 'cubic-bezier(.22,1,.36,1)';
-        function all(s) { return s ? [].slice.call(document.querySelectorAll(s)) : []; }
-        function rise(el, d) {
-            if (RM || !el.animate) return;
-            el.animate([{ opacity: 0, transform: 'translateY(18px) scale(.985)' }, { opacity: 1, transform: 'none' }],
-                { duration: 650, delay: d, easing: E, fill: 'backwards' });
-        }
-        function onView(els, fn) {
-            if (!('IntersectionObserver' in window)) { els.forEach(function (e, i) { fn(e, i); }); return; }
-            var io = new IntersectionObserver(function (es) {
-                var n = 0;
-                es.forEach(function (e) { if (e.isIntersecting) { fn(e.target, n++); io.unobserve(e.target); } });
-            }, { threshold: 0.08 });
-            els.forEach(function (e) { io.observe(e); });
-        }
-        function counter(el) {
-            var end = el.textContent, m = end.trim().match(/^(\D*)(\d+(?:\.\d+)?)(.*)$/);
-            if (!m || RM) return;
-            var to = parseFloat(m[2]), dec = (m[2].split('.')[1] || '').length, t0 = performance.now();
-            (function s(t) {
-                var k = Math.min(1, (t - t0) / 1200), e = 1 - Math.pow(1 - k, 4);
-                el.textContent = k < 1 ? m[1] + (to * e).toFixed(dec) + m[3] : end;
-                if (k < 1) requestAnimationFrame(s);
-            })(t0);
-        }
-        function surface(el, tilt, lift) {
-            el.classList.add('fx-card');
-            if (!fine || RM) return;
-            var raf;
-            el.addEventListener('pointermove', function (e) {
-                var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-                cancelAnimationFrame(raf);
-                raf = requestAnimationFrame(function () {
-                    el.style.setProperty('--mx', x * 100 + '%');
-                    el.style.setProperty('--my', y * 100 + '%');
-                    if (tilt) el.style.transform = 'perspective(900px) rotateX(' + ((0.5 - y) * 3) + 'deg) rotateY(' + ((x - 0.5) * 4) + 'deg) translateY(' + (lift ? -4 : 0) + 'px)';
-                });
-            });
-            el.addEventListener('pointerleave', function () { cancelAnimationFrame(raf); el.style.transform = ''; });
-        }
-
-        all(cfg.tilt).forEach(function (el) { surface(el, true, true); });
-        all(cfg.glow).forEach(function (el) { surface(el, false, false); });
-        all(cfg.edge).forEach(function (el) { el.classList.add('fx-edge'); el.style.setProperty('--c', '#f59e0b'); });
-        all(cfg.rows).forEach(function (el) { el.classList.add('fx-row'); });
-        all(cfg.rise).forEach(function (el) { el.__fxRise = 1; });
-        onView(all(cfg.rise), rise);
-        onView(all(cfg.stagger), function (el, i) { rise(el, Math.min(i, 14) * 55); });
-        all(cfg.fields).forEach(function (l) {
-            var f = l.parentElement;
-            if (f) f.classList.add('fx-field');
-        });
-        all(cfg.skills).forEach(function (el, i) { el.classList.add('fx-skill'); rise(el, 250 + i * 60); });
-        onView(all(cfg.counters), function (el) { counter(el); });
-        all(cfg.orbs).forEach(function (m) {
-            var o = document.createElement('div');
-            o.className = 'fx-orbs'; o.setAttribute('aria-hidden', 'true');
-            o.innerHTML = '<i></i><i></i><i></i>';
-            m.insertBefore(o, m.firstChild);
-        });
-        all(cfg.lift).forEach(function (el) { el.classList.add('fx-lift'); });
-        all(cfg.alerts).forEach(function (el) { el.classList.add('fx-shake'); });
-
-        document.addEventListener('pointerdown', function (e) {
-            var b = e.target.closest && e.target.closest('button[type=submit], .btn-ripple');
-            if (!b || RM) return;
-            b.classList.add('fx-rip-host');
-            var r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2, d = document.createElement('span');
-            d.className = 'fx-ripple';
-            d.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' + (e.clientX - r.left - s / 2) + 'px;top:' + (e.clientY - r.top - s / 2) + 'px';
-            b.appendChild(d);
-            setTimeout(function () { d.remove(); }, 650);
-        });
-        if (cfg.busy) document.addEventListener('submit', function (e) {
-            if (!e.target.matches(cfg.busy)) return;
-            var b = e.target.querySelector('button[type=submit], button:not([type])');
-            if (b) b.classList.add('fx-busy');
-        });
-    })({"glow": "main .rounded-xl.shadow-card", "rise": "main .rounded-xl.shadow-card", "fields": "main .profile-label", "skills": "main .flex-wrap span.bg-brand-navy"});
-    </script>
+    <script src="/assets/js/animations.js"></script>
 
 </body>
 </html>

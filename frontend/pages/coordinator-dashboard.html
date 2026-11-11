@@ -153,22 +153,22 @@
 
                 <!-- Left 60% Content -->
                 <div class="relative z-10 w-full md:w-[60%] text-white px-6 py-14 md:px-16 lg:px-28 flex flex-col justify-center">
-                    <span class="text-brand-red uppercase font-bold tracking-widest text-xs mb-3.5 inline-block">
+                    <span class="text-brand-red uppercase font-bold tracking-widest text-xs mb-3.5 inline-block reveal">
                         Coordinator Command Center
                     </span>
 
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold uppercase leading-tight">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold uppercase leading-tight reveal delay-100">
                         Disaster Relief<br>
                         <span class="text-brand-yellow">
                             Operations Hub.
                         </span>
                     </h1>
 
-                    <p class="text-gray-300 leading-relaxed max-w-xl mt-4 text-sm sm:text-base font-normal">
+                    <p class="text-gray-300 leading-relaxed max-w-xl mt-4 text-sm sm:text-base font-normal reveal delay-200">
                         Welcome back, {{ user.first_name or 'Coordinator' }}. Triage incoming distress transmissions, dispatch field response tasks, and coordinate verified volunteers across all Kerala sectors.
                     </p>
 
-                    <div class="flex flex-wrap gap-4 mt-7">
+                    <div class="flex flex-wrap gap-4 mt-7 reveal delay-300">
                         <button onclick="openNewTaskModal()" class="btn-ripple btn-curved bg-brand-red hover:bg-red-700 text-white px-6 py-3 text-xs font-bold uppercase tracking-wider transition shadow-md">
                             + Create Deployment Task
                         </button>
@@ -179,7 +179,7 @@
                 </div>
 
                 <!-- Right 40% Image with Soft Curved Frame -->
-                <div class="relative z-10 hidden md:block md:w-[40%] bg-brand-red">
+                <div class="relative z-10 hidden md:block md:w-[40%] bg-brand-red reveal-right">
                     <img
                         src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80"
                         alt="CDVH disaster response operations"
@@ -197,7 +197,7 @@
                 </div>
 
                 <div class="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-16 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                    <div class="border-r border-red-500/40 last:border-r-0">
+                    <div class="border-r border-red-500/40 last:border-r-0 reveal delay-100">
                         <div class="text-3xl lg:text-5xl font-display font-bold counter-num" data-counter="{{ disasters|length }}">
                             {{ disasters|length }}
                         </div>
@@ -206,7 +206,7 @@
                         </div>
                     </div>
 
-                    <div class="border-r border-red-500/40 last:border-r-0">
+                    <div class="border-r border-red-500/40 last:border-r-0 reveal delay-200">
                         <div class="text-3xl lg:text-5xl font-display font-bold counter-num" data-counter="{{ active_tasks_count }}">
                             {{ active_tasks_count }}
                         </div>
@@ -215,7 +215,7 @@
                         </div>
                     </div>
 
-                    <div class="border-r border-red-500/40 last:border-r-0">
+                    <div class="border-r border-red-500/40 last:border-r-0 reveal delay-300">
                         <div class="text-3xl lg:text-5xl font-display font-bold counter-num" data-counter="{{ volunteers|length }}">
                             {{ volunteers|length }}
                         </div>
@@ -224,7 +224,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div class="reveal delay-400">
                         <div class="text-3xl lg:text-5xl font-display font-bold text-yellow-300 counter-num" data-counter="{{ urgent_alerts_count }}">
                             {{ urgent_alerts_count }}
                         </div>
@@ -245,7 +245,7 @@
             <!-- ======================================= -->
             <!-- SECTION 1: EMERGENCY INCIDENT ALERTS    -->
             <!-- ======================================= -->
-            <section id="dl-alerts" class="curved-panel">
+            <section id="dl-alerts" class="curved-panel reveal">
                 <!-- Section Header -->
                 <div class="p-6 md:p-8 border-b border-gray-200 bg-white">
                     <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
@@ -287,7 +287,7 @@
                     {% if disasters %}
                         <div id="alertsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
                             {% for disaster in disasters %}
-                                <div class="alert-item curved-card flex flex-col justify-between border-t-4 {% if disaster.severity in ('Urgent', 'High') %}border-t-brand-red{% elif disaster.severity == 'Medium' %}border-t-amber-500{% else %}border-t-green-600{% endif %}"
+                                <div class="alert-item curved-card flex flex-col justify-between border-t-4 {% if disaster.severity in ('Urgent', 'High') %}border-t-brand-red{% elif disaster.severity == 'Medium' %}border-t-amber-500{% else %}border-t-green-600{% endif %} reveal delay-{{ ((loop.index0 % 3) + 1) * 100 }}"
                                      data-severity="{{ disaster.severity }}"
                                      data-status="{{ disaster.status }}">
 
@@ -407,7 +407,7 @@
             <!-- (WITH REAL DYNAMIC IMAGES FOR TASKS!)   -->
             <!-- (NO PROGRESS BARS - BOXY METRIC CHIPS)  -->
             <!-- ======================================= -->
-            <section id="active-tasks" class="curved-panel">
+            <section id="active-tasks" class="curved-panel reveal">
                 <!-- Section Header -->
                 <div class="p-6 md:p-8 border-b border-gray-200 bg-white">
                     <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
@@ -456,7 +456,7 @@
                                 {% set is_full = (active_asgs|length >= task.required_volunteer_count) %}
                                 {% set spots_needed = task.required_volunteer_count - active_asgs|length %}
 
-                                <div class="task-item curved-card flex flex-col justify-between border-t-4 {% if task.urgency == 'Urgent' %}border-t-brand-red{% elif task.status == 'resolved' %}border-t-gray-500{% else %}border-t-brand-blue{% endif %}"
+                                <div class="task-item curved-card flex flex-col justify-between border-t-4 {% if task.urgency == 'Urgent' %}border-t-brand-red{% elif task.status == 'resolved' %}border-t-gray-500{% else %}border-t-brand-blue{% endif %} reveal delay-{{ ((loop.index0 % 3) + 1) * 100 }}"
                                      data-urgency="{{ task.urgency }}"
                                      data-status="{{ task.status }}"
                                      data-is-full="{{ 'true' if is_full else 'false' }}">
@@ -640,7 +640,7 @@
             <!-- SECTION 3: VOLUNTEER ROSTER DIRECTORY   -->
             <!-- (MATCHES ADMIN USER MANAGEMENT TABLE)   -->
             <!-- ======================================= -->
-            <section id="volunteer-pool" class="curved-panel">
+            <section id="volunteer-pool" class="curved-panel reveal">
                 <!-- Section Header -->
                 <div class="p-6 md:p-8 border-b border-gray-200 bg-white">
                     <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
@@ -794,7 +794,7 @@
             <!-- ======================================= -->
             <section id="reports" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Log Field Report Form with Subtle Decorative Watermark -->
-                <div class="curved-panel p-6 md:p-8 flex flex-col justify-between relative overflow-hidden bg-white">
+                <div class="curved-panel p-6 md:p-8 flex flex-col justify-between relative overflow-hidden bg-white reveal-left">
                     <!-- Subtle Decorative Background Image Watermark -->
                     <div class="absolute right-0 top-0 w-80 h-full bg-cover bg-right opacity-[0.03] pointer-events-none"
                          style="background-image: url('https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=600&q=80');">
@@ -842,7 +842,7 @@
                 </div>
 
                 <!-- Sector Overview with Real Photo Cards (NO PROGRESS BARS) -->
-                <div class="curved-panel p-6 md:p-8 flex flex-col justify-between bg-white">
+                <div class="curved-panel p-6 md:p-8 flex flex-col justify-between bg-white reveal-right">
                     <div>
                         <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
                             Sector Readiness
@@ -1062,7 +1062,7 @@
     <!-- ============================================= -->
     <!-- FOOTER (MATCHES ADMIN & VOLUNTEER DASHBOARD) -->
     <!-- ============================================= -->
-    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10 mt-auto">
+    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10 mt-auto reveal">
         <div class="max-w-[1600px] mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-10 text-sm">
             <div>
                 <span class="font-display font-bold text-2xl text-white block mb-3">CDVH<span class="text-brand-red">.</span></span>

@@ -34,21 +34,88 @@
         const reveals = document.querySelectorAll('.reveal, .reveal-scale, .reveal-left, .reveal-right');
         if (reveals.length === 0) return;
 
+        function markVisible(el) {
+            el.classList.add('active');
+            el.classList.add('visible');
+        }
+
         if (!('IntersectionObserver' in window)) {
-            reveals.forEach(el => el.classList.add('active'));
+            reveals.forEach(markVisible);
             return;
         }
 
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
                     obs.unobserve(entry.target);
+                    // Defer to next frame so browser establishes initial state and triggers transition
+                    requestAnimationFrame(() => {
+                        markVisible(entry.target);
+                    });
                 }
             });
-        }, { threshold: 0.1 });
+        }, {
+            threshold: 0.05,
+            rootMargin: '0px 0px -10px 0px'
+        });
 
         reveals.forEach(el => observer.observe(el));
+
+        // Safety fallback: ensure above-the-fold elements are revealed after initial entrance
+        setTimeout(() => {
+            reveals.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    markVisible(el);
+                }
+            });
+        }, 1200);
+
+        // Expose helper to trigger scroll-reveal on dynamically filtered/added elements
+        window.refreshScrollReveal = function () {
+            document.querySelectorAll('.reveal:not(.visible), .reveal-scale:not(.visible), .reveal-left:not(.visible), .reveal-right:not(.visible)')
+                .forEach(el => observer.observe(el));
+        };
+    }
+
+    // ------------------------------------------------------------------
+    // 2B. TYPEWRITER TEXT ANIMATION (#typed-text)
+    // ------------------------------------------------------------------
+    function initTypewriter() {
+        const el = document.getElementById('typed-text');
+        if (!el) return;
+
+        const words = ['PROTECTING', 'SAVING', 'SUPPORTING', 'EMPOWERING', 'UNITING'];
+        let wordIdx = 0;
+        let charIdx = el.textContent ? el.textContent.trim().length : 0;
+        let isDeleting = charIdx > 0;
+
+        function tick() {
+            const current = words[wordIdx];
+
+            if (isDeleting) {
+                el.textContent = current.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                el.textContent = current.substring(0, charIdx + 1);
+                charIdx++;
+            }
+
+            let delay = isDeleting ? 55 : 110;
+
+            if (!isDeleting && charIdx === current.length) {
+                delay = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                wordIdx = (wordIdx + 1) % words.length;
+                delay = 350;
+            }
+
+            setTimeout(tick, delay);
+        }
+
+        setTimeout(tick, isDeleting ? 2200 : 400);
     }
 
     // ------------------------------------------------------------------
@@ -612,6 +679,7 @@
     function initAllAnimations() {
         initNavbarScroll();
         initScrollReveal();
+        initTypewriter();
         initButtonRipples();
         initMobileMenuAnimation();
         initHeroParticles();
