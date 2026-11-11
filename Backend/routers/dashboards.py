@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import Optional
+import json
 import logging
+from urllib.parse import unquote, quote
 
 import jwt
 from fastapi import (
@@ -143,13 +145,22 @@ async def volunteer_dashboard(
         .all()
     )
 
+    raw_history = request.cookies.get("cdvh_chat_history")
+    try:
+        chat_history = json.loads(unquote(raw_history)) if raw_history else []
+    except Exception:
+        chat_history = []
+    chat_open = (request.query_params.get("chat") == "open")
+
     return templates.TemplateResponse(
         request=request,
         name="volunteer-dashboard.html",
         context={
             "user": user,
             "skills": get_user_skills(user),
-            "assignments": assignments
+            "assignments": assignments,
+            "chat_history": chat_history,
+            "chat_open": chat_open,
         },
         headers=NO_CACHE_HEADERS
     )
@@ -302,6 +313,13 @@ async def coordinator_dashboard(
             )
             task_matches[task.id] = []
 
+    raw_history = request.cookies.get("cdvh_chat_history")
+    try:
+        chat_history = json.loads(unquote(raw_history)) if raw_history else []
+    except Exception:
+        chat_history = []
+    chat_open = (request.query_params.get("chat") == "open")
+
     return templates.TemplateResponse(
         request=request,
         name="coordinator-dashboard.html",
@@ -313,7 +331,9 @@ async def coordinator_dashboard(
             "volunteers": volunteers,
             "task_matches": task_matches,
             "active_tasks_count": active_tasks_count,
-            "urgent_alerts_count": urgent_alerts_count
+            "urgent_alerts_count": urgent_alerts_count,
+            "chat_history": chat_history,
+            "chat_open": chat_open,
         },
         headers=NO_CACHE_HEADERS
     )
@@ -366,7 +386,6 @@ async def create_task(
     )
 
 
-@router.get("/coordinator/tasks/{task_id}/matches")
 @router.get("/coordinator/tasks/{task_id}/match")
 async def get_task_volunteer_matches(
     task_id: int,
@@ -1240,4 +1259,42 @@ def fetch_home_landing_data(
 @router.get("/api/home/details")
 async def get_home_page_data(db: Session = Depends(get_db)):
     """Public API for homepage data, campaigns, volunteers, and DL analysis."""
-    return fetch_home_landing_data(db)
+    raw = fetch_home_landing_data(db)
+    serialized_volunteers = []
+    for v in raw.get("volunteers", []):
+        serialized_volunteers.append({
+            "id": v.id,
+            "first_name": v.first_name,
+            "last_name": v.last_name,
+            "username": v.username,
+            "place": v.place,
+            "district": v.district,
+            "skill1": v.skill1,
+            "skill2": v.skill2,
+            "skill3": v.skill3,
+            "years_experience": v.years_experience,
+            "blood_group": v.blood_group,
+            "profile_image": v.profile_image,
+            "is_approved": v.is_approved
+        })
+    serialized_campaigns = []
+    for c in raw.get("campaigns", []):
+        serialized_campaigns.append({
+            "id": c.id,
+            "title": c.title,
+            "disaster_type": c.disaster_type,
+            "severity": c.severity,
+            "status": c.status,
+            "place": c.place,
+            "district": c.district,
+            "description": c.description,
+            "created_at": c.created_at.isoformat() if getattr(c, 'created_at', None) else None
+        })
+    return {
+        "success": True,
+        "stats": raw.get("stats", {}),
+        "volunteers": serialized_volunteers,
+        "campaigns": serialized_campaigns,
+        "kerala_districts": raw.get("kerala_districts", []),
+        "kerala_places": raw.get("kerala_places", {}),
+    }

@@ -1,76 +1,112 @@
-/* =============================================
-   CDVH | Volunteer Dashboard Styles
-   Matches main.html brand identity
-   ============================================= */
+/* ======================================================================
+   CDVH | Volunteer Dashboard Premium Design System & Styles
+   Matches #0b1b36 (Navy), #e62429 (Red), #2563eb (Blue), #f0c040 (Yellow)
+   ====================================================================== */
 @import url("style.css");
 
-/* --- Base --- */
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
+/* ----------------------------------------------------------------------
+   1. ROOT VARIABLES
+   ---------------------------------------------------------------------- */
+:root {
+    --navy-deep: #060e1d;
+    --navy-main: #0b1b36;
+    --navy-surface: #102344;
+    --red-main: #e62429;
+    --red-glow: rgba(230, 36, 41, 0.25);
+    --blue-main: #2563eb;
+    --yellow-main: #f0c040;
+    --emerald-main: #10b981;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --- Custom Scrollbar --- */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-/* --- Animations --- */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+/* ----------------------------------------------------------------------
+   2. CUSTOM SCROLLBAR
+   ---------------------------------------------------------------------- */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
 }
-.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+::-webkit-scrollbar-track {
+    background: #f1f4f9;
 }
-.animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+::-webkit-scrollbar-thumb {
+    background: #c3cedd;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #9aa8bd;
+}
 
-/* --- Button Hover Effect (matches main.html) --- */
-.btn-hover {
-    position: relative;
+/* ----------------------------------------------------------------------
+   3. CARD ELEVATION & SHADOWS
+   ---------------------------------------------------------------------- */
+.shadow-premium {
+    box-shadow: 0 4px 20px -2px rgba(11, 27, 54, 0.06), 0 2px 6px -1px rgba(11, 27, 54, 0.03), 0 0 0 1px rgba(11, 27, 54, 0.04);
+}
+
+.shadow-premium-hover {
+    transition: transform 0.28s var(--ease-out-expo), box-shadow 0.28s var(--ease-out-expo), border-color 0.28s ease;
+}
+
+.shadow-premium-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px -6px rgba(11, 27, 54, 0.12), 0 6px 12px -2px rgba(11, 27, 54, 0.06);
+}
+
+/* ----------------------------------------------------------------------
+   4. 3D TILT EFFECT CARDS
+   ---------------------------------------------------------------------- */
+.tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.22s var(--ease-out-expo), box-shadow 0.22s ease;
+    will-change: transform;
+}
+
+/* ----------------------------------------------------------------------
+   5. PROGRESS BARS & RADAR
+   ---------------------------------------------------------------------- */
+.ops-progress-track {
+    background: #e9eef5;
+    border-radius: 9999px;
     overflow: hidden;
-    z-index: 1;
-}
-.btn-hover::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.15);
-    transform: scaleY(0);
-    transform-origin: bottom;
-    transition: transform 0.3s ease-out;
-    z-index: -1;
-}
-.btn-hover:hover::before {
-    transform: scaleY(1);
+    position: relative;
 }
 
-/* --- Sidebar nav active state --- */
-.nav-item.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-left: 4px solid #e62429;
-    color: white;
+.ops-progress-fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width 1.2s var(--ease-out-expo);
+    will-change: width;
 }
 
-/* --- Chatbot Window Transition --- */
-#chatWindow {
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    transform-origin: bottom right;
+/* ----------------------------------------------------------------------
+   6. STAGGER ENTRANCE UTILITIES
+   ---------------------------------------------------------------------- */
+.stagger-item {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: staggerFadeIn 0.5s var(--ease-out-expo) forwards;
+    animation-delay: calc(var(--stagger-i, 0) * 45ms);
 }
 
-/* --- Chatbot Expanded (maximized) State --- */
-.chat-expanded {
-    width: 85vw !important;
-    height: 85vh !important;
-    max-width: 1000px !important;
-    max-height: 800px !important;
-    bottom: 24px !important;
-    right: 24px !important;
+@keyframes staggerFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ----------------------------------------------------------------------
+   7. PREFERS-REDUCED-MOTION
+   ---------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .tilt-card {
+        transform: none !important;
+    }
 }

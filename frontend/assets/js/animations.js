@@ -1,5 +1,5 @@
 // ======================================================================
-// CDVH | ANIMATIONS.JS — PURE CLIENT-SIDE UI ANIMATIONS ONLY
+// CDVH | ANIMATIONS.JS — PURE CLIENT-SIDE UI ANIMATIONS & INTERACTIONS
 // All data, authentication, chat, and matching are handled by Python backend
 // ======================================================================
 
@@ -7,17 +7,19 @@
     'use strict';
 
     // ------------------------------------------------------------------
-    // 1. NAVBAR SCROLL SHADOW
+    // 1. NAVBAR SCROLL SHADOW & GLASS EFFECT
     // ------------------------------------------------------------------
     function initNavbarScroll() {
         const header = document.querySelector('header');
         if (!header) return;
 
         function updateHeader() {
-            if (window.scrollY > 20) {
+            if (window.scrollY > 15) {
                 header.classList.add('shadow-md');
+                header.classList.add('nav-scrolled');
             } else {
                 header.classList.remove('shadow-md');
+                header.classList.remove('nav-scrolled');
             }
         }
 
@@ -176,13 +178,317 @@
     }
 
     // ------------------------------------------------------------------
-    // 7. MODAL UI HANDLERS (EXPOSED GLOBALLY)
+    // 7. NUMERICAL COUNTERS ANIMATION (RAF EASING)
+    // ------------------------------------------------------------------
+    function initNumberCounters() {
+        const counters = document.querySelectorAll('[data-counter]');
+        if (counters.length === 0) return;
+
+        function animateCounter(el) {
+            const target = parseInt(el.getAttribute('data-counter'), 10);
+            if (isNaN(target)) return;
+
+            const duration = 1200; // ms
+            const startTime = performance.now();
+            const prefix = el.getAttribute('data-prefix') || '';
+            const suffix = el.getAttribute('data-suffix') || '';
+
+            function update(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease out expo: 1 - 2^(-10 * progress)
+                const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                const currentVal = Math.floor(eased * target);
+
+                el.textContent = `${prefix}${currentVal}${suffix}`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.textContent = `${prefix}${target}${suffix}`;
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            counters.forEach(c => observer.observe(c));
+        } else {
+            counters.forEach(c => animateCounter(c));
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 8. 3D CARD TILT ON MOUSEMOVE
+    // ------------------------------------------------------------------
+    function initCardTiltEffects() {
+        // Respect prefers-reduced-motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const tiltCards = document.querySelectorAll('.tilt-card');
+        if (tiltCards.length === 0) return;
+
+        tiltCards.forEach(card => {
+            let isHovered = false;
+
+            card.addEventListener('mouseenter', () => {
+                isHovered = true;
+                card.style.transition = 'transform 0.1s ease-out, box-shadow 0.25s ease';
+            });
+
+            card.addEventListener('mousemove', (e) => {
+                if (!isHovered) return;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -4.5; // max 4.5 deg
+                const rotateY = ((x - centerX) / centerX) * 4.5;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                isHovered = false;
+                card.style.transition = 'transform 0.4s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)), box-shadow 0.4s ease';
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
+            });
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // 9. PROGRESS BAR SCROLL TRIGGERED ANIMATIONS
+    // ------------------------------------------------------------------
+    function initProgressBars() {
+        const progressFills = document.querySelectorAll('[data-progress-target]');
+        if (progressFills.length === 0) return;
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const targetWidth = entry.target.getAttribute('data-progress-target');
+                        entry.target.style.width = targetWidth;
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            progressFills.forEach(p => observer.observe(p));
+        } else {
+            progressFills.forEach(p => {
+                p.style.width = p.getAttribute('data-progress-target');
+            });
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 10. STAGGER ENTRANCE DELAYS
+    // ------------------------------------------------------------------
+    function initStaggerDelays() {
+        const groups = document.querySelectorAll('[data-stagger-group]');
+        groups.forEach(group => {
+            const items = group.querySelectorAll('.stagger-item');
+            items.forEach((item, idx) => {
+                item.style.setProperty('--stagger-i', idx);
+            });
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // 11. DASHBOARD CLIENT-SIDE FILTERS & LIVE SEARCH
+    // ------------------------------------------------------------------
+    function initDashboardFilters() {
+        // --- A. Emergency Alerts Filter Tabs & Search ---
+        const alertFilterTabs = document.querySelectorAll('#alertFilterTabs .filter-tab-btn');
+        const alertSearchInput = document.getElementById('alertSearchInput');
+        const alertItems = document.querySelectorAll('.alert-item');
+        const alertEmptyFiltered = document.getElementById('alertEmptyFiltered');
+
+        function filterAlerts() {
+            let activeSeverity = 'all';
+            alertFilterTabs.forEach(tab => {
+                if (tab.classList.contains('active')) {
+                    activeSeverity = tab.getAttribute('data-filter') || 'all';
+                }
+            });
+
+            const query = (alertSearchInput ? alertSearchInput.value : '').trim().toLowerCase();
+            let visibleCount = 0;
+
+            alertItems.forEach(item => {
+                const itemSeverity = (item.getAttribute('data-severity') || '').toLowerCase();
+                const itemStatus = (item.getAttribute('data-status') || '').toLowerCase();
+                const itemText = item.textContent.toLowerCase();
+
+                let matchesFilter = false;
+                if (activeSeverity === 'all') {
+                    matchesFilter = true;
+                } else if (activeSeverity === 'critical') {
+                    matchesFilter = (itemSeverity === 'urgent' || itemSeverity === 'high');
+                } else if (activeSeverity === 'medium') {
+                    matchesFilter = (itemSeverity === 'medium');
+                } else if (activeSeverity === 'resolved') {
+                    matchesFilter = (itemStatus === 'resolved');
+                } else if (activeSeverity === 'active') {
+                    matchesFilter = (itemStatus === 'active');
+                }
+
+                const matchesQuery = !query || itemText.includes(query);
+
+                if (matchesFilter && matchesQuery) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (alertEmptyFiltered) {
+                if (visibleCount === 0 && alertItems.length > 0) {
+                    alertEmptyFiltered.classList.remove('hidden');
+                } else {
+                    alertEmptyFiltered.classList.add('hidden');
+                }
+            }
+        }
+
+        if (alertFilterTabs.length > 0) {
+            alertFilterTabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    alertFilterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    filterAlerts();
+                });
+            });
+        }
+
+        if (alertSearchInput) {
+            alertSearchInput.addEventListener('input', filterAlerts);
+        }
+
+        // --- B. Tasks Filter Tabs & Search ---
+        const taskFilterTabs = document.querySelectorAll('#taskFilterTabs .filter-tab-btn');
+        const taskSearchInput = document.getElementById('taskSearchInput');
+        const taskItems = document.querySelectorAll('.task-item');
+        const taskEmptyFiltered = document.getElementById('taskEmptyFiltered');
+
+        function filterTasks() {
+            let activeFilter = 'all';
+            taskFilterTabs.forEach(tab => {
+                if (tab.classList.contains('active')) {
+                    activeFilter = tab.getAttribute('data-filter') || 'all';
+                }
+            });
+
+            const query = (taskSearchInput ? taskSearchInput.value : '').trim().toLowerCase();
+            let visibleCount = 0;
+
+            taskItems.forEach(item => {
+                const itemUrgency = (item.getAttribute('data-urgency') || '').toLowerCase();
+                const itemStatus = (item.getAttribute('data-status') || '').toLowerCase();
+                const isFull = item.getAttribute('data-is-full') === 'true';
+                const itemText = item.textContent.toLowerCase();
+
+                let matchesFilter = false;
+                if (activeFilter === 'all') {
+                    matchesFilter = true;
+                } else if (activeFilter === 'urgent') {
+                    matchesFilter = (itemUrgency === 'urgent');
+                } else if (activeFilter === 'needs-volunteers') {
+                    matchesFilter = !isFull && (itemStatus !== 'resolved');
+                } else if (activeFilter === 'resolved') {
+                    matchesFilter = (itemStatus === 'resolved');
+                }
+
+                const matchesQuery = !query || itemText.includes(query);
+
+                if (matchesFilter && matchesQuery) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (taskEmptyFiltered) {
+                if (visibleCount === 0 && taskItems.length > 0) {
+                    taskEmptyFiltered.classList.remove('hidden');
+                } else {
+                    taskEmptyFiltered.classList.add('hidden');
+                }
+            }
+        }
+
+        if (taskFilterTabs.length > 0) {
+            taskFilterTabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    taskFilterTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    filterTasks();
+                });
+            });
+        }
+
+        if (taskSearchInput) {
+            taskSearchInput.addEventListener('input', filterTasks);
+        }
+
+        // --- C. Volunteer Pool Real-time Search & Filter ---
+        const volSearchInput = document.getElementById('volSearchInput');
+        const volCards = document.querySelectorAll('.volunteer-card');
+        const volEmptyFiltered = document.getElementById('volEmptyFiltered');
+
+        if (volSearchInput && volCards.length > 0) {
+            volSearchInput.addEventListener('input', function () {
+                const query = this.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                volCards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    if (!query || text.includes(query)) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (volEmptyFiltered) {
+                    if (visibleCount === 0 && volCards.length > 0) {
+                        volEmptyFiltered.classList.remove('hidden');
+                    } else {
+                        volEmptyFiltered.classList.add('hidden');
+                    }
+                }
+            });
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 12. MODAL UI HANDLERS (EXPOSED GLOBALLY)
     // ------------------------------------------------------------------
     window.openNewTaskModal = function () {
         const modal = document.getElementById('newTaskModal');
         if (modal) {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+            const titleInput = modal.querySelector('input[name="title"]');
+            if (titleInput) setTimeout(() => titleInput.focus(), 100);
         }
     };
 
@@ -191,6 +497,7 @@
         if (modal) {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
         }
     };
 
@@ -211,6 +518,7 @@
             if (expEl) expEl.value = exp || 0;
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
         }
     };
 
@@ -219,6 +527,7 @@
         if (modal) {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
         }
     };
 
@@ -249,6 +558,54 @@
         }
     });
 
+    // Close modal on outside backdrop click
+    document.addEventListener("click", function (e) {
+        if (e.target && e.target.id === 'newTaskModal') {
+            window.closeNewTaskModal();
+        }
+        if (e.target && e.target.id === 'coordinatorSkillModal') {
+            window.closeCoordinatorEditSkillModal();
+        }
+        if (e.target && e.target.id === 'volunteerSkillModal') {
+            window.closeVolunteerSkillModal();
+        }
+    });
+
+    // ------------------------------------------------------------------
+    // 13. DYNAMIC LOCATION SELECTORS (DISTRICT -> LOCALITY SYNC)
+    // ------------------------------------------------------------------
+    function initLocationSelectors() {
+        const distSelect = document.getElementById('incidentDistrict');
+        const placeSelect = document.getElementById('incidentPlace');
+
+        if (distSelect && placeSelect) {
+            distSelect.addEventListener('change', function () {
+                const selectedDistrict = this.value.trim().toLowerCase();
+                const optgroups = placeSelect.querySelectorAll('optgroup');
+
+                let matched = false;
+                optgroups.forEach(group => {
+                    const groupLabel = (group.label || '').trim().toLowerCase();
+                    if (!selectedDistrict || groupLabel === selectedDistrict) {
+                        group.style.display = '';
+                        matched = true;
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+
+                // Check if current place belongs to chosen district
+                const currentOpt = placeSelect.selectedOptions ? placeSelect.selectedOptions[0] : null;
+                if (currentOpt && currentOpt.parentElement && currentOpt.parentElement.tagName === 'OPTGROUP') {
+                    const parentLabel = (currentOpt.parentElement.label || '').trim().toLowerCase();
+                    if (selectedDistrict && parentLabel !== selectedDistrict) {
+                        placeSelect.value = '';
+                    }
+                }
+            });
+        }
+    }
+
     // ------------------------------------------------------------------
     // INITIALIZATION
     // ------------------------------------------------------------------
@@ -259,6 +616,12 @@
         initMobileMenuAnimation();
         initHeroParticles();
         initChatbotToggle();
+        initNumberCounters();
+        initCardTiltEffects();
+        initProgressBars();
+        initStaggerDelays();
+        initDashboardFilters();
+        initLocationSelectors();
     }
 
     if (document.readyState === 'loading') {

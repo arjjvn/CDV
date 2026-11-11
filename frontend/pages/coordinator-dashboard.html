@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b1b36">
+
     <title>CDVH | Coordinator Dashboard</title>
 
-    <!-- Anti-Cache & Back-Button Logout Protection -->
+    <!-- Anti-Cache & Back-Button Protection -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <script>
-        // Immediately kick user to login if navigating back to protected page after logout
         window.addEventListener("pageshow", function (event) {
             var navEntries = (window.performance && window.performance.getEntriesByType) ? window.performance.getEntriesByType("navigation") : [];
             var isBackForward = (navEntries.length > 0 && navEntries[0].type === "back_forward") ||
@@ -22,13 +22,13 @@
         });
     </script>
 
-    <!-- Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="icon" href="/assets/favicon.ico" type="image/x-icon">
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -37,6 +37,7 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         display: ['Oswald', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
                         brand: {
@@ -45,60 +46,55 @@
                             blue:      '#2a7bbd',
                             yellow:    '#f0c040',
                             beige:     '#f8f5f0',
-                            textDark:  '#1a1a1a',
+                            textDark:  '#111827',
                             textMuted: '#6b7280'
                         }
                     },
                     boxShadow: {
-                        'soft':  '0 10px 40px -10px rgba(0,0,0,0.08)',
-                        'card':  '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
-                        'float': '0 10px 40px -10px rgba(0,0,0,0.15)',
+                        card:  '0 2px 6px rgba(0,0,0,0.06)',
+                        curved: '0 4px 14px rgba(11,27,54,0.07)'
                     }
                 }
             }
-        }
+        };
     </script>
 
-    <!-- Coordinator Dashboard Styles -->
+    <!-- Coordinator Refined Curved Stylesheet -->
     <link rel="stylesheet" href="/assets/css/coordinator.css">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-
-        .btn-ripple { position: relative; overflow: hidden; }
-        .btn-ripple::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: rgba(255,255,255,0.18);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
-        .btn-ripple:hover::after { transform: scaleX(1); }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-white text-brand-textDark font-sans flex flex-col min-h-screen overflow-x-hidden">
 
-    <!-- ════════════════════════════════════════════
-         STICKY HEADER
-    ═════════════════════════════════════════════ -->
-    <header id="main-header" class="bg-white border-b border-gray-100 sticky top-0 z-40 transition-shadow duration-300">
-        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 py-4 flex justify-between items-center gap-5">
-            <!-- Logo -->
-            <a href="/" class="flex items-center gap-2 group" aria-label="CDVH Home">
-                <div class="flex flex-col gap-0.5">
-                    <div class="flex gap-0.5"><div class="w-3.5 h-3.5 bg-brand-red"></div><div class="w-3.5 h-3.5 bg-brand-navy"></div></div>
-                    <div class="flex gap-0.5"><div class="w-3.5 h-3.5 bg-brand-navy"></div><div class="w-3.5 h-3.5 bg-brand-red"></div></div>
+<body class="bg-[#f8f9fa] text-brand-textDark flex flex-col min-h-screen relative">
+
+    <!-- Global Subtle Low-Opacity Background Image Overlay -->
+    <div class="site-bg-overlay" aria-hidden="true"></div>
+
+    <!-- ============================================= -->
+    <!-- HEADER (CLASSIC CDVH NAV)                     -->
+    <!-- ============================================= -->
+    <header class="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-40 transition-shadow">
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-16 py-3.5 flex justify-between items-center gap-5">
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center gap-3" aria-label="CDVH Home">
+                <div class="grid grid-cols-2 gap-1" aria-hidden="true">
+                    <span class="w-3.5 h-3.5 bg-brand-red rounded-xs"></span>
+                    <span class="w-3.5 h-3.5 bg-brand-navy rounded-xs"></span>
+                    <span class="w-3.5 h-3.5 bg-brand-navy rounded-xs"></span>
+                    <span class="w-3.5 h-3.5 bg-brand-red rounded-xs"></span>
                 </div>
-                <span class="text-xl font-display font-bold tracking-tight text-brand-navy ml-1 group-hover:text-brand-red transition">CDVH<span class="text-brand-red">.</span></span>
-                <span class="hidden sm:block text-[10px] uppercase tracking-widest text-gray-400 ml-1 leading-none">Disaster<br>Volunteer Hub</span>
+                <span class="text-2xl font-display font-bold text-brand-navy">
+                    CDVH<span class="text-brand-red">.</span>
+                </span>
             </a>
 
-            <!-- Desktop Nav -->
-            <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-brand-textDark">
-                <a href="#dl-alerts" class="text-brand-red font-semibold flex items-center gap-1.5 hover:opacity-90 transition">
-                    <span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex gap-6 text-sm font-semibold">
+                <a href="#dl-alerts" class="text-brand-red flex items-center gap-1.5 hover:text-red-700 transition">
                     <span>Emergency Alerts</span>
                     {% if disasters %}
                         <span class="bg-brand-red text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">
@@ -107,23 +103,23 @@
                     {% endif %}
                 </a>
                 <a href="#active-tasks" class="text-gray-700 hover:text-brand-red transition">Deployments</a>
-                <a href="#volunteer-pool" class="text-gray-700 hover:text-brand-red transition">Volunteer Pool</a>
+                <a href="#volunteer-pool" class="text-gray-700 hover:text-brand-red transition">Volunteer Roster</a>
                 <a href="#reports" class="text-gray-700 hover:text-brand-red transition">Field Reports</a>
                 <a href="/profile" class="text-gray-700 hover:text-brand-red transition">My Profile</a>
             </nav>
 
-            <!-- Profile CTA -->
-            <div class="flex items-center gap-4 border-l border-gray-200 pl-4 sm:pl-6">
-                <div class="text-right hidden sm:block">
-                    <div class="text-sm font-bold text-brand-navy leading-tight">
+            <!-- User Info & Sign Out -->
+            <div class="flex items-center gap-4 border-l border-gray-200 pl-4">
+                <div class="hidden sm:block text-right">
+                    <div class="text-sm font-bold text-brand-navy">
                         {{ user.first_name or 'Coordinator' }} {{ user.last_name or '' }}
                     </div>
-                    <div class="text-[10px] font-semibold text-brand-red uppercase tracking-wider">
+                    <div class="text-[10px] uppercase tracking-wider font-bold text-brand-red">
                         {{ user.department or "Coordinator" }}
                     </div>
                 </div>
 
-                <a href="/profile" class="w-10 h-10 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold border-2 border-white shadow-sm overflow-hidden" title="View Profile">
+                <a href="/profile" class="w-10 h-10 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold border-2 border-white shadow-sm overflow-hidden hover:ring-2 hover:ring-brand-red transition" title="View Profile">
                     {% if user.profile_image %}
                         <img src="{{ user.profile_image }}" alt="{{ user.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
                     {% else %}
@@ -131,634 +127,840 @@
                     {% endif %}
                 </a>
 
-                <a href="/auth/logout" onclick="try{localStorage.clear();sessionStorage.clear();}catch(e){}" class="btn-ripple bg-white border border-gray-200 hover:border-brand-red hover:text-brand-red text-brand-navy text-xs font-semibold px-3 py-2 rounded transition">
+                <a id="logoutButton" href="/auth/logout" onclick="try{localStorage.clear();sessionStorage.clear();}catch(e){}" class="btn-ripple text-xs text-gray-700 hover:text-brand-red border border-gray-300 px-3 py-1.5 rounded-lg font-semibold transition bg-white shadow-xs">
                     Sign out
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 pb-16 bg-[#f8f9fa]">
 
-        <!-- HERO BANNER -->
-        <section class="w-full">
-            <div class="relative w-full flex flex-col md:flex-row min-h-[460px] overflow-hidden bg-brand-navy">
-                <!-- Navy Left -->
-                <div class="text-white w-full md:w-[60%] px-6 py-14 md:py-20 md:pl-16 lg:pl-32 flex flex-col justify-center z-10">
-                    <span class="text-brand-red font-bold text-xs sm:text-sm tracking-widest uppercase mb-4 block">Coordinator Portal</span>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold uppercase mb-5 leading-tight">
-                        Command Center,<br>
-                        <span class="text-brand-yellow">{{ user.first_name or 'Coordinator' }}.</span>
+    <!-- ============================================= -->
+    <!-- MAIN CONTENT                                  -->
+    <!-- ============================================= -->
+    <main class="flex-1 pb-16 relative">
+
+        <!-- ========================================= -->
+        <!-- HERO & STATISTICS WITH BACKGROUND PHOTO   -->
+        <!-- ========================================= -->
+        <section id="overview" class="relative">
+            <div class="relative w-full flex flex-col md:flex-row min-h-[420px] bg-brand-navy overflow-hidden">
+                <!-- Decorative Photographic Background Layer (Subtle Low Opacity) -->
+                <div class="absolute inset-0 bg-cover bg-center opacity-8 pointer-events-none mix-blend-luminosity"
+                     style="background-image: url('https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1600&q=80');">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/95 to-brand-navy/80 z-[1]"></div>
+
+                <!-- Left 60% Content -->
+                <div class="relative z-10 w-full md:w-[60%] text-white px-6 py-14 md:px-16 lg:px-28 flex flex-col justify-center">
+                    <span class="text-brand-red uppercase font-bold tracking-widest text-xs mb-3.5 inline-block">
+                        Coordinator Command Center
+                    </span>
+
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold uppercase leading-tight">
+                        Disaster Relief<br>
+                        <span class="text-brand-yellow">
+                            Operations Hub.
+                        </span>
                     </h1>
 
-                    <p class="text-gray-300 text-sm md:text-base leading-relaxed max-w-lg mb-7 font-light">
-                        Welcome back, {{ user.first_name or 'Coordinator' }}. Review active emergency deployments, mobilize volunteers based on verified skills, and coordinate district relief.
+                    <p class="text-gray-300 leading-relaxed max-w-xl mt-4 text-sm sm:text-base font-normal">
+                        Welcome back, {{ user.first_name or 'Coordinator' }}. Triage incoming distress transmissions, dispatch field response tasks, and coordinate verified volunteers across all Kerala sectors.
                     </p>
 
-                    <div class="flex flex-wrap gap-4 items-center">
-                        <button onclick="openNewTaskModal()" class="btn-ripple bg-brand-red hover:bg-red-700 text-white px-7 py-3.5 text-xs font-bold uppercase tracking-wider transition shadow flex items-center gap-2 rounded">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            Create New Task
+                    <div class="flex flex-wrap gap-4 mt-7">
+                        <button onclick="openNewTaskModal()" class="btn-ripple btn-curved bg-brand-red hover:bg-red-700 text-white px-6 py-3 text-xs font-bold uppercase tracking-wider transition shadow-md">
+                            + Create Deployment Task
                         </button>
-                        <a href="/profile" class="btn-ripple border border-white/40 hover:bg-white/10 text-white px-6 py-3.5 text-xs font-semibold uppercase tracking-wider transition rounded">
-                            Coordinator Profile
+                        <a href="#dl-alerts" class="btn-curved border border-white/40 hover:bg-white/10 text-white px-6 py-3 text-xs font-bold uppercase tracking-wider transition">
+                            View Alerts
                         </a>
                     </div>
                 </div>
 
-                <!-- Red Right Image -->
-                <div class="bg-brand-red w-full md:w-[40%] relative hidden md:block">
-                    <div class="absolute top-1/2 -translate-y-1/2 -left-16 w-[115%] z-20 shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80" alt="Disaster Response Command" class="w-full h-auto object-cover border-8 border-white" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80';">
-                    </div>
+                <!-- Right 40% Image with Soft Curved Frame -->
+                <div class="relative z-10 hidden md:block md:w-[40%] bg-brand-red">
+                    <img
+                        src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80"
+                        alt="CDVH disaster response operations"
+                        class="w-full h-full object-cover border-l-8 border-white"
+                        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80';"
+                    >
                 </div>
             </div>
 
-            <!-- Stats Bar -->
-            <div class="bg-brand-red text-white border-t border-red-500/30">
-                <div class="max-w-[1600px] mx-auto py-8 px-6 lg:px-16">
-                    <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/20 text-center">
-                        <div class="px-4">
-                            <div class="text-3xl lg:text-4xl font-display font-bold mb-1 text-yellow-300">{{ disasters|length }}</div>
-                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">⚡ DL Emergencies</div>
+            <!-- CLASSIC SOLID RED STATISTICS STRIP WITH SUBTLE BG IMAGE -->
+            <div class="relative bg-brand-red text-white overflow-hidden border-b border-red-700">
+                <!-- Background Decoration Layer (Subtle Low Opacity) -->
+                <div class="absolute inset-0 bg-cover bg-center opacity-8 pointer-events-none mix-blend-overlay"
+                     style="background-image: url('https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=1600&q=80');">
+                </div>
+
+                <div class="relative z-10 max-w-[1600px] mx-auto px-6 lg:px-16 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="border-r border-red-500/40 last:border-r-0">
+                        <div class="text-3xl lg:text-5xl font-display font-bold counter-num" data-counter="{{ disasters|length }}">
+                            {{ disasters|length }}
                         </div>
-                        <div class="px-4">
-                            <div class="text-3xl lg:text-4xl font-display font-bold mb-1">{{ active_tasks_count }}</div>
-                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Active Deployments</div>
+                        <div class="text-xs uppercase font-bold tracking-wider mt-1 text-white/90">
+                            Active Incidents
                         </div>
-                        <div class="px-4">
-                            <div class="text-3xl lg:text-4xl font-display font-bold mb-1">{{ volunteers|length }}</div>
-                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Available Volunteers</div>
+                    </div>
+
+                    <div class="border-r border-red-500/40 last:border-r-0">
+                        <div class="text-3xl lg:text-5xl font-display font-bold counter-num" data-counter="{{ active_tasks_count }}">
+                            {{ active_tasks_count }}
                         </div>
-                        <div class="px-4">
-                            <div class="text-3xl lg:text-4xl font-display font-bold mb-1 text-yellow-300">{{ urgent_alerts_count }}</div>
-                            <div class="text-[11px] sm:text-xs uppercase tracking-wider text-red-100 font-semibold">Urgent Alerts</div>
+                        <div class="text-xs uppercase font-bold tracking-wider mt-1 text-white/90">
+                            Active Deployments
+                        </div>
+                    </div>
+
+                    <div class="border-r border-red-500/40 last:border-r-0">
+                        <div class="text-3xl lg:text-5xl font-display font-bold counter-num" data-counter="{{ volunteers|length }}">
+                            {{ volunteers|length }}
+                        </div>
+                        <div class="text-xs uppercase font-bold tracking-wider mt-1 text-white/90">
+                            Verified Volunteers
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-3xl lg:text-5xl font-display font-bold text-yellow-300 counter-num" data-counter="{{ urgent_alerts_count }}">
+                            {{ urgent_alerts_count }}
+                        </div>
+                        <div class="text-xs uppercase font-bold tracking-wider mt-1 text-yellow-200">
+                            Urgent Priority
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- MAIN CONTENT CARDS -->
-        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-12 space-y-12">
 
-            <!-- ══════════════════════════════════════════════════════
-                 ⚡ DEEP LEARNING EMERGENCY TRIAGE & INCIDENT FEED
-            ══════════════════════════════════════════════════════ -->
-            <div id="dl-alerts" class="scroll-mt-24">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-5 h-5 bg-brand-red animate-pulse"></div>
-                    <div class="w-5 h-5 bg-brand-navy -ml-2.5 mt-2.5"></div>
-                    <span class="text-brand-red font-bold text-xs uppercase tracking-widest ml-2">Live Neural Network Triage</span>
-                </div>
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <h2 class="text-3xl md:text-4xl font-display font-bold uppercase text-brand-navy">Deep Learning Emergency Alerts</h2>
-                            {% if disasters %}
-                                <span class="bg-brand-red text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider animate-pulse">
-                                    {{ disasters|length }} Active Incident(s)
-                                </span>
-                            {% endif %}
+        <!-- ========================================= -->
+        <!-- MAIN CONTENT PANELS (REFINED CURVED)      -->
+        <!-- ========================================= -->
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-16 mt-12 space-y-12">
+
+            <!-- ======================================= -->
+            <!-- SECTION 1: EMERGENCY INCIDENT ALERTS    -->
+            <!-- ======================================= -->
+            <section id="dl-alerts" class="curved-panel">
+                <!-- Section Header -->
+                <div class="p-6 md:p-8 border-b border-gray-200 bg-white">
+                    <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
+                        Real-Time Incident Stream
+                    </span>
+
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-1">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-display font-bold uppercase text-brand-navy">
+                                Emergency Incident Alerts
+                            </h2>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Verified citizen distress transmissions prioritized by emergency severity, sector jurisdiction, and relief specialization.
+                            </p>
                         </div>
-                        <p class="text-sm text-gray-500 mt-1">
-                            Live distress messages analyzed by the Deep Learning neural network model from citizen reports on the index page, classified by disaster type, urgency level, and response skills.
-                        </p>
+
+                        <!-- Search & Filter Controls -->
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <div class="relative">
+                                <input type="text" id="alertSearchInput" placeholder="Filter alerts (e.g. Aluva, Flood)..." class="w-full sm:w-60 pl-8 pr-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 placeholder-gray-400 focus:outline-none focus:border-brand-navy">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+                            <div id="alertFilterTabs" class="flex items-center gap-1 bg-gray-100 p-1 rounded-lg border border-gray-200">
+                                <button type="button" data-filter="all" class="filter-tab-btn active text-xs">All ({{ disasters|length }})</button>
+                                <button type="button" data-filter="critical" class="filter-tab-btn text-xs">Urgent</button>
+                                <button type="button" data-filter="active" class="filter-tab-btn text-xs">Active</button>
+                                <button type="button" data-filter="resolved" class="filter-tab-btn text-xs">Resolved</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {% if disasters %}
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {% for disaster in disasters %}
-                            <div class="bg-white rounded-xl border-2 {% if disaster.severity == 'Urgent' or disaster.severity == 'High' %}border-red-400 bg-red-50/15{% elif disaster.severity == 'Medium' %}border-amber-300 bg-amber-50/15{% else %}border-gray-200 bg-white{% endif %} shadow-card overflow-hidden transition flex flex-col justify-between">
-                                <div class="p-6">
-                                    <!-- Header Badges: DL Predictions -->
-                                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <!-- 1. Urgency Level -->
-                                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded text-white
-                                                {% if disaster.severity == 'Urgent' or disaster.severity == 'High' %}bg-brand-red
-                                                {% elif disaster.severity == 'Medium' %}bg-amber-600
-                                                {% else %}bg-green-600{% endif %}">
-                                                🚨 {{ disaster.severity }} Urgency
+                <!-- Section Body: Curved Alert Cards -->
+                <div class="p-6 md:p-8 bg-gray-50/60 relative overflow-hidden">
+                    <!-- Visible Atmospheric Background Image Decoration -->
+                    <div class="bg-decorated-layer opacity-10 mix-blend-multiply"
+                         style="background-image: url('https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1600&q=80');"></div>
+
+                    {% if disasters %}
+                        <div id="alertsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+                            {% for disaster in disasters %}
+                                <div class="alert-item curved-card flex flex-col justify-between border-t-4 {% if disaster.severity in ('Urgent', 'High') %}border-t-brand-red{% elif disaster.severity == 'Medium' %}border-t-amber-500{% else %}border-t-green-600{% endif %}"
+                                     data-severity="{{ disaster.severity }}"
+                                     data-status="{{ disaster.status }}">
+
+                                    <div class="p-6">
+                                        <!-- Header Badges & ID -->
+                                        <div class="flex items-center justify-between gap-2 mb-3.5 pb-3 border-b border-gray-100">
+                                            <div class="flex flex-wrap items-center gap-1.5">
+                                                <span class="badge-curved text-white shadow-xs {% if disaster.severity in ('Urgent', 'High') %}bg-brand-red{% elif disaster.severity == 'Medium' %}bg-amber-600{% else %}bg-green-700{% endif %}">
+                                                    {{ disaster.severity }}
+                                                </span>
+                                                <span class="badge-curved bg-brand-navy text-white">
+                                                    {{ disaster.disaster_type }}
+                                                </span>
+                                            </div>
+                                            <span class="badge-curved bg-gray-100 text-gray-700 border border-gray-200 text-[10px] font-mono">
+                                                ID: #{{ disaster.id }}
                                             </span>
-                                            <!-- 2. Disaster Prediction -->
-                                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-purple-100 text-purple-900 border border-purple-200 flex items-center gap-1">
-                                                <span>🧠 Disaster:</span>
-                                                <strong>{{ disaster.disaster_type }}</strong>
-                                            </span>
-                                            <!-- 3. Identified Need -->
+                                        </div>
+                                            <!-- Location & Date -->
+                                            <div class="flex items-center justify-between text-xs text-gray-500 mb-2 font-mono">
+                                                <span class="font-bold text-brand-navy uppercase truncate">
+                                                    📍 {{ disaster.place or 'Sector' }}{% if disaster.district %}, {{ disaster.district }}{% endif %}
+                                                </span>
+                                                <span class="shrink-0">{{ disaster.created_at.strftime('%d %b %Y') if disaster.created_at and disaster.created_at.strftime is defined else (disaster.created_at or 'Recent') }}</span>
+                                            </div>
+
+                                            <!-- Incident Title -->
+                                            <h3 class="text-lg font-bold text-brand-navy uppercase leading-snug mb-2 hover:text-brand-red transition">
+                                                {{ disaster.title }}
+                                            </h3>
+
+                                            <!-- Citizen Distress Message -->
+                                            <div class="bg-gray-50 p-3.5 rounded-lg border-l-3 border-brand-red border-y border-r border-gray-200 text-xs text-gray-700 italic mb-4">
+                                                “{{ disaster.description or 'No citizen message text provided.' }}”
+                                            </div>
+
+                                            <!-- Dispatched Response Task Sub-Box -->
                                             {% if disaster.tasks %}
-                                                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-blue-100 text-blue-900 border border-blue-200 flex items-center gap-1">
-                                                    <span>🎯 Need:</span>
-                                                    <strong>{{ disaster.tasks[0].skills_required or 'Rescue' }}</strong>
-                                                </span>
-                                            {% endif %}
-                                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded
-                                                {% if disaster.status == 'Active' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-700{% endif %}">
-                                                {{ disaster.status }}
-                                            </span>
-                                        </div>
-                                        <span class="text-xs text-gray-400 font-medium">
-                                            {{ disaster.created_at.strftime('%d %b %Y, %I:%M %p') if disaster.created_at else 'Recent' }}
-                                        </span>
-                                    </div>
-
-                                    <!-- Deep Learning Model Assessment Box -->
-                                    <div class="grid grid-cols-3 gap-2 p-2.5 bg-gray-50 border border-gray-200 rounded-lg mb-3 text-xs">
-                                        <div>
-                                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">DL Disaster</span>
-                                            <strong class="text-brand-navy">{{ disaster.disaster_type }}</strong>
-                                        </div>
-                                        <div>
-                                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">DL Urgency</span>
-                                            <strong class="{% if disaster.severity in ('Urgent', 'High') %}text-brand-red{% else %}text-amber-600{% endif %}">{{ disaster.severity }}</strong>
-                                        </div>
-                                        <div>
-                                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">DL Need / Skill</span>
-                                            <strong class="text-brand-blue">{{ (disaster.tasks[0].skills_required if disaster.tasks else 'Rescue') }}</strong>
-                                        </div>
-                                    </div>
-
-                                    <!-- Title & Location -->
-                                    <h3 class="font-display font-bold text-lg text-brand-navy uppercase mb-1">
-                                        {{ disaster.title }}
-                                    </h3>
-                                    <p class="text-xs text-gray-600 mb-4 flex items-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5 text-brand-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                        <span>Sector Jurisdiction: <strong class="text-brand-navy">{{ disaster.place or 'Kerala Sector' }}{% if disaster.district %}, {{ disaster.district }}{% endif %}</strong></span>
-                                    </p>
-
-                                    <!-- Distress Text -->
-                                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
-                                        <div class="text-[10px] uppercase font-bold tracking-wider text-gray-400 mb-1">Citizen Distress Text (Analyzed by DL Neural Net):</div>
-                                        <p class="text-xs text-gray-800 leading-relaxed italic">
-                                            “{{ disaster.description or 'No message text provided.' }}”
-                                        </p>
-                                    </div>
-
-                                    <!-- Auto-Dispatched Response Task -->
-                                    {% if disaster.tasks %}
-                                        {% set dtask = disaster.tasks[0] %}
-                                        <div class="bg-blue-50/60 p-4 rounded-lg border border-blue-200 mb-2">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <span class="text-xs font-bold text-brand-navy uppercase tracking-wider flex items-center gap-1.5">
-                                                    <span>📋 Dispatched Task:</span>
-                                                    <span class="text-brand-blue">{{ dtask.title }}</span>
-                                                </span>
-                                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded
-                                                    {% if dtask.status == 'active' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-700{% endif %}">
-                                                    {{ dtask.status|capitalize }}
-                                                </span>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
-                                                <div>DL Required Skill: <strong class="text-brand-navy">{{ dtask.skills_required or 'Rescue' }}</strong></div>
-                                                <div>Target Responders: <strong>{{ dtask.required_volunteer_count }} Volunteer(s)</strong></div>
-                                            </div>
-
-                                            <div class="flex items-center gap-2">
-                                                <form action="/coordinator/tasks/{{ dtask.id }}/status" method="post" class="flex-1 m-0">
-                                                    {% if dtask.status == 'active' %}
-                                                        <input type="hidden" name="new_status" value="resolved">
-                                                        <button type="submit" class="w-full border border-gray-300 hover:border-gray-500 bg-white text-gray-700 py-2 px-3 text-xs font-semibold rounded transition">
-                                                            Mark Resolved
-                                                        </button>
-                                                    {% else %}
-                                                        <input type="hidden" name="new_status" value="active">
-                                                        <button type="submit" class="w-full border border-gray-300 hover:border-brand-navy bg-white text-brand-navy py-2 px-3 text-xs font-semibold rounded transition">
-                                                            Re-open Task
-                                                        </button>
-                                                    {% endif %}
-                                                </form>
-                                                <form action="/coordinator/tasks/{{ dtask.id }}/delete" method="post" class="inline m-0" onsubmit="return confirm('Delete this response task?');">
-                                                    <button type="submit" title="Delete Task" class="p-2 border border-red-200 text-brand-red hover:bg-red-50 rounded transition flex items-center justify-center">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-                                    <span class="text-[11px] text-gray-500">Incident ID: #{{ disaster.id }}</span>
-                                    <form action="/coordinator/disasters/{{ disaster.id }}/status" method="post" class="inline m-0">
-                                        {% if disaster.status == 'Active' %}
-                                            <input type="hidden" name="new_status" value="Resolved">
-                                            <button type="submit" class="text-xs font-semibold text-gray-500 hover:text-brand-red transition">
-                                                Mark Incident Resolved →
-                                            </button>
-                                        {% else %}
-                                            <input type="hidden" name="new_status" value="Active">
-                                            <button type="submit" class="text-xs font-semibold text-brand-blue hover:underline transition">
-                                                Re-activate Incident →
-                                            </button>
-                                        {% endif %}
-                                    </form>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="p-8 bg-white border border-gray-200 rounded-xl text-center text-gray-500">
-                        <span class="text-3xl block mb-2">🟢</span>
-                        <h4 class="font-display font-bold text-brand-navy uppercase mb-1">No Active Deep Learning Emergencies</h4>
-                        <p class="text-xs text-gray-500">All emergency reports from citizens on the index page have been resolved or no distress messages are currently pending.</p>
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Active Task Management -->
-            <div id="active-tasks">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-5 h-5 bg-brand-red"></div>
-                    <div class="w-5 h-5 bg-brand-navy -ml-2.5 mt-2.5"></div>
-                    <span class="text-brand-red font-bold text-xs uppercase tracking-widest ml-2">Live Task Board</span>
-                </div>
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
-                    <div>
-                        <h2 class="text-3xl md:text-4xl font-display font-bold uppercase text-brand-navy">Active Deployments</h2>
-                        <p class="text-sm text-gray-500 mt-1">Live status of field deployments and active disaster relief tasks stored in the system.</p>
-                    </div>
-                    <button onclick="openNewTaskModal()" class="btn-ripple bg-brand-navy hover:bg-[#152e59] text-white px-6 py-3 text-xs font-bold uppercase tracking-wider transition shadow flex items-center gap-2 rounded">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        New Task
-                    </button>
-                </div>
-
-                <!-- Task Cards Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                    {% for task in tasks %}
-                        {% set active_asgs = task.assignments|selectattr('status', 'ne', 'rejected')|list %}
-                        {% set is_full = (active_asgs|length >= task.required_volunteer_count) %}
-                        {% set spots_needed = task.required_volunteer_count - active_asgs|length %}
-                        <div class="bg-white rounded border border-gray-100 shadow-card overflow-hidden hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
-                            <div>
-                                <div class="h-2 {% if task.urgency == 'Urgent' %}bg-brand-red{% elif task.urgency == 'Resolved' %}bg-gray-400{% else %}bg-green-500{% endif %}"></div>
-                                <div class="p-6">
-                                    <div class="flex items-start justify-between mb-4">
-                                        <div>
-                                            <h4 class="font-display font-bold uppercase text-brand-navy text-lg">{{ task.title }}</h4>
-                                            <p class="text-xs text-gray-500 mt-0.5">{{ task.location or 'Kerala Sector' }}</p>
-                                        </div>
-                                        <span class="text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider
-                                            {% if task.urgency == 'Urgent' %}bg-red-100 text-brand-red
-                                            {% elif task.status == 'resolved' %}bg-gray-100 text-gray-700
-                                            {% else %}bg-green-100 text-green-700{% endif %}">
-                                            {{ task.urgency or task.status|capitalize }}
-                                        </span>
-                                    </div>
-
-                                    {% if task.disaster %}
-                                        <div class="mb-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-purple-100 text-purple-900 border border-purple-200 text-[10px] font-bold">
-                                            <span>⚡ DL Triaged:</span>
-                                            <span class="text-brand-red font-black uppercase tracking-wider">{{ task.disaster.disaster_type }}</span>
-                                            <span class="text-gray-400">·</span>
-                                            <span>{{ task.disaster.severity }} Urgency</span>
-                                        </div>
-                                    {% endif %}
-
-                                    <p class="text-xs text-gray-600 mb-4">{{ task.description or 'Active relief task deployed for emergency responders.' }}</p>
-                                    <ul class="text-xs text-gray-500 space-y-2 mb-4">
-                                        <li class="flex items-center gap-2">
-                                            <svg class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                                            <span>Skills: <strong class="text-brand-navy">{{ task.skills_required or 'General Support' }}</strong></span>
-                                        </li>
-                                        <li class="flex items-center justify-between">
-                                            <span class="flex items-center gap-2">
-                                                <svg class="w-3.5 h-3.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                                <span>Team Roster: <strong class="text-brand-navy">{{ active_asgs|length }} / {{ task.required_volunteer_count }}</strong></span>
-                                            </span>
-                                            {% if is_full %}
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
-                                                    ✓ Target Reached
-                                                </span>
-                                            {% else %}
-                                                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">
-                                                    {{ spots_needed }} needed
-                                                </span>
-                                            {% endif %}
-                                        </li>
-                                    </ul>
-
-                                    <!-- DEPLOYED ASSIGNEES -->
-                                    <div class="mt-4 pt-4 border-t border-gray-100">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="text-[11px] font-bold uppercase tracking-wider text-brand-navy flex items-center gap-1.5">
-                                                <svg class="w-3.5 h-3.5 text-brand-blue" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
-                                                Assigned Responders ({{ active_asgs|length }})
-                                            </span>
-                                            {% if is_full %}
-                                                <span class="text-[10px] text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded border border-green-200">Full</span>
-                                            {% endif %}
-                                        </div>
-                                        {% if active_asgs %}
-                                            <div class="space-y-1.5">
-                                                {% for asg in active_asgs %}
-                                                    <div class="p-2 bg-gray-50 rounded border border-gray-200 text-xs flex items-center justify-between gap-2">
-                                                        <div class="min-w-0">
-                                                            <span class="font-bold text-brand-navy block truncate">
-                                                                {{ asg.volunteer.first_name }} {{ asg.volunteer.last_name or '' }}
-                                                            </span>
-                                                            <span class="text-[10px] text-gray-500 block">
-                                                                {{ asg.volunteer.phone or 'No phone' }} · {{ asg.volunteer.place or asg.volunteer.district or 'Kerala' }}
-                                                            </span>
-                                                        </div>
-                                                        <div class="shrink-0 text-right">
-                                                            <span class="text-[9px] font-bold px-2 py-0.5 rounded uppercase
-                                                                {% if asg.status == 'accepted' %}bg-green-100 text-green-800
-                                                                {% elif asg.status == 'pending' %}bg-amber-100 text-amber-800
-                                                                {% else %}bg-blue-100 text-blue-800{% endif %}">
-                                                                {{ asg.status|capitalize }}
-                                                            </span>
-                                                        </div>
+                                                {% set dtask = disaster.tasks[0] %}
+                                                <div class="border border-gray-200 bg-gray-50 rounded-lg p-3 text-xs mb-3">
+                                                    <div class="flex items-center justify-between mb-1.5">
+                                                        <span class="font-bold text-brand-navy uppercase tracking-wider text-[11px] truncate">
+                                                            Task: <span class="text-brand-blue">{{ dtask.title }}</span>
+                                                        </span>
+                                                        <span class="badge-curved shrink-0 {% if dtask.status == 'active' %}bg-green-100 text-green-800 border border-green-300{% else %}bg-gray-200 text-gray-700{% endif %}">
+                                                            {{ dtask.status|capitalize }}
+                                                        </span>
                                                     </div>
-                                                {% endfor %}
-                                            </div>
-                                        {% else %}
-                                            <p class="text-xs text-gray-400 italic">No volunteers assigned to this deployment yet.</p>
-                                        {% endif %}
-                                    </div>
-
-                                    <!-- AI / ML VOLUNTEER MATCHING (SERVER-SIDE RENDERED) -->
-                                    {% if is_full %}
-                                        <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded text-xs text-green-800 flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-green-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                                            <span class="font-semibold">Required volunteer quota reached ({{ active_asgs|length }}/{{ task.required_volunteer_count }} deployed).</span>
-                                        </div>
-                                    {% else %}
-                                        <div class="mt-4 border-t border-gray-100 pt-4">
-                                            <div class="flex items-center justify-between mb-2">
-                                                <div>
-                                                    <h5 class="text-sm font-bold text-brand-navy">AI Recommended Responders</h5>
-                                                    <p class="text-[11px] text-gray-500">
-                                                        ML matched candidates for this deployment ({{ spots_needed }} spot(s) needed).
+                                                    <p class="text-gray-600 mb-2">
+                                                        Skill: <strong class="text-brand-navy">{{ dtask.skills_required or 'Rescue' }}</strong> · Responders: <strong class="text-brand-navy">{{ dtask.required_volunteer_count }}</strong>
                                                     </p>
-                                                </div>
-                                                <span class="text-green-700 bg-green-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">
-                                                    {{ spots_needed }} Spot(s) Needed
-                                                </span>
-                                            </div>
-
-                                            {% set t_matches = task_matches.get(task.id, []) if task_matches else [] %}
-                                            {% if t_matches %}
-                                                <div class="space-y-2 pt-1">
-                                                    {% for m in t_matches %}
-                                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-2.5 rounded border border-gray-200 gap-2">
-                                                            <div class="text-xs">
-                                                                <span class="font-bold text-brand-navy block">{{ m.name }}</span>
-                                                                <span class="text-gray-500 text-[11px]">{{ m.city or 'Kerala' }} · {{ m.experience or 0 }} yrs exp · Skills: {{ (m.matched_skills or [])|join(', ') or m.skill or 'Relief' }}</span>
-                                                            </div>
-                                                            <div class="flex items-center gap-2 self-end sm:self-auto">
-                                                                <span class="bg-blue-100 text-brand-blue font-bold px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
-                                                                    {{ m.match_score }}% Match
-                                                                </span>
-                                                                <form action="/coordinator/tasks/assign" method="post" class="inline m-0">
-                                                                    <input type="hidden" name="task_id" value="{{ task.id }}">
-                                                                    <input type="hidden" name="volunteer_id" value="{{ m.id }}">
-                                                                    <input type="hidden" name="match_score" value="{{ m.match_score }}">
-                                                                    <button type="submit" class="btn-ripple bg-brand-navy hover:bg-[#152e59] text-white px-3 py-1.5 rounded font-bold text-[11px] uppercase tracking-wider transition">
-                                                                        Assign
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    {% endfor %}
-                                                </div>
-                                            {% else %}
-                                                <div class="p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded text-xs">
-                                                    ℹ️ No additional eligible unassigned volunteers available for this task.
+                                                    <div class="flex items-center gap-2">
+                                                        <form action="/coordinator/tasks/{{ dtask.id }}/status" method="post" class="flex-1 m-0">
+                                                            {% if dtask.status == 'active' %}
+                                                                <input type="hidden" name="new_status" value="resolved">
+                                                                <button type="submit" class="btn-ripple w-full border border-gray-300 hover:bg-white bg-gray-100 text-gray-700 py-1.5 px-2 text-xs font-bold uppercase tracking-wider rounded-md transition shadow-xs">
+                                                                    Mark Resolved
+                                                                </button>
+                                                            {% else %}
+                                                                <input type="hidden" name="new_status" value="active">
+                                                                <button type="submit" class="btn-ripple w-full border border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white py-1.5 px-2 text-xs font-bold uppercase tracking-wider rounded-md transition shadow-xs">
+                                                                    Re-open Task
+                                                                </button>
+                                                            {% endif %}
+                                                        </form>
+                                                        <form action="/coordinator/tasks/{{ dtask.id }}/delete" method="post" class="inline m-0" onsubmit="return confirm('Delete this response task?');">
+                                                            <button type="submit" title="Delete Task" class="p-1.5 border border-red-200 text-brand-red hover:bg-red-50 rounded-md text-xs font-bold">
+                                                                ✕
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             {% endif %}
-                                        </div>
-                                    {% endif %}
+                                    </div>
+
+                                    <!-- Card Action Footer -->
+                                    <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between text-xs">
+                                        <span class="font-bold uppercase tracking-wider text-[11px] text-gray-600">
+                                            Status: <strong class="{% if disaster.status == 'Active' %}text-green-700{% else %}text-gray-500{% endif %}">{{ disaster.status }}</strong>
+                                        </span>
+                                        <form action="/coordinator/disasters/{{ disaster.id }}/status" method="post" class="inline m-0">
+                                            {% if disaster.status == 'Active' %}
+                                                <input type="hidden" name="new_status" value="Resolved">
+                                                <button type="submit" class="btn-ripple btn-curved bg-green-700 hover:bg-green-800 text-white px-3.5 py-1.5 text-xs font-bold shadow-xs">
+                                                    ✓ Mark Resolved
+                                                </button>
+                                            {% else %}
+                                                <input type="hidden" name="new_status" value="Active">
+                                                <button type="submit" class="btn-ripple btn-curved border border-gray-300 hover:bg-white bg-gray-100 text-gray-700 px-3.5 py-1.5 text-xs font-bold shadow-xs">
+                                                    Re-open Incident
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="p-6 pt-0 flex gap-2 items-center">
-                                {% if task.status != 'resolved' %}
-                                    <form action="/coordinator/tasks/{{ task.id }}/status" method="post" class="flex-1">
-                                        <input type="hidden" name="new_status" value="resolved">
-                                        <button type="submit" class="w-full border border-gray-200 text-gray-600 py-2.5 text-xs font-semibold rounded hover:bg-gray-50 transition">
-                                            Mark Resolved
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <form action="/coordinator/tasks/{{ task.id }}/status" method="post" class="flex-1">
-                                        <input type="hidden" name="new_status" value="active">
-                                        <button type="submit" class="w-full border border-green-200 text-green-700 py-2.5 text-xs font-semibold rounded hover:bg-green-50 transition">
-                                            Reactivate
-                                        </button>
-                                    </form>
-                                {% endif %}
-                                <form action="/coordinator/tasks/{{ task.id }}/delete" method="post" class="inline m-0" onsubmit="return confirm('Are you sure you want to permanently delete this task?');">
-                                    <button type="submit" title="Delete Task" class="p-2.5 border border-red-200 text-brand-red hover:bg-red-50 rounded transition flex items-center justify-center">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </button>
-                                </form>
-                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Empty Filter State -->
+                        <div id="alertEmptyFiltered" class="hidden p-8 bg-white border border-gray-200 rounded-xl text-center">
+                            <p class="text-gray-800 font-bold uppercase">No matching alerts found</p>
+                            <p class="text-gray-500 text-xs mt-1">Try clearing or modifying your filter parameters.</p>
                         </div>
                     {% else %}
-                        <div class="col-span-1 md:col-span-3 p-10 bg-white rounded border border-gray-100 text-center">
-                            <p class="text-sm text-gray-500 mb-3">No active deployment tasks registered in database.</p>
-                            <button onclick="openNewTaskModal()" class="bg-brand-navy text-white text-xs font-bold px-4 py-2 rounded uppercase tracking-wider">Create First Task</button>
+                        <!-- Empty Database State -->
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
+                            <h3 class="text-green-900 font-bold uppercase text-lg">No active emergency incidents</h3>
+                            <p class="text-green-700 text-sm mt-1">All citizen distress transmissions on the public portal have been reviewed and resolved.</p>
                         </div>
-                    {% endfor %}
-
+                    {% endif %}
                 </div>
-            </div>
+            </section>
 
-            <!-- ML Volunteer Matching Section -->
-            <section id="volunteer-pool" class="py-14 bg-brand-navy rounded-xl border border-gray-800 shadow-xl relative overflow-hidden">
-                <div class="px-6 md:px-12 relative z-10 flex flex-col lg:flex-row gap-10 items-start">
-                    <div class="lg:w-1/3 text-white">
-                        <span class="text-brand-red font-bold text-xs uppercase tracking-widest mb-2 block">Response Recommendations</span>
-                        <h2 class="text-3xl md:text-4xl font-display font-bold uppercase mb-4">Registered Volunteers<br><span class="text-brand-yellow">for Dispatch</span></h2>
-                        <p class="text-gray-300 text-sm mb-6 leading-relaxed font-light">
-                            Live list of community volunteers registered in PostgreSQL. Matched against emergency deployment requirements using skill and availability profiles.
-                        </p>
-                        <div class="flex gap-6 text-center">
-                            <div>
-                                <div class="text-2xl font-bold font-display text-brand-yellow mb-0.5">RF</div>
-                                <div class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">Random Forest</div>
+
+            <!-- ======================================= -->
+            <!-- SECTION 2: ACTIVE DEPLOYMENTS & TASKS   -->
+            <!-- (WITH REAL DYNAMIC IMAGES FOR TASKS!)   -->
+            <!-- (NO PROGRESS BARS - BOXY METRIC CHIPS)  -->
+            <!-- ======================================= -->
+            <section id="active-tasks" class="curved-panel">
+                <!-- Section Header -->
+                <div class="p-6 md:p-8 border-b border-gray-200 bg-white">
+                    <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
+                        Field Operations
+                    </span>
+
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-1">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-display font-bold uppercase text-brand-navy">
+                                Active Deployments & Tasks
+                            </h2>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Command on-ground relief operations, monitor responder quotas, and assign verified volunteers.
+                            </p>
+                        </div>
+
+                        <!-- Task Board Controls -->
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <div class="relative">
+                                <input type="text" id="taskSearchInput" placeholder="Filter tasks by name or sector..." class="w-full sm:w-60 pl-8 pr-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 placeholder-gray-400 focus:outline-none focus:border-brand-navy">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             </div>
-                            <div class="w-px bg-white/20"></div>
-                            <div>
-                                <div class="text-2xl font-bold font-display text-brand-yellow mb-0.5">{{ volunteers|length }}</div>
-                                <div class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">In Database</div>
+                            <div id="taskFilterTabs" class="flex items-center gap-1 bg-gray-100 p-1 rounded-lg border border-gray-200">
+                                <button type="button" data-filter="all" class="filter-tab-btn active text-xs">All</button>
+                                <button type="button" data-filter="urgent" class="filter-tab-btn text-xs">Urgent</button>
+                                <button type="button" data-filter="needs-volunteers" class="filter-tab-btn text-xs">Needs Responders</button>
+                                <button type="button" data-filter="resolved" class="filter-tab-btn text-xs">Resolved</button>
+                            </div>
+                            <button onclick="openNewTaskModal()" class="btn-ripple btn-curved bg-brand-navy hover:bg-[#152e59] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition shadow-sm">
+                                + New Task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Body: Deployments Grid without Card Images -->
+                <div class="p-6 md:p-8 bg-gray-50/60 relative overflow-hidden">
+                    <!-- Visible Atmospheric Background Image Decoration -->
+                    <div class="bg-decorated-layer opacity-10 mix-blend-multiply"
+                         style="background-image: url('https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=1600&q=80');"></div>
+
+                    {% if tasks %}
+                        <div id="tasksGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+                            {% for task in tasks %}
+                                {% set active_asgs = task.assignments|selectattr('status', 'ne', 'rejected')|list %}
+                                {% set is_full = (active_asgs|length >= task.required_volunteer_count) %}
+                                {% set spots_needed = task.required_volunteer_count - active_asgs|length %}
+
+                                <div class="task-item curved-card flex flex-col justify-between border-t-4 {% if task.urgency == 'Urgent' %}border-t-brand-red{% elif task.status == 'resolved' %}border-t-gray-500{% else %}border-t-brand-blue{% endif %}"
+                                     data-urgency="{{ task.urgency }}"
+                                     data-status="{{ task.status }}"
+                                     data-is-full="{{ 'true' if is_full else 'false' }}">
+
+                                    <div class="p-6">
+                                        <!-- Top Badges & ID -->
+                                        <div class="flex items-center justify-between gap-2 mb-3.5 pb-3 border-b border-gray-100">
+                                            <div class="flex flex-wrap items-center gap-1.5">
+                                                <span class="badge-curved shadow-xs {% if task.urgency == 'Urgent' %}bg-brand-red text-white{% elif task.status == 'resolved' %}bg-gray-700 text-white{% else %}bg-green-700 text-white{% endif %}">
+                                                    {{ task.urgency or task.status|capitalize }}
+                                                </span>
+                                                <span class="badge-curved bg-brand-navy text-white">
+                                                    {{ task.skills_required or 'General' }}
+                                                </span>
+                                            </div>
+                                            <span class="badge-curved bg-gray-100 text-gray-700 border border-gray-200 text-[10px] font-mono">
+                                                TASK #{{ task.id }}
+                                            </span>
+                                        </div>
+                                            <!-- Title & Location -->
+                                            <div class="mb-2">
+                                                <h4 class="font-display font-bold uppercase text-brand-navy text-lg leading-tight hover:text-brand-red transition">
+                                                    {{ task.title }}
+                                                </h4>
+                                                <p class="text-xs text-gray-500 mt-1 font-mono">
+                                                    📍 {{ task.location or 'Kerala Sector' }}
+                                                </p>
+                                            </div>
+
+                                            <!-- Linked Incident Tag -->
+                                            {% if task.disaster %}
+                                                <div class="mb-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-gray-100 border border-gray-200 text-[10px] text-gray-700">
+                                                    <span class="font-bold text-brand-navy uppercase">Incident:</span>
+                                                    <span>{{ task.disaster.disaster_type }} ({{ task.disaster.severity }})</span>
+                                                </div>
+                                            {% endif %}
+
+                                            <!-- Description -->
+                                            <p class="text-xs text-gray-600 mb-4 leading-relaxed">
+                                                {{ task.description or 'Field relief task deployed for emergency responders.' }}
+                                            </p>
+
+                                            <!-- REFINED BOXY METRIC TILES (NO PROGRESS BARS) -->
+                                            <div class="border border-gray-200 bg-gray-50 rounded-lg p-3 mb-4 grid grid-cols-2 gap-3 text-xs">
+                                                <div class="border-r border-gray-200 pr-2">
+                                                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Required Skill</span>
+                                                    <span class="font-bold text-brand-navy text-sm">{{ task.skills_required or 'General Support' }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Deployed Force</span>
+                                                    <div class="flex items-center gap-2 mt-0.5">
+                                                        <span class="font-bold text-brand-navy text-sm">{{ active_asgs|length }} / {{ task.required_volunteer_count }}</span>
+                                                        {% if is_full %}
+                                                            <span class="badge-curved bg-green-100 text-green-800 border border-green-300 text-[9px]">Full</span>
+                                                        {% else %}
+                                                            <span class="badge-curved bg-amber-100 text-amber-800 border border-amber-300 text-[9px]">{{ spots_needed }} Needed</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Assigned Responders -->
+                                            <div class="pt-3 border-t border-gray-100 mb-4">
+                                                <span class="text-xs font-bold uppercase tracking-wider text-brand-navy block mb-2">
+                                                    Assigned Volunteers ({{ active_asgs|length }})
+                                                </span>
+                                                {% if active_asgs %}
+                                                    <div class="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+                                                        {% for asg in active_asgs %}
+                                                            <div class="p-2 bg-gray-50 border border-gray-200 rounded-md text-xs flex items-center justify-between gap-2">
+                                                                <div class="min-w-0">
+                                                                    <span class="font-bold text-brand-navy block truncate">
+                                                                        {% if asg.volunteer %}{{ asg.volunteer.first_name }} {{ asg.volunteer.last_name or '' }}{% else %}Volunteer #{{ asg.volunteer_user_id }}{% endif %}
+                                                                    </span>
+                                                                    <span class="text-[10px] text-gray-500 block truncate font-mono">
+                                                                        {% if asg.volunteer %}{{ asg.volunteer.phone or 'No phone' }} · {{ asg.volunteer.place or asg.volunteer.district or 'Kerala' }}{% else %}Field Personnel{% endif %}
+                                                                    </span>
+                                                                </div>
+                                                                <span class="badge-curved {% if asg.status == 'accepted' %}bg-green-100 text-green-800{% elif asg.status == 'pending' %}bg-amber-100 text-amber-800{% else %}bg-blue-100 text-blue-800{% endif %} text-[9px]">
+                                                                    {{ asg.status|capitalize }}
+                                                                </span>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% else %}
+                                                    <p class="text-xs text-gray-400 italic">No volunteers assigned to this deployment yet.</p>
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- Recommended Candidates -->
+                                            {% if is_full %}
+                                                <div class="p-2.5 bg-green-50 border border-green-200 rounded-lg text-xs text-green-800 font-semibold">
+                                                    ✓ Quota fully satisfied ({{ active_asgs|length }}/{{ task.required_volunteer_count }} deployed).
+                                                </div>
+                                            {% else %}
+                                                <div class="border-t border-gray-100 pt-3">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <span class="text-xs font-bold uppercase text-brand-navy">Recommended Candidates</span>
+                                                        <span class="text-[10px] font-bold text-brand-red uppercase">{{ spots_needed }} Open</span>
+                                                    </div>
+                                                    {% set t_matches = task_matches.get(task.id, []) if task_matches else [] %}
+                                                    {% if t_matches %}
+                                                        <div class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                                                            {% for m in t_matches %}
+                                                                <div class="flex items-center justify-between bg-gray-50 p-2 rounded-lg border border-gray-200 gap-2 text-xs">
+                                                                    <div class="min-w-0">
+                                                                        <span class="font-bold text-brand-navy block truncate">{{ m.name }}</span>
+                                                                        <span class="text-gray-500 text-[10px] block truncate">
+                                                                            {{ m.city or 'Kerala' }} · {{ m.experience or 0 }} yrs · {{ (m.matched_skills or [])|join(', ') or m.skill or 'Relief' }}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="flex items-center gap-1.5 shrink-0">
+                                                                        <span class="badge-curved bg-blue-100 text-blue-800 border border-blue-200 text-[9px]">
+                                                                            {{ m.match_score }}% Match
+                                                                        </span>
+                                                                        <form action="/coordinator/tasks/assign" method="post" class="inline m-0">
+                                                                            <input type="hidden" name="task_id" value="{{ task.id }}">
+                                                                            <input type="hidden" name="volunteer_id" value="{{ m.id }}">
+                                                                            <input type="hidden" name="match_score" value="{{ m.match_score }}">
+                                                                            <button type="submit" class="btn-ripple btn-curved bg-brand-navy hover:bg-[#152e59] text-white px-2 py-1 text-[10px] uppercase font-bold shadow-xs">
+                                                                                Assign
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% else %}
+                                                        <p class="text-xs text-gray-400 italic">No available volunteers matched for this skill set.</p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                    </div>
+
+                                    <!-- Card Action Footer -->
+                                    <div class="p-3 bg-gray-50 border-t border-gray-200 flex gap-2 items-center">
+                                        {% if task.status != 'resolved' %}
+                                            <form action="/coordinator/tasks/{{ task.id }}/status" method="post" class="flex-1 m-0">
+                                                <input type="hidden" name="new_status" value="resolved">
+                                                <button type="submit" class="btn-ripple btn-curved w-full border border-gray-300 hover:bg-white bg-gray-100 text-gray-700 py-1.5 text-xs font-bold uppercase tracking-wider transition shadow-xs">
+                                                    Mark Resolved
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form action="/coordinator/tasks/{{ task.id }}/status" method="post" class="flex-1 m-0">
+                                                <input type="hidden" name="new_status" value="active">
+                                                <button type="submit" class="btn-ripple btn-curved w-full border border-green-300 bg-green-50 text-green-800 py-1.5 text-xs font-bold uppercase tracking-wider transition shadow-xs">
+                                                    Reactivate Task
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        <form action="/coordinator/tasks/{{ task.id }}/delete" method="post" class="inline m-0" onsubmit="return confirm('Permanently delete this task?');">
+                                            <button type="submit" title="Delete Task" class="p-1.5 border border-red-200 text-brand-red hover:bg-red-50 rounded-lg text-xs font-bold">
+                                                ✕
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Empty Filter State -->
+                        <div id="taskEmptyFiltered" class="hidden p-8 bg-white border border-gray-200 rounded-xl text-center">
+                            <p class="text-gray-800 font-bold uppercase">No matching deployments found</p>
+                            <p class="text-gray-500 text-xs mt-1">Try adjusting your filter tabs or search keywords.</p>
+                        </div>
+                    {% else %}
+                        <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-xs">
+                            <h3 class="text-gray-800 font-bold uppercase text-lg">No active tasks registered</h3>
+                            <p class="text-gray-500 text-sm mt-1">There are currently no active field deployment tasks recorded in the database.</p>
+                            <button onclick="openNewTaskModal()" class="mt-4 btn-ripple btn-curved bg-brand-navy text-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider shadow-sm">
+                                Create First Task
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+
+
+            <!-- ======================================= -->
+            <!-- SECTION 3: VOLUNTEER ROSTER DIRECTORY   -->
+            <!-- (MATCHES ADMIN USER MANAGEMENT TABLE)   -->
+            <!-- ======================================= -->
+            <section id="volunteer-pool" class="curved-panel">
+                <!-- Section Header -->
+                <div class="p-6 md:p-8 border-b border-gray-200 bg-white">
+                    <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
+                        Responder Directory
+                    </span>
+
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-1">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-display font-bold uppercase text-brand-navy">
+                                Volunteer Roster & Profiles
+                            </h2>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Directory of vetted responders registered in the CDVH platform. Review skill competencies, location, and on-call availability.
+                            </p>
+                        </div>
+
+                        <!-- Search Input -->
+                        <div class="w-full sm:w-72">
+                            <div class="relative">
+                                <input type="text" id="volSearchInput" placeholder="Search by name, skill, district..." class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-xs font-medium text-gray-700 placeholder-gray-400 focus:outline-none focus:border-brand-navy">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Volunteer Cards -->
-                    <div class="lg:w-2/3 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {% for vol in volunteers %}
-                            <div class="bg-white rounded p-5 flex items-center gap-4 shadow-card hover:-translate-y-0.5 transition border border-gray-100">
-                                <div class="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold text-base border-2 border-brand-red overflow-hidden shrink-0">
-                                    {% if vol.profile_image %}
-                                        <img src="{{ vol.profile_image }}" alt="{{ vol.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
-                                    {% else %}
-                                        <span>{{ (((vol.first_name or '')[:1]) ~ ((vol.last_name or '')[:1]))|upper or 'V' }}</span>
-                                    {% endif %}
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between">
-                                        <h5 class="font-bold text-brand-navy text-sm">{{ vol.first_name or 'Volunteer' }} {{ vol.last_name or '' }}</h5>
-                                        <span class="bg-brand-navy text-white text-[10px] font-bold px-2 py-0.5 rounded">{{ vol.district or 'Kerala' }}</span>
-                                    </div>
-                                    <p class="text-[10px] text-brand-red font-semibold mt-0.5">
-                                        {{ [vol.skill1, vol.skill2, vol.skill3]|select|join(' · ') or 'General Relief' }}
-                                        {% if vol.years_experience %} · {{ vol.years_experience }} Yrs Exp{% endif %}
-                                    </p>
-                                    <div class="flex items-center justify-between mt-1">
-                                        <p class="text-[10px] text-gray-500 truncate">
-                                            {{ vol.place or vol.district or 'Available' }} ·
+                <!-- Section Body: Classic Table with Curved Avatars -->
+                <div class="overflow-x-auto bg-white">
+                    {% if volunteers %}
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-brand-navy">
+                                        Volunteer
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-brand-navy">
+                                        Location
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-brand-navy">
+                                        Specialized Skills
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-brand-navy hidden md:table-cell">
+                                        Experience
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-brand-navy hidden lg:table-cell">
+                                        Availability
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-brand-navy text-right">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="volunteerGrid" class="divide-y divide-gray-100">
+                                {% for vol in volunteers %}
+                                    <tr class="volunteer-card hover:bg-gray-50 transition"
+                                        data-search="{{ ((vol.first_name or '') ~ ' ' ~ (vol.last_name or '') ~ ' ' ~ (vol.district or '') ~ ' ' ~ (vol.place or '') ~ ' ' ~ (vol.skill1 or '') ~ ' ' ~ (vol.skill2 or '') ~ ' ' ~ (vol.skill3 or ''))|lower }}">
+
+                                        <!-- Volunteer Name & Curved Avatar -->
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-11 h-11 shrink-0 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold overflow-hidden border border-gray-200 shadow-xs">
+                                                    {% if vol.profile_image %}
+                                                        <img src="{{ vol.profile_image }}" alt="{{ vol.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
+                                                    {% else %}
+                                                        <span>{{ (((vol.first_name or '')[:1]) ~ ((vol.last_name or '')[:1]))|upper or 'V' }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="min-w-0">
+                                                    <span class="font-bold text-brand-navy block truncate">
+                                                        {{ vol.first_name or 'Volunteer' }} {{ vol.last_name or '' }}
+                                                    </span>
+                                                    <span class="text-xs text-gray-500 block truncate font-mono">
+                                                        Volunteer ID: #{{ vol.id }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Location -->
+                                        <td class="px-6 py-4">
+                                            <span class="badge-curved bg-gray-100 text-gray-800 border border-gray-200">
+                                                {{ vol.district or 'Kerala' }}{% if vol.place %}, {{ vol.place }}{% endif %}
+                                            </span>
+                                        </td>
+
+                                        <!-- Skills -->
+                                        <td class="px-6 py-4">
+                                            <div class="flex flex-wrap gap-1">
+                                                {% for s in [vol.skill1, vol.skill2, vol.skill3] if s %}
+                                                    <span class="badge-curved
+                                                        {% if s == 'Medical' %}bg-red-50 text-brand-red border border-red-200
+                                                        {% elif s == 'Rescue' %}bg-amber-50 text-amber-800 border border-amber-200
+                                                        {% elif s == 'Food Supply' %}bg-green-50 text-green-800 border border-green-200
+                                                        {% elif s == 'Ambulance' %}bg-blue-50 text-brand-blue border border-blue-200
+                                                        {% else %}bg-gray-100 text-gray-700 border border-gray-200{% endif %}">
+                                                        {{ s }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-xs text-gray-400">General Relief</span>
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+
+                                        <!-- Experience -->
+                                        <td class="px-6 py-4 hidden md:table-cell text-xs font-semibold text-gray-700">
+                                            {{ vol.years_experience or 0 }} Years
+                                        </td>
+
+                                        <!-- Availability -->
+                                        <td class="px-6 py-4 hidden lg:table-cell text-xs text-gray-600 font-mono">
                                             {% if vol.available_from and vol.available_to %}
-                                                {{ vol.available_from.strftime('%H:%M') }} – {{ vol.available_to.strftime('%H:%M') }}
+                                                {{ vol.available_from.strftime('%H:%M') if vol.available_from.strftime is defined else vol.available_from }} – {{ vol.available_to.strftime('%H:%M') if vol.available_to.strftime is defined else vol.available_to }}
                                             {% else %}
                                                 Available on call
                                             {% endif %}
-                                        </p>
-                                        <button
-                                            type="button"
-                                            onclick="openCoordinatorEditSkillModal('{{ vol.id }}', '{{ vol.first_name }} {{ vol.last_name }}', '{{ vol.skill1 or '' }}', '{{ vol.skill2 or '' }}', '{{ vol.skill3 or '' }}', '{{ vol.years_experience or 0 }}')"
-                                            class="text-[10px] text-brand-blue hover:text-brand-navy font-bold flex items-center gap-1 shrink-0 ml-2 uppercase tracking-wider"
-                                            title="Update Volunteer Skills"
-                                        >
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                            Edit Skills
-                                        </button>
+                                        </td>
+
+                                        <!-- Action: Edit Skills -->
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                type="button"
+                                                onclick="openCoordinatorEditSkillModal('{{ vol.id }}', '{{ vol.first_name }} {{ vol.last_name }}', '{{ vol.skill1 or '' }}', '{{ vol.skill2 or '' }}', '{{ vol.skill3 or '' }}', '{{ vol.years_experience or 0 }}')"
+                                                class="btn-ripple btn-curved border border-gray-300 hover:bg-gray-100 text-brand-navy px-3 py-1.5 text-xs font-bold transition shadow-xs"
+                                                title="Update Volunteer Skills"
+                                            >
+                                                Edit Skills
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <!-- Empty Filter State -->
+                        <div id="volEmptyFiltered" class="hidden p-8 text-center text-gray-500 text-sm">
+                            No registered volunteers found matching your query.
+                        </div>
+                    {% else %}
+                        <div class="p-8 text-center text-gray-500 text-sm">
+                            No volunteers currently registered in the database.
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+
+
+            <!-- ======================================= -->
+            <!-- SECTION 4: FIELD REPORTS & READINESS    -->
+            <!-- (DECORATED BACKGROUND & BOXY/CURVED)    -->
+            <!-- (NO PROGRESS BARS - BOXY IMAGE TILES)   -->
+            <!-- ======================================= -->
+            <section id="reports" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Log Field Report Form with Subtle Decorative Watermark -->
+                <div class="curved-panel p-6 md:p-8 flex flex-col justify-between relative overflow-hidden bg-white">
+                    <!-- Subtle Decorative Background Image Watermark -->
+                    <div class="absolute right-0 top-0 w-80 h-full bg-cover bg-right opacity-[0.03] pointer-events-none"
+                         style="background-image: url('https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=600&q=80');">
+                    </div>
+
+                    <div class="relative z-10">
+                        <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
+                            Operations Log
+                        </span>
+                        <h3 class="text-2xl font-display font-bold uppercase text-brand-navy mb-2">
+                            Log Field Report
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-6">
+                            Submit verified on-ground incident updates and resource requests directly to central disaster records.
+                        </p>
+
+                        <form id="reportForm" method="post" action="/coordinator/field-report" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Sector / Location *</label>
+                                <input type="text" name="location" placeholder="e.g. Sector 4, Near Highway Bridge, Aluva" required class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Situation Type *</label>
+                                <select name="situation" required class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy">
+                                    <option value="Medical Emergency" selected>Medical Emergency</option>
+                                    <option value="Rescue Required">Rescue Required</option>
+                                    <option value="Resource Request">Resource Request</option>
+                                    <option value="Volunteer Shortage">Volunteer Shortage</option>
+                                    <option value="Infrastructure Damage">Infrastructure Damage</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Field Notes & Assessment *</label>
+                                <textarea name="notes" rows="4" placeholder="Detail the situation, hazards, and relief requirements..." required class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy resize-none"></textarea>
+                            </div>
+                            <button type="submit" class="btn-ripple btn-curved w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 text-xs font-bold uppercase tracking-wider transition shadow-sm">
+                                Submit Official Field Report
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="reportStatus" class="relative z-10 hidden mt-4 p-3 bg-green-50 border border-green-300 rounded-lg text-xs text-green-800 font-semibold">
+                        Field report logged successfully in central operations log.
+                    </div>
+                </div>
+
+                <!-- Sector Overview with Real Photo Cards (NO PROGRESS BARS) -->
+                <div class="curved-panel p-6 md:p-8 flex flex-col justify-between bg-white">
+                    <div>
+                        <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
+                            Sector Readiness
+                        </span>
+                        <h3 class="text-2xl font-display font-bold uppercase text-brand-navy mb-2">
+                            Sector Capacity Overview
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-6">
+                            Operational capacity across specialized emergency response branches.
+                        </p>
+
+                        <!-- REAL PHOTO CARDS IN PLACE OF PROGRESS BARS -->
+                        <div class="space-y-4">
+                            <!-- Branch 1: Medical -->
+                            <div class="curved-card flex items-center p-3 gap-4 border border-gray-200">
+                                <div class="w-20 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                    <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80" alt="Medical Unit" class="w-full h-full object-cover">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="font-bold text-brand-navy text-sm uppercase">Medical Unit</h4>
+                                        <span class="badge-curved bg-red-100 text-brand-red border border-red-200">80% Active</span>
                                     </div>
+                                    <p class="text-xs text-gray-500 mt-0.5 truncate">
+                                        Field triage, trauma care, and emergency medication transit.
+                                    </p>
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="col-span-1 sm:col-span-2 p-8 bg-white/10 text-white rounded text-center text-sm">
-                                No volunteers currently registered in the database.
+
+                            <!-- Branch 2: Search & Rescue -->
+                            <div class="curved-card flex items-center p-3 gap-4 border border-gray-200">
+                                <div class="w-20 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                    <img src="https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=400&q=80" alt="Rescue Operations" class="w-full h-full object-cover">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="font-bold text-brand-navy text-sm uppercase">Search & Rescue</h4>
+                                        <span class="badge-curved bg-amber-100 text-amber-800 border border-amber-200">65% Active</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5 truncate">
+                                        Water boat evacuation, perimeter clearing & flood survival.
+                                    </p>
+                                </div>
                             </div>
-                        {% endfor %}
+
+                            <!-- Branch 3: Logistics & Supply -->
+                            <div class="curved-card flex items-center p-3 gap-4 border border-gray-200">
+                                <div class="w-20 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                    <img src="https://images.unsplash.com/photo-1593113565694-c6c21e649d21?auto=format&fit=crop&w=400&q=80" alt="Logistics Unit" class="w-full h-full object-cover">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="font-bold text-brand-navy text-sm uppercase">Logistics & Supply</h4>
+                                        <span class="badge-curved bg-green-100 text-green-800 border border-green-200">100% Deployed</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5 truncate">
+                                        Dry ration distribution, clean drinking water & transit vans.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Summary -->
+                    <div class="border-t border-gray-200 pt-5 mt-6 grid grid-cols-2 gap-4">
+                        <div class="border border-gray-200 bg-gray-50 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold font-display text-brand-navy counter-num" data-counter="{{ volunteers|length }}">
+                                {{ volunteers|length }}
+                            </div>
+                            <div class="text-xs uppercase font-bold tracking-wider text-gray-600 mt-1">
+                                Registered Volunteers
+                            </div>
+                        </div>
+                        <div class="border border-gray-200 bg-gray-50 rounded-lg p-4 text-center">
+                            <div class="text-3xl font-bold font-display text-brand-navy counter-num" data-counter="{{ active_tasks_count }}">
+                                {{ active_tasks_count }}
+                            </div>
+                            <div class="text-xs uppercase font-bold tracking-wider text-gray-600 mt-1">
+                                Active Deployments
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Emergency Report & Sector Overview Split -->
-            <div id="reports" class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-2">
-                <!-- Log Field Report Form -->
-                <div class="bg-white rounded border border-gray-100 shadow-card p-6 md:p-8">
-                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                        <div class="w-10 h-10 rounded bg-red-50 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        </div>
-                        <div>
-                            <span class="text-brand-red text-xs font-bold uppercase tracking-widest block">Field Ops</span>
-                            <h3 class="text-xl font-display font-bold uppercase text-brand-navy">Log Field Report</h3>
-                        </div>
-                    </div>
-                    <form id="reportForm" method="post" action="/coordinator/field-report" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Sector / Location</label>
-                            <input type="text" name="location" placeholder="e.g., Sector 4, Near Highway Bridge" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Situation Type</label>
-                            <select name="situation" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
-                                <option value="Medical Emergency" selected>Medical Emergency</option>
-                                <option value="Rescue Required">Rescue Required</option>
-                                <option value="Resource Request">Resource Request</option>
-                                <option value="Volunteer Shortage">Volunteer Shortage</option>
-                                <option value="Infrastructure Damage">Infrastructure Damage</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Field Notes</label>
-                            <textarea name="notes" rows="3" placeholder="Describe the on-ground situation..." required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition resize-none"></textarea>
-                        </div>
-                        <button type="submit" class="btn-ripple w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-xs font-bold uppercase tracking-wider transition flex justify-center items-center gap-2 shadow">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                            Submit Field Report
-                        </button>
-                    </form>
-                    <div id="reportStatus" class="hidden mt-4 p-4 bg-green-50 border border-green-200 rounded items-center gap-3">
-                        <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <p class="text-sm text-green-700 font-medium">Field report logged successfully.</p>
-                    </div>
-                </div>
-
-                <!-- Sector Overview Panel -->
-                <div class="bg-white rounded border border-gray-100 shadow-card p-6 md:p-8">
-                    <div class="mb-6 pb-4 border-b border-gray-100">
-                        <span class="text-brand-red text-xs font-bold uppercase tracking-widest block">Capacity Metrics</span>
-                        <h3 class="text-xl font-display font-bold uppercase text-brand-navy">Sector Overview</h3>
-                    </div>
-                    <div class="space-y-5">
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-1.5">
-                                <span class="text-brand-navy uppercase tracking-wider">Medical Volunteers</span>
-                                <span class="text-brand-navy font-bold">Active</span>
-                            </div>
-                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-brand-red rounded-full" style="width: 80%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-1.5">
-                                <span class="text-brand-navy uppercase tracking-wider">Rescue Team</span>
-                                <span class="text-brand-navy font-bold">Active</span>
-                            </div>
-                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-yellow-400 rounded-full" style="width: 65%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-1.5">
-                                <span class="text-brand-navy uppercase tracking-wider">Logistics & Supply</span>
-                                <span class="text-brand-navy font-bold">100% Deployed</span>
-                            </div>
-                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-gray-100 pt-6 grid grid-cols-2 gap-4">
-                            <div class="bg-gray-50 p-4 rounded border-l-4 border-brand-red">
-                                <div class="text-2xl font-bold font-display text-brand-navy mb-0.5">{{ volunteers|length }}</div>
-                                <div class="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Registered Responders</div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded border-l-4 border-brand-navy">
-                                <div class="text-2xl font-bold font-display text-brand-navy mb-0.5">{{ active_tasks_count }}</div>
-                                <div class="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Deployments Active</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </main>
 
-    <!-- NEW TASK MODAL -->
-    <div id="newTaskModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in">
+
+    <!-- ============================================= -->
+    <!-- NEW TASK MODAL (MATCHES ADMIN MODALS)         -->
+    <!-- ============================================= -->
+    <div id="newTaskModal" class="fixed inset-0 modal-overlay z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden modal-card border border-gray-200" onclick="event.stopPropagation()">
             <div class="bg-brand-navy p-6 text-white flex justify-between items-center">
                 <div>
-                    <span class="text-brand-red text-[10px] font-bold uppercase tracking-widest block mb-1">Incident Management</span>
-                    <h3 class="text-lg font-display font-bold uppercase">Create Deployment Task</h3>
+                    <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
+                        Task Management
+                    </span>
+                    <h3 class="text-xl font-display font-bold uppercase tracking-wide">
+                        Create Deployment Task
+                    </h3>
                 </div>
-                <button type="button" onclick="closeNewTaskModal()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+                <button type="button" onclick="closeNewTaskModal()" class="text-gray-400 hover:text-white text-2xl font-bold transition">&times;</button>
             </div>
             <form action="/coordinator/tasks/create" method="post" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Task Title *</label>
-                    <input type="text" name="title" required placeholder="e.g. Emergency Sandbagging & Triage" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
+                    <input type="text" name="title" required placeholder="e.g. Emergency Sandbagging & Triage" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Location / Sector *</label>
-                    <input type="text" name="location" required placeholder="e.g. Chengannur Town Relief Center" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
+                    <input type="text" name="location" required placeholder="e.g. Chengannur Town Relief Center" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Urgency Level</label>
-                        <select name="urgency" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
+                        <select name="urgency" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy bg-white">
                             <option value="Urgent">Urgent (Immediate)</option>
                             <option value="Active" selected>Active (Normal)</option>
                             <option value="Pending">Pending (Standby)</option>
@@ -766,13 +968,13 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Required Volunteers</label>
-                        <input type="number" name="required_volunteer_count" value="2" min="1" max="50" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
+                        <input type="number" name="required_volunteer_count" value="2" min="1" max="50" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy bg-white">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Required Skill (ML Matching Compatible)</label>
-                    <select name="skills_required" required class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
-                        <option value="" disabled selected>Select Skill Used by ML Model</option>
+                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Required Skill *</label>
+                    <select name="skills_required" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy bg-white">
+                        <option value="" disabled selected>Select Primary Skill</option>
                         <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
                         <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
                         <option value="Food Supply">Food Supply (Logistics, Ration Packing, Clean Water)</option>
@@ -781,32 +983,39 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Instructions</label>
-                    <textarea name="description" rows="2" placeholder="Brief deployment instructions..." class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy resize-none"></textarea>
+                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Deployment Instructions</label>
+                    <textarea name="description" rows="3" placeholder="Brief deployment instructions..." class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy resize-none"></textarea>
                 </div>
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                    <button type="button" onclick="closeNewTaskModal()" class="px-4 py-2 border border-gray-200 rounded text-xs font-semibold text-gray-600 hover:bg-gray-50">Cancel</button>
-                    <button type="submit" class="bg-brand-navy hover:bg-[#152e59] text-white px-5 py-2 rounded text-xs font-bold uppercase tracking-wider">Save Task</button>
+                <div class="flex justify-end gap-3 pt-3 border-t border-gray-200">
+                    <button type="button" onclick="closeNewTaskModal()" class="btn-curved px-4 py-2 border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition">Cancel</button>
+                    <button type="submit" class="btn-ripple btn-curved bg-brand-navy text-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition shadow-sm">Save Task</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- COORDINATOR EDIT VOLUNTEER SKILLS MODAL -->
-    <div id="coordinatorSkillModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in" onclick="event.stopPropagation()">
+
+    <!-- ============================================= -->
+    <!-- EDIT VOLUNTEER SKILLS MODAL                   -->
+    <!-- ============================================= -->
+    <div id="coordinatorSkillModal" class="fixed inset-0 modal-overlay z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden modal-card border border-gray-200" onclick="event.stopPropagation()">
             <div class="bg-brand-navy p-6 text-white flex justify-between items-center">
                 <div>
-                    <span class="text-brand-red text-[10px] font-bold uppercase tracking-widest block mb-1">Roster Management</span>
-                    <h3 class="text-lg font-display font-bold uppercase">Update Volunteer Skills</h3>
+                    <span class="text-brand-red text-xs font-bold uppercase tracking-widest block mb-1">
+                        Roster Management
+                    </span>
+                    <h3 class="text-xl font-display font-bold uppercase tracking-wide">
+                        Update Volunteer Skills
+                    </h3>
                     <p class="text-xs text-gray-300 mt-1">Volunteer: <span id="coordSkillVolName" class="font-semibold text-brand-yellow"></span></p>
                 </div>
-                <button type="button" onclick="closeCoordinatorEditSkillModal()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+                <button type="button" onclick="closeCoordinatorEditSkillModal()" class="text-gray-400 hover:text-white text-2xl font-bold transition">&times;</button>
             </div>
             <form id="coordinatorSkillForm" action="" method="post" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Primary Skill (ML Compatible) <span class="text-brand-red">*</span></label>
-                    <select id="coordSkill1" name="skill1" required class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Primary Skill *</label>
+                    <select id="coordSkill1" name="skill1" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy bg-white">
                         <option value="" disabled>Select primary skill</option>
                         <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
                         <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
@@ -816,8 +1025,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Secondary Skill</label>
-                    <select id="coordSkill2" name="skill2" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Secondary Skill</label>
+                    <select id="coordSkill2" name="skill2" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy bg-white">
                         <option value="">None / Not applicable</option>
                         <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
                         <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
@@ -827,8 +1036,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Tertiary Skill</label>
-                    <select id="coordSkill3" name="skill3" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Tertiary Skill</label>
+                    <select id="coordSkill3" name="skill3" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy bg-white">
                         <option value="">None / Not applicable</option>
                         <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
                         <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
@@ -838,26 +1047,29 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Years of Experience</label>
-                    <input type="number" id="coordSkillExp" name="years_experience" min="0" max="60" value="0" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Years of Experience</label>
+                    <input type="number" id="coordSkillExp" name="years_experience" min="0" max="60" value="0" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy bg-white">
                 </div>
-                <div class="flex gap-3 pt-2">
-                    <button type="submit" class="btn-ripple flex-1 bg-brand-navy text-white py-2.5 rounded text-xs font-bold uppercase tracking-wider transition">Save Changes</button>
-                    <button type="button" onclick="closeCoordinatorEditSkillModal()" class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded text-xs font-semibold hover:bg-gray-50 transition">Cancel</button>
+                <div class="flex gap-3 pt-3">
+                    <button type="submit" class="btn-ripple btn-curved flex-1 bg-brand-navy hover:bg-[#152e59] text-white py-2.5 text-xs font-bold uppercase tracking-wider transition shadow-sm">Save Changes</button>
+                    <button type="button" onclick="closeCoordinatorEditSkillModal()" class="btn-curved flex-1 border border-gray-300 text-gray-700 py-2.5 text-xs font-bold hover:bg-gray-100 transition">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="bg-brand-navy text-gray-300 py-14 border-t border-white/10 mt-auto">
-        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-10 text-sm">
+
+    <!-- ============================================= -->
+    <!-- FOOTER (MATCHES ADMIN & VOLUNTEER DASHBOARD) -->
+    <!-- ============================================= -->
+    <footer class="bg-brand-navy text-gray-300 py-12 border-t border-white/10 mt-auto">
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-4 gap-10 text-sm">
             <div>
                 <span class="font-display font-bold text-2xl text-white block mb-3">CDVH<span class="text-brand-red">.</span></span>
-                <p class="text-gray-400 text-xs leading-relaxed">Community Disaster Volunteer Hub. AI-assisted platform for rapid response coordination across Kerala.</p>
+                <p class="text-gray-400 text-xs leading-relaxed">Community Disaster Volunteer Hub. Integrated platform for rapid emergency response coordination across Kerala.</p>
             </div>
             <div>
-                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Platform</h4>
+                <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-xs">Platform</h4>
                 <ul class="space-y-2 text-gray-400 text-xs">
                     <li><a href="#active-tasks" class="hover:text-white transition">Deployments</a></li>
                     <li><a href="#volunteer-pool" class="hover:text-white transition">Volunteer Pool</a></li>
@@ -865,60 +1077,86 @@
                 </ul>
             </div>
             <div>
-                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Resources</h4>
+                <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-xs">Resources</h4>
                 <ul class="space-y-2 text-gray-400 text-xs">
                     <li><a href="/volunteers/dashboard" class="hover:text-white transition">Volunteer View</a></li>
                     <li><a href="/docs" class="hover:text-white transition">API Documentation</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-bold text-white mb-4 uppercase tracking-wider text-xs">Emergency Hotline</h4>
+                <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-xs">Emergency Hotline</h4>
                 <ul class="space-y-2 text-gray-400 text-xs">
                     <li>112 · National Disaster Line</li>
                     <li>Kerala, India</li>
                 </ul>
             </div>
         </div>
-        <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 mt-6 pt-6 border-t border-white/5 text-center text-xs text-gray-500">
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-16 mt-6 pt-6 border-t border-white/5 text-center text-xs text-gray-500">
             &copy; 2026 Community Disaster Volunteer Hub. All rights reserved.
         </div>
     </footer>
 
-    <!-- FLOATING RAG CHATBOT -->
+
+    <!-- ============================================= -->
+    <!-- FLOATING RAG CHATBOT (PRESERVED & WORKING)   -->
+    <!-- ============================================= -->
     <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        <div id="chatWindow" class="bg-white w-[calc(100vw-2rem)] sm:w-[450px] h-[500px] rounded-xl shadow-2xl border border-gray-200 mb-4 hidden flex-col overflow-hidden">
+        <div id="chatWindow" class="bg-white w-[calc(100vw-2rem)] sm:w-[450px] h-[500px] rounded-xl shadow-2xl border border-gray-300 mb-4 {% if not chat_open %}hidden{% else %}flex{% endif %} flex-col overflow-hidden animate-fade-in">
             <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center font-bold">
+                    <div class="w-8 h-8 rounded-lg bg-brand-red flex items-center justify-center font-bold">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
                     </div>
                     <div>
                         <h4 class="font-semibold text-sm">CDVH Coordinator Assistant</h4>
-                        <p class="text-[10px] text-gray-300 uppercase tracking-widest">Official Guidelines RAG</p>
+                        <p class="text-[10px] text-gray-300 uppercase tracking-widest font-mono">Disaster Protocols & Guidelines</p>
                     </div>
                 </div>
-                <button id="chatCloseButton" type="button" class="text-gray-300 hover:text-white transition" aria-label="Close chat">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
-                <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm">
-                    Hello {{ user.first_name or 'Coordinator' }}! I am your CDVH AI Assistant. Ask about disaster SOPs, triage protocols, or evacuation guidelines.
+                <div class="flex items-center gap-2">
+                    {% if chat_history %}
+                    <form action="/chat/clear" method="post" class="inline m-0">
+                        <button type="submit" title="Clear chat history" class="text-xs text-gray-300 hover:text-white px-2 py-1 bg-white/10 rounded-md transition">
+                            Clear
+                        </button>
+                    </form>
+                    {% endif %}
+                    <button id="chatCloseButton" type="button" class="text-gray-300 hover:text-white transition" aria-label="Close chat">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
             </div>
-            <form id="chatForm" class="p-3 bg-white border-t border-gray-200 flex gap-2">
-                <input type="text" id="chatInput" placeholder="Ask about guidelines..." required autocomplete="off" class="flex-1 px-3 py-2 bg-gray-100 border-none rounded text-sm focus:outline-none focus:ring-1 focus:ring-brand-navy">
-                <button type="submit" class="bg-brand-red hover:bg-red-700 text-white px-3 py-2 rounded transition">
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
+                <div class="bg-white p-3 rounded-lg border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm">
+                    Hello {{ user.first_name or 'Coordinator' }}! I am your CDVH Assistant. Ask about disaster SOPs, triage protocols, or evacuation guidelines.
+                </div>
+                {% if chat_history %}
+                    {% for msg in chat_history %}
+                        {% if msg.sender == 'user' %}
+                            <div class="bg-brand-navy text-white p-3 rounded-lg text-sm self-end max-w-[85%] shadow-sm">
+                                {{ msg.text }}
+                            </div>
+                        {% else %}
+                            <div class="bg-white p-3 rounded-lg border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap">
+                                {{ msg.text }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <form id="chatForm" method="POST" action="/chat#chatWindow" class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" name="question" id="chatInput" placeholder="Ask about guidelines..." required autocomplete="off" class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy">
+                <button type="submit" class="bg-brand-red hover:bg-red-700 text-white px-3 py-2 rounded-lg transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                 </button>
             </form>
         </div>
-        <button id="chatToggleButton" type="button" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-xl transition-transform hover:scale-105 border-2 border-white" aria-label="Open chat">
+        <button id="chatToggleButton" type="button" class="w-12 h-12 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-xl transition-transform hover:scale-105 border-2 border-white" aria-label="Open chat">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
         </button>
     </div>
 
-    <!-- Scripts (Animations Only) -->
+    <!-- Scripts (Client UI & Filtering Only) -->
     <script src="/assets/js/animations.js"></script>
+
 </body>
 </html>

@@ -119,19 +119,37 @@ async def handle_home_chat(
         chat_history.append({"sender": "bot", "text": bot_answer})
         chat_history = chat_history[-10:]
 
-    res = RedirectResponse(url="/?chat=open#chatWindow", status_code=303)
+    referer = request.headers.get("referer") or "/"
+    clean_target = referer.split("#")[0]
+    sep = "&" if "?" in clean_target else "?"
+    if "chat=open" not in clean_target:
+        redirect_url = f"{clean_target}{sep}chat=open#chatWindow"
+    else:
+        redirect_url = f"{clean_target}#chatWindow"
+
+    res = RedirectResponse(url=redirect_url, status_code=303)
     res.set_cookie(key="cdvh_chat_history", value=quote(json.dumps(chat_history)), max_age=86400, path="/")
     return res
 
 
 @app.post("/chat/clear")
-def handle_clear_chat():
-    res = RedirectResponse(url="/?chat=open#chatWindow", status_code=303)
+def handle_clear_chat(request: Request):
+    referer = request.headers.get("referer") or "/"
+    clean_target = referer.split("#")[0]
+    sep = "&" if "?" in clean_target else "?"
+    if "chat=open" not in clean_target:
+        redirect_url = f"{clean_target}{sep}chat=open#chatWindow"
+    else:
+        redirect_url = f"{clean_target}#chatWindow"
+
+    res = RedirectResponse(url=redirect_url, status_code=303)
     res.delete_cookie(key="cdvh_chat_history", path="/")
     return res
 
 
 @app.post("/report")
+@app.post("/emergency/report")
+@app.post("/api/emergency/report")
 async def handle_home_emergency_report(
     request: Request,
     db: Session = Depends(get_db)
@@ -361,7 +379,7 @@ async def handle_coordinator_field_report(
         logger.error("Failed to log coordinator field report: %s", e)
         db.rollback()
 
-    return RedirectResponse(url="/coordinator/dashboard#incident-reporting", status_code=303, headers=NO_CACHE_HEADERS)
+    return RedirectResponse(url="/coordinator/dashboard#reports", status_code=303, headers=NO_CACHE_HEADERS)
 
 
 @app.get("/logout")

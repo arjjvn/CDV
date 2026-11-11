@@ -472,3 +472,20 @@ header.nav-scrolled {
         font-size: 15px;
     }
 }
+
+/* ======================================================================
+   CDVH | Global Decorated Background Overlay (Visible & Atmospheric)
+   Applied across all pages with enhanced opacity
+   ====================================================================== */
+.site-bg-overlay {
+    position: fixed;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.10;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 0;
+}

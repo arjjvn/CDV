@@ -144,10 +144,90 @@
                 animation-iteration-count: 1 !important;
             }
         }
+        /* ===== Deployments redesign (scoped to .dp) ===== */
+        .dp{--navy:#0b1b36;--red:#e62429;--blue:#2a7bbd;--ease:cubic-bezier(.22,1,.36,1)}
+        .dp [hidden]{display:none!important}
+        .dp-tabs{display:none}
+        .dp-js .dp-tabs{display:flex;position:relative;gap:.25rem;padding:.25rem;margin-bottom:1.5rem;width:max-content;max-width:100%;overflow-x:auto;background:#f3f4f6;border-radius:10px}
+        .dp-pill{position:absolute;top:.25rem;bottom:.25rem;left:0;width:0;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(11,27,54,.18);transition:transform .45s var(--ease),width .45s var(--ease)}
+        .dp-tab{position:relative;z-index:1;padding:.5rem .9rem;font-size:12px;font-weight:600;color:#6b7280;white-space:nowrap;border-radius:8px;transition:color .25s}
+        .dp-tab b{margin-left:.4rem;font-weight:700;opacity:.55}
+        .dp-tab[aria-pressed=true]{color:var(--navy)}
+        .dp :is(.dp-tab,.dp-btn,.dp-toggle,.dp-link,.dp-ring):focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+        .dp-list{display:grid;gap:1.25rem;perspective:1200px}
+        .dp-card{--c:#9ca3af;--mx:50%;--my:0%;position:relative;display:block;padding:1.5rem 1.5rem 1.5rem 2rem;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#fff,#fafbfc);border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(11,27,54,.04),0 14px 30px -20px rgba(11,27,54,.3);transition:transform .5s var(--ease),box-shadow .4s,border-color .3s}
+        .dp-pending{--c:#f59e0b}.dp-accepted{--c:#16a34a}
+        .dp-card::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 35%,#fff))}
+        .dp-pending::before{animation:dpPulse 2.6s ease-in-out infinite}
+        .dp-card::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(420px circle at var(--mx) var(--my),color-mix(in srgb,var(--c) 13%,transparent),transparent 60%)}
+        .dp-card:hover{border-color:color-mix(in srgb,var(--c) 45%,#e5e7eb);box-shadow:0 2px 4px rgba(11,27,54,.05),0 26px 44px -22px rgba(11,27,54,.38)}
+        .dp-card:hover::after{opacity:1}
+        .dp-rejected{background:#f9fafb}
+        .dp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+        .dp-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
+        .dp-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .55rem;border-radius:999px}
+        .dp-navy{background:var(--navy);color:#fff}.dp-urgent{background:linear-gradient(135deg,var(--red),#b91c1c);color:#fff}
+        .dp-green{background:#dcfce7;color:#166534}.dp-amber{background:#fef3c7;color:#92400e}.dp-grey{background:#e5e7eb;color:#374151}
+        .dp-title{font:700 1.35rem/1.25 Oswald,sans-serif;color:var(--navy)}
+        .dp-loc{display:flex;align-items:center;gap:.35rem;margin-top:.45rem;font-size:12px;color:#6b7280}
+        .dp-loc svg{color:var(--red);flex:none}.dp-loc strong{color:var(--navy)}
+        .dp-ring{--p:0;position:relative;flex:none;width:68px;height:68px;border-radius:50%;display:grid;place-items:center;cursor:help;background:conic-gradient(var(--blue) calc(var(--p)*1%),#e5e7eb 0);filter:drop-shadow(0 6px 10px rgba(42,123,189,.25))}
+        .dp-ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:#fff}
+        .dp-pct{position:relative;font:700 13px/1 Oswald,sans-serif;color:var(--navy)}
+        .dp-tip{position:absolute;bottom:calc(100% + 8px);right:0;white-space:nowrap;padding:.4rem .6rem;border-radius:6px;background:var(--navy);color:#fff;font:500 11px/1 Inter,sans-serif;font-style:normal;opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .2s,transform .25s var(--ease);z-index:2}
+        .dp-ring:hover .dp-tip,.dp-ring:focus-visible .dp-tip{opacity:1;transform:none}
+        .dp-desc{margin:1.1rem 0 .9rem;font-size:14px;line-height:1.65;color:#374151;white-space:pre-wrap;max-width:70ch}
+        .dp-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;font-size:12px;color:#4b5563}
+        .dp-k{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#9ca3af}
+        .dp-meta .dp-k{color:var(--navy);font-size:12px;text-transform:none;letter-spacing:0}
+        .dp-chip{padding:.2rem .6rem;border-radius:6px;background:#eef2f7;color:var(--navy);font-weight:600}
+        .dp-by{margin-left:auto}
+        .dp-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.25rem;padding-top:1.1rem;border-top:1px dashed color-mix(in srgb,var(--c) 50%,#e5e7eb)}
+        .dp-actions p{font-size:12px;font-weight:500;color:#78350f;max-width:46ch}
+        .dp-quiet p{color:#6b7280}
+        .dp-btns{display:flex;gap:.6rem}
+        .dp-btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:.4rem;padding:.7rem 1.2rem;border-radius:9px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;transition:transform .2s var(--ease),box-shadow .25s,background .2s}
+        .dp-btn:hover{transform:translateY(-2px)}.dp-btn:active{transform:scale(.97)}
+        .dp-ok{color:#fff;background:linear-gradient(135deg,#16a34a,#15803d);box-shadow:0 10px 20px -10px rgba(22,163,74,.8)}
+        .dp-no{color:#dc2626;background:#fff;border:1px solid #fca5a5}.dp-no:hover{background:#fef2f2}
+        .dp-btn.busy{pointer-events:none;opacity:.7}
+        .dp-btn.busy::after{content:"";width:12px;height:12px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:dpSpin .7s linear infinite}
+        .dp-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.4);transform:scale(0);animation:dpRip .6s ease-out forwards;pointer-events:none}
+        .dp-no .dp-ripple{background:rgba(220,38,38,.18)}
+        .dp-link{font-size:12px;font-weight:600;color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+        .dp-toggle{display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%;margin-top:1.25rem;padding:.75rem 1rem;border-radius:10px;font:700 12px/1 Oswald,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);background:linear-gradient(135deg,#eaf3fb,#f4f8fc);border:1px solid rgba(42,123,189,.25);transition:background .25s}
+        .dp-toggle:hover{background:#e0eef9}
+        .dp-toggle svg{transition:transform .45s var(--ease)}
+        .dp-toggle[aria-expanded=false] svg{transform:rotate(-90deg)}
+        .dp-fold{display:grid;grid-template-rows:1fr;transition:grid-template-rows .5s var(--ease)}
+        .dp-fold>div{min-height:0;overflow:hidden}
+        .dp-fold.shut{grid-template-rows:0fr}
+        .dp-note{margin:.9rem 0;font-size:12px;line-height:1.6;color:#374151}
+        .dp-contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;padding-bottom:2px}
+        .dp-tile{display:flex;flex-direction:column;gap:.2rem;min-width:0;padding:.85rem;border-radius:10px;background:rgba(255,255,255,.8);backdrop-filter:blur(6px);border:1px solid rgba(42,123,189,.18);transition:transform .3s var(--ease),box-shadow .3s}
+        .dp-tile:hover{transform:translateY(-3px);box-shadow:0 12px 22px -14px rgba(11,27,54,.35)}
+        .dp-tile strong{font-size:14px;color:var(--navy)}.dp-tile small{font-size:10px;color:#6b7280}
+        .dp-red{font-size:14px;font-weight:700;color:var(--red)}.dp-mail{font-size:13px;font-weight:600;color:var(--navy);overflow:hidden;text-overflow:ellipsis}
+        .dp-red:hover,.dp-mail:hover{text-decoration:underline}
+        .dp-tile .dp-live{color:#16a34a;font-weight:600}
+        .dp-empty{position:relative;padding:2.5rem 1.5rem;text-align:center;border-radius:14px;border:1px dashed #cbd5e1;background:radial-gradient(circle at 50% 0,#eaf3fb,#f8fafc 70%)}
+        .dp-empty h4{font:700 1rem Oswald,sans-serif;text-transform:uppercase;color:var(--navy);margin-bottom:.35rem}
+        .dp-empty p{font-size:12px;color:#6b7280;max-width:28rem;margin:0 auto}
+        .dp-radar{position:relative;width:72px;height:72px;margin:0 auto 1rem;display:grid;place-items:center;font-size:1.5rem}
+        .dp-radar i{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--blue);opacity:0;animation:dpRadar 3.2s ease-out infinite}
+        .dp-radar i:nth-child(2){animation-delay:1.05s}.dp-radar i:nth-child(3){animation-delay:2.1s}
+        @keyframes dpPulse{50%{opacity:.45}}
+        @keyframes dpSpin{to{transform:rotate(360deg)}}
+        @keyframes dpRip{to{transform:scale(1);opacity:0}}
+        @keyframes dpRadar{0%{transform:scale(.45);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+        @media (max-width:640px){.dp-card{padding:1.25rem 1.1rem 1.25rem 1.5rem}.dp-by{margin-left:0;width:100%}.dp-btns,.dp-btns form,.dp-btns .dp-btn{width:100%}.dp-btns .dp-btn{justify-content:center}}
+        @media (prefers-reduced-motion:reduce){.dp *,.dp *::before,.dp *::after{animation:none!important;transition-duration:.01ms!important}}
     </style>
 </head>
 
-<body class="bg-white text-brand-textDark font-sans flex flex-col min-h-screen overflow-x-hidden">
+<body class="bg-white text-brand-textDark font-sans flex flex-col min-h-screen overflow-x-hidden relative">
+
+    <div class="site-bg-overlay" aria-hidden="true"></div>
 
     <!-- HEADER -->
     <header
@@ -396,159 +476,121 @@
                     </div>
                 </div>
 
+                <div class="dp">
                 {% if assignments %}
-                    <div class="space-y-6">
+                    <div class="dp-tabs" role="group" aria-label="Filter assignments">
+                        <span class="dp-pill" aria-hidden="true"></span>
+                        <button type="button" class="dp-tab" data-filter="all" aria-pressed="true">All<b>{{ assignments|length }}</b></button>
+                        <button type="button" class="dp-tab" data-filter="pending" aria-pressed="false">Awaiting response<b>{{ assignments|selectattr('status','equalto','pending')|list|length }}</b></button>
+                        <button type="button" class="dp-tab" data-filter="accepted" aria-pressed="false">Accepted<b>{{ assignments|selectattr('status','equalto','accepted')|list|length }}</b></button>
+                        <button type="button" class="dp-tab" data-filter="rejected" aria-pressed="false">Declined<b>{{ assignments|selectattr('status','equalto','rejected')|list|length }}</b></button>
+                    </div>
+
+                    <div class="dp-list">
                         {% for asg in assignments %}
-                            <div class="p-6 rounded-lg border-2 {% if asg.status == 'accepted' %}border-green-300 bg-green-50/20{% elif asg.status == 'pending' %}border-amber-300 bg-amber-50/20{% else %}border-gray-200 bg-gray-50/50{% endif %} transition">
-                                
-                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-gray-100 pb-4">
-                                    <div>
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white
-                                                {% if asg.task.urgency == 'Urgent' %}bg-brand-red{% else %}bg-brand-navy{% endif %}">
-                                                {{ asg.task.urgency or 'Active' }} Priority
-                                            </span>
-                                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded
-                                                {% if asg.status == 'accepted' %}bg-green-100 text-green-800{% elif asg.status == 'pending' %}bg-amber-100 text-amber-800{% else %}bg-gray-100 text-gray-700{% endif %}">
+                            <article class="dp-card dp-{{ asg.status }}" data-status="{{ asg.status }}">
+                                <div class="dp-head">
+                                    <div class="dp-main">
+                                        <div class="dp-badges">
+                                            <span class="dp-badge {% if asg.task.urgency == 'Urgent' %}dp-urgent{% else %}dp-navy{% endif %}">{{ asg.task.urgency or 'Active' }} Priority</span>
+                                            <span class="dp-badge {% if asg.status == 'accepted' %}dp-green{% elif asg.status == 'pending' %}dp-amber{% else %}dp-grey{% endif %}">
                                                 {% if asg.status == 'accepted' %}✓ Deployment Accepted{% elif asg.status == 'pending' %}⚡ Awaiting Your Response{% else %}Declined{% endif %}
                                             </span>
-                                            {% if asg.match_score %}
-                                                <span class="text-[10px] font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                                                    🤖 {{ asg.match_score|round(1) }}% ML Match
-                                                </span>
-                                            {% endif %}
                                         </div>
-
-                                        <h3 class="text-lg md:text-xl font-display font-bold text-brand-navy">
-                                            {{ asg.task.title }}
-                                        </h3>
+                                        <h3 class="dp-title">{{ asg.task.title }}</h3>
+                                        <div class="dp-loc">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                            <strong>{{ asg.task.location or 'Kerala' }}</strong>
+                                        </div>
                                     </div>
-
-                                    <div class="text-xs text-gray-500 flex items-center gap-1.5 self-start md:self-auto">
-                                        <svg class="w-4 h-4 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                        <strong class="text-brand-navy">{{ asg.task.location or 'Kerala' }}</strong>
-                                    </div>
+                                    {% if asg.match_score %}
+                                        <div class="dp-ring" tabindex="0" style="--p:{{ asg.match_score|round(1) }}" data-p="{{ asg.match_score|round(1) }}" aria-label="{{ asg.match_score|round(1) }}% ML Match">
+                                            <span class="dp-pct">{{ asg.match_score|round(1) }}%</span>
+                                            <em class="dp-tip" role="tooltip">🤖 ML Match for your skills</em>
+                                        </div>
+                                    {% endif %}
                                 </div>
 
-                                <div class="py-4 space-y-3">
-                                    <p class="text-xs md:text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                        {{ asg.task.description or 'Emergency coordination and field relief assistance required.' }}
-                                    </p>
+                                <p class="dp-desc">{{ asg.task.description or 'Emergency coordination and field relief assistance required.' }}</p>
 
-                                    <div class="flex flex-wrap items-center gap-3 text-xs text-gray-600">
-                                        <span class="font-semibold text-brand-navy">Required Capabilities:</span>
-                                        <span class="bg-gray-100 text-gray-800 px-2 py-0.5 rounded font-medium">
-                                            {{ asg.task.skills_required or 'General Relief' }}
-                                        </span>
-                                        <span class="text-gray-400">·</span>
-                                        <span>Assigned by: <strong>{{ asg.assigner.first_name }} {{ asg.assigner.last_name }}</strong></span>
-                                    </div>
+                                <div class="dp-meta">
+                                    <span class="dp-k">Required Capabilities:</span>
+                                    <span class="dp-chip">{{ asg.task.skills_required or 'General Relief' }}</span>
+                                    <span class="dp-by">Assigned by: <strong>{{ asg.assigner.first_name }} {{ asg.assigner.last_name }}</strong></span>
                                 </div>
 
-                                <!-- ACTION: IF PENDING RESPONSE -->
                                 {% if asg.status == 'pending' %}
-                                    <div class="mt-2 pt-4 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                        <div class="text-xs text-amber-900 font-medium">
-                                            ⚠️ An emergency coordinator has dispatched this task to you. Please accept or decline immediately:
-                                        </div>
-
-                                        <div class="flex items-center gap-3 self-end sm:self-auto">
-                                            <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="inline m-0">
+                                    <div class="dp-actions">
+                                        <p>⚠️ An emergency coordinator has dispatched this task to you. Please accept or decline immediately:</p>
+                                        <div class="dp-btns">
+                                            <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="m-0">
                                                 <input type="hidden" name="action" value="accept">
-                                                <button type="submit" class="btn-ripple bg-green-600 hover:bg-green-700 text-white font-bold text-xs uppercase px-5 py-2.5 rounded shadow transition flex items-center gap-1.5">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                <button type="submit" class="dp-btn dp-ok">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                                     Accept Task
                                                 </button>
                                             </form>
-
-                                            <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="inline m-0">
+                                            <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="m-0">
                                                 <input type="hidden" name="action" value="reject">
-                                                <button type="submit" class="border border-red-300 hover:bg-red-50 text-red-600 font-semibold text-xs uppercase px-4 py-2.5 rounded transition">
-                                                    Decline
-                                                </button>
+                                                <button type="submit" class="dp-btn dp-no">Decline</button>
                                             </form>
                                         </div>
                                     </div>
                                 {% endif %}
 
-                                <!-- ACTION: IF ACCEPTED (SHOW COORDINATOR CONTACT DETAILS) -->
                                 {% if asg.status == 'accepted' %}
-                                    <div class="mt-2 p-5 bg-blue-50 border-2 border-brand-blue/30 rounded-lg">
-                                        <div class="flex items-start gap-3">
-                                            <div class="w-9 h-9 rounded-full bg-brand-navy text-white flex items-center justify-center flex-shrink-0 font-bold text-base shadow-sm">
-                                                📞
+                                    <button type="button" class="dp-toggle" aria-expanded="true" aria-controls="dp-contact-{{ asg.id }}">
+                                        <span>Assigned Coordinator Contact Details</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                    <div class="dp-fold" id="dp-contact-{{ asg.id }}">
+                                      <div>
+                                        <p class="dp-note">You have accepted this deployment. Please reach out to your assigned coordinator immediately for staging checkpoint location, protective gear, and operational instructions:</p>
+                                        <div class="dp-contacts">
+                                            <div class="dp-tile">
+                                                <span class="dp-k">Field Coordinator</span>
+                                                <strong>{{ asg.assigner.first_name }} {{ asg.assigner.last_name }}</strong>
+                                                <small>{{ asg.assigner.organization or asg.assigner.department or 'Kerala Disaster Hub' }}</small>
                                             </div>
-
-                                            <div class="flex-1">
-                                                <h4 class="font-display font-bold text-brand-navy text-sm uppercase tracking-wider mb-1 flex items-center gap-2">
-                                                    Assigned Coordinator Contact Details
-                                                </h4>
-
-                                                <p class="text-xs text-gray-700 leading-relaxed mb-3">
-                                                    You have accepted this deployment. Please reach out to your assigned coordinator immediately for staging checkpoint location, protective gear, and operational instructions:
-                                                </p>
-
-                                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                                                    <div class="bg-white p-3 rounded border border-blue-100 shadow-sm">
-                                                        <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Field Coordinator</span>
-                                                        <strong class="text-brand-navy text-sm block mt-0.5">
-                                                            {{ asg.assigner.first_name }} {{ asg.assigner.last_name }}
-                                                        </strong>
-                                                        <span class="text-[10px] text-gray-500 block mt-0.5">
-                                                            {{ asg.assigner.organization or asg.assigner.department or 'Kerala Disaster Hub' }}
-                                                        </span>
-                                                    </div>
-
-                                                    <div class="bg-white p-3 rounded border border-blue-100 shadow-sm">
-                                                        <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Phone / Direct Hotline</span>
-                                                        <a href="tel:{{ asg.assigner.phone }}" class="text-brand-red font-bold text-sm hover:underline block mt-0.5">
-                                                            📞 {{ asg.assigner.phone or '+91 94000 12345 (Hub Line)' }}
-                                                        </a>
-                                                        <span class="text-[10px] text-green-600 font-semibold block mt-0.5">● Dispatch Line Active</span>
-                                                    </div>
-
-                                                    <div class="bg-white p-3 rounded border border-blue-100 shadow-sm">
-                                                        <span class="text-gray-400 block text-[10px] uppercase font-bold tracking-wider">Official Email</span>
-                                                        <a href="mailto:{{ asg.assigner.email }}" class="text-brand-navy font-semibold hover:underline block truncate mt-0.5">
-                                                            ✉️ {{ asg.assigner.email }}
-                                                        </a>
-                                                        <span class="text-[10px] text-gray-500 block mt-0.5">Official In-System Contact</span>
-                                                    </div>
-                                                </div>
+                                            <div class="dp-tile">
+                                                <span class="dp-k">Phone / Direct Hotline</span>
+                                                <a href="tel:{{ asg.assigner.phone }}" class="dp-red">📞 {{ asg.assigner.phone or '+91 94000 12345 (Hub Line)' }}</a>
+                                                <small class="dp-live">● Dispatch Line Active</small>
+                                            </div>
+                                            <div class="dp-tile">
+                                                <span class="dp-k">Official Email</span>
+                                                <a href="mailto:{{ asg.assigner.email }}" class="dp-mail">✉️ {{ asg.assigner.email }}</a>
+                                                <small>Official In-System Contact</small>
                                             </div>
                                         </div>
+                                      </div>
                                     </div>
                                 {% endif %}
 
-                                <!-- IF REJECTED -->
                                 {% if asg.status == 'rejected' %}
-                                    <div class="mt-2 pt-3 border-t border-gray-200 text-xs text-gray-500 flex items-center justify-between">
-                                        <span>You declined this deployment assignment. The coordinator has been notified to reassign another candidate.</span>
-                                        <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="inline m-0">
+                                    <div class="dp-actions dp-quiet">
+                                        <p>You declined this deployment assignment. The coordinator has been notified to reassign another candidate.</p>
+                                        <form action="/volunteer/assignments/{{ asg.id }}/respond" method="post" class="m-0">
                                             <input type="hidden" name="action" value="accept">
-                                            <button type="submit" class="text-brand-blue hover:underline text-xs font-semibold">
-                                                Re-accept if available
-                                            </button>
+                                            <button type="submit" class="dp-link">Re-accept if available</button>
                                         </form>
                                     </div>
                                 {% endif %}
-
-                            </div>
+                            </article>
                         {% endfor %}
                     </div>
+                    <div class="dp-empty dp-none" hidden>
+                        <h4>Nothing in this view</h4>
+                        <p>Switch to another tab to see your other assignments.</p>
+                    </div>
                 {% else %}
-                    <div class="p-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center text-xl">
-                            🛡️
-                        </div>
-                        <h4 class="font-display font-bold text-base text-brand-navy uppercase mb-1">
-                            No Active Deployment Dispatches
-                        </h4>
-                        <p class="text-xs text-gray-500 max-w-md mx-auto">
-                            You are active in the volunteer pool. When an incident coordinator matches a task to your skills and locality, it will appear here with instant accept/reject options and coordinator contact details.
-                        </p>
+                    <div class="dp-empty">
+                        <div class="dp-radar" aria-hidden="true"><i></i><i></i><i></i><span>🛡️</span></div>
+                        <h4>No Active Deployment Dispatches</h4>
+                        <p>You are active in the volunteer pool. When an incident coordinator matches a task to your skills and locality, it will appear here with instant accept/reject options and coordinator contact details.</p>
                     </div>
                 {% endif %}
+                </div>
             </section>
 
             <section
@@ -1031,7 +1073,7 @@
         <!-- Chat Window -->
         <div
             id="chatWindow"
-            class="bg-white w-[calc(100vw-2rem)] sm:w-[50vw] lg:w-[45vw] max-w-2xl h-[75vh] min-h-[350px] max-h-[80vh] rounded-xl shadow-2xl border border-gray-200 mb-4 hidden flex-col overflow-hidden"
+            class="bg-white w-[calc(100vw-2rem)] sm:w-[50vw] lg:w-[45vw] max-w-2xl h-[75vh] min-h-[350px] max-h-[80vh] rounded-xl shadow-2xl border border-gray-200 mb-4 {% if not chat_open %}hidden{% else %}flex{% endif %} flex-col overflow-hidden animate-fade-in"
         >
             <!-- Chat Header -->
             <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
@@ -1052,21 +1094,30 @@
                     </div>
                 </div>
 
-                <button
-                    id="chatCloseButton"
-                    type="button"
-                    class="text-gray-300 hover:text-white transition"
-                    aria-label="Close chat"
-                >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"
-                        />
-                    </svg>
-                </button>
+                <div class="flex items-center gap-2">
+                    {% if chat_history %}
+                    <form action="/chat/clear" method="post" class="inline m-0">
+                        <button type="submit" title="Clear chat history" class="text-xs text-gray-300 hover:text-white px-2 py-1 rounded bg-white/10 transition">
+                            Clear
+                        </button>
+                    </form>
+                    {% endif %}
+                    <button
+                        id="chatCloseButton"
+                        type="button"
+                        class="text-gray-300 hover:text-white transition"
+                        aria-label="Close chat"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Chat Messages -->
@@ -1080,15 +1131,32 @@
                     Hello {{ user.first_name or 'volunteer' }}!
                     I can help you find information in the available disaster guidelines.
                 </div>
+
+                {% if chat_history %}
+                    {% for msg in chat_history %}
+                        {% if msg.sender == 'user' %}
+                            <div class="bg-brand-navy text-white p-3 rounded-lg rounded-tr-none text-sm self-end max-w-[85%] shadow-sm">
+                                {{ msg.text }}
+                            </div>
+                        {% else %}
+                            <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap">
+                                {{ msg.text }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <!-- Chat Input -->
             <form
                 id="chatForm"
+                method="POST"
+                action="/chat#chatWindow"
                 class="p-3 bg-white border-t border-gray-200 flex gap-2"
             >
                 <input
                     type="text"
+                    name="question"
                     id="chatInput"
                     placeholder="Ask a question..."
                     required
@@ -1300,6 +1368,111 @@
             </form>
         </div>
     </div>
+
+    <script>
+    /* Deployments redesign: reveal, ring counters, tilt, filter, fold, ripple */
+    (function () {
+        var root = document.querySelector('#deployments .dp');
+        if (!root) return;
+        var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+        var EASE = 'cubic-bezier(.22,1,.36,1)';
+        var cards = [].slice.call(root.querySelectorAll('.dp-card'));
+        root.classList.add('dp-js');
+
+        function rise(el, delay) {
+            if (RM || !el.animate) return;
+            el.animate([{ opacity: 0, transform: 'translateY(20px) scale(.985)' }, { opacity: 1, transform: 'none' }],
+                { duration: 700, delay: delay, easing: EASE, fill: 'backwards' });
+        }
+        function countRing(card) {
+            var ring = card.querySelector('.dp-ring');
+            if (!ring || ring.dataset.done) return;
+            ring.dataset.done = '1';
+            var to = parseFloat(ring.dataset.p) || 0, label = ring.querySelector('.dp-pct'), end = label.textContent;
+            if (RM) return;
+            var t0 = performance.now();
+            (function step(t) {
+                var k = Math.min(1, (t - t0) / 1100), e = 1 - Math.pow(1 - k, 4);
+                ring.style.setProperty('--p', to * e);
+                label.textContent = k < 1 ? (to * e).toFixed(1) + '%' : end;
+                if (k < 1) requestAnimationFrame(step);
+            })(t0);
+        }
+        function reveal(card, i) { rise(card, i * 90); countRing(card); }
+
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                var n = 0;
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) { reveal(e.target, n++); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.12 });
+            cards.forEach(function (c) { io.observe(c); });
+        } else {
+            cards.forEach(reveal);
+        }
+
+        if (fine && !RM) cards.forEach(function (c) {
+            var raf;
+            c.addEventListener('pointermove', function (e) {
+                var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+                cancelAnimationFrame(raf);
+                raf = requestAnimationFrame(function () {
+                    c.style.setProperty('--mx', x * 100 + '%');
+                    c.style.setProperty('--my', y * 100 + '%');
+                    c.style.transform = 'rotateX(' + ((0.5 - y) * 3) + 'deg) rotateY(' + ((x - 0.5) * 4) + 'deg)';
+                });
+            });
+            c.addEventListener('pointerleave', function () { cancelAnimationFrame(raf); c.style.transform = ''; });
+        });
+
+        var tabs = [].slice.call(root.querySelectorAll('.dp-tab')),
+            pill = root.querySelector('.dp-pill'),
+            none = root.querySelector('.dp-none');
+        function place(t) {
+            pill.style.width = t.offsetWidth + 'px';
+            pill.style.transform = 'translateX(' + t.offsetLeft + 'px)';
+        }
+        function filter(t) {
+            tabs.forEach(function (x) { x.setAttribute('aria-pressed', x === t); });
+            place(t);
+            var f = t.dataset.filter, n = 0;
+            cards.forEach(function (c) {
+                var show = f === 'all' || c.dataset.status === f;
+                c.hidden = !show;
+                if (show) rise(c, n++ * 70);
+            });
+            if (none) none.hidden = n > 0;
+        }
+        if (tabs.length) {
+            tabs.forEach(function (t) { t.addEventListener('click', function () { filter(t); }); });
+            var cur = function () { return root.querySelector('.dp-tab[aria-pressed="true"]') || tabs[0]; };
+            requestAnimationFrame(function () { place(cur()); });
+            addEventListener('resize', function () { place(cur()); });
+        }
+
+        root.addEventListener('click', function (e) {
+            var b = e.target.closest('.dp-toggle');
+            if (!b) return;
+            var shut = document.getElementById(b.getAttribute('aria-controls')).classList.toggle('shut');
+            b.setAttribute('aria-expanded', !shut);
+        });
+        root.addEventListener('pointerdown', function (e) {
+            var b = e.target.closest('.dp-btn');
+            if (!b || RM) return;
+            var r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2, d = document.createElement('span');
+            d.className = 'dp-ripple';
+            d.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' + (e.clientX - r.left - s / 2) + 'px;top:' + (e.clientY - r.top - s / 2) + 'px';
+            b.appendChild(d);
+            setTimeout(function () { d.remove(); }, 650);
+        });
+        root.addEventListener('submit', function (e) {
+            var b = e.target.querySelector('.dp-btn');
+            if (b) b.classList.add('busy');
+        });
+    })();
+    </script>
 
 </body>
 </html>
