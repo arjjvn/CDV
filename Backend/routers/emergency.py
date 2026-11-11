@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Form
 from sqlalchemy.orm import Session
+from sqlalchemy import func, or_
 
 from Backend.database_dependency import get_db
 from Backend.models import Disaster, Task, User
@@ -13,6 +14,61 @@ from Backend.ml_model import find_volunteer_matches
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["Emergency & Deep Learning"])
+
+
+# ----------------------------------------------------------------------
+# HELPER: MATCH COORDINATOR BY LOCATION (PLACE / DISTRICT / REGION)
+# ----------------------------------------------------------------------
+
+def find_coordinator_for_location(
+    db: Session,
+    place: Optional[str] = None,
+    district: Optional[str] = None
+) -> Optional[User]:
+    """
+    Finds the designated approved coordinator for a given place or district.
+    Matching priority:
+    1. Exact or partial match on coordinator place
+    2. Exact or partial match on coordinator district
+    3. Match on coordinator region
+    """
+    base_query = db.query(User).filter(
+        User.role == "coordinator",
+        User.is_approved.is_(True)
+    )
+
+    clean_place = place.strip().lower() if place and place.strip() else None
+    clean_district = district.strip().lower() if district and district.strip() else None
+
+    # 1. Match on place
+    if clean_place:
+        coord = base_query.filter(func.lower(User.place) == clean_place).first()
+        if coord:
+            return coord
+        coord = base_query.filter(User.place.ilike(f"%{clean_place}%")).first()
+        if coord:
+            return coord
+
+    # 2. Match on district
+    if clean_district:
+        coord = base_query.filter(func.lower(User.district) == clean_district).first()
+        if coord:
+            return coord
+        coord = base_query.filter(User.district.ilike(f"%{clean_district}%")).first()
+        if coord:
+            return coord
+
+    # 3. Match on region
+    if clean_place:
+        coord = base_query.filter(func.lower(User.region) == clean_place).first()
+        if coord:
+            return coord
+    if clean_district:
+        coord = base_query.filter(func.lower(User.region) == clean_district).first()
+        if coord:
+            return coord
+
+    return None
 
 
 # ----------------------------------------------------------------------
@@ -43,7 +99,7 @@ async def analyze_message_endpoint(
     """
     Direct endpoint for Deep Learning NLP message classification.
     Processes distress messages using the multi-head MLP neural network.
-    Returns: skill, urgency, disaster, confidence scores, and emergency flag.
+    Returns: skill (need), urgency, disaster, confidence scores, and emergency flag.
     """
     text = ""
     content_type = request.headers.get("content-type", "")
@@ -97,12 +153,15 @@ async def report_emergency_endpoint(
 ):
     """
     Full emergency reporting endpoint:
-    1. Analyzes distress text using the Deep Learning model.
+    1. Analyzes distress text using the Deep Learning model to predict:
+       - What is the disaster (disaster_type)
+       - How urgent is it (severity / urgency)
+       - What is the need (skill required)
     2. Registers an active Disaster record in the database.
-    3. Creates a corresponding emergency response Task.
-    4. Triggers the Scikit-learn ML volunteer matching engine to find candidate volunteers.
+    3. Finds the coordinator of that place and assigns the disaster/task to them.
+    4. Creates a corresponding response Task with the predicted skill need.
+    5. Triggers the Scikit-learn ML volunteer matching engine to find candidate volunteers.
     """
-    # Extract data from either JSON or Form data
     district = None
     place = None
     text = None
@@ -132,15 +191,15 @@ async def report_emergency_endpoint(
     if not text:
         raise HTTPException(status_code=400, detail="Emergency description is required.")
 
-    # 1. Run Deep Learning classification
+    # 1. Run Deep Learning classification: predicts disaster, urgency, and need (skill)
     analysis = await analyze_emergency_message(text)
 
     disaster_label = analysis.get("disaster", "Unknown")
-    urgency_label = analysis.get("urgency", "medium")
+    urgency_label = (analysis.get("urgency", "medium") or "medium").lower()
     skill_label = analysis.get("skill", "Unknown")
 
     # Map urgency to platform severity
-    if urgency_label == "high":
+    if urgency_label in ("high", "urgent", "critical"):
         severity = "Urgent"
         task_urgency = "Urgent"
         required_vols = 3
@@ -158,6 +217,20 @@ async def report_emergency_endpoint(
 
     location_str = ", ".join(filter(None, [place, district])) or "Kerala"
 
+    # Identify coordinator specifically responsible for this place / district
+    coordinator = find_coordinator_for_location(db, place=place, district=district)
+    coordinator_id = coordinator.id if coordinator else None
+    if coordinator:
+        logger.info(
+            "Emergency message for '%s, %s' assigned to coordinator: %s (ID: %s)",
+            place, district, coordinator.username, coordinator.id
+        )
+    else:
+        logger.warning(
+            "No local coordinator found for '%s, %s'. Emergency queued in central response.",
+            place, district
+        )
+
     # 2. Create Disaster Record
     disaster_title = f"{clean_disaster_type} Alert at {location_str}"
     new_disaster = Disaster(
@@ -168,6 +241,7 @@ async def report_emergency_endpoint(
         place=place,
         severity=severity,
         status="Active",
+        created_by=coordinator_id,
     )
     db.add(new_disaster)
 
@@ -179,7 +253,7 @@ async def report_emergency_endpoint(
         logger.error("Failed to save disaster record: %s", exc)
         raise HTTPException(status_code=500, detail="Database failure creating disaster record.")
 
-    # 3. Create Corresponding Task
+    # 3. Create Corresponding Task with predicted need
     task_title = f"Dispatch: {clean_skill} Support ({clean_disaster_type})"
     new_task = Task(
         disaster_id=new_disaster.id,
@@ -190,6 +264,7 @@ async def report_emergency_endpoint(
         status="active",
         skills_required=clean_skill,
         required_volunteer_count=required_vols,
+        created_by=coordinator_id,
     )
     db.add(new_task)
 
@@ -219,9 +294,22 @@ async def report_emergency_endpoint(
     except Exception as exc:
         logger.warning("Automated volunteer matching non-critical warning: %s", exc)
 
+    coordinator_info = None
+    if coordinator:
+        coordinator_name = f"{coordinator.first_name or ''} {coordinator.last_name or ''}".strip() or coordinator.username
+        coordinator_info = {
+            "id": coordinator.id,
+            "username": coordinator.username,
+            "name": coordinator_name,
+            "district": coordinator.district,
+            "place": coordinator.place,
+            "phone": coordinator.phone or "112 / Hub",
+        }
+
     return {
         "success": True,
-        "message": "Emergency alert registered and analyzed successfully.",
+        "message": f"Emergency alert registered and dispatched to Coordinator for {place or district or 'Kerala'}.",
+        "coordinator": coordinator_info,
         "disaster_id": new_disaster.id,
         "task_id": new_task.id,
         "location": location_str,

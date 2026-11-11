@@ -3,7 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDVH | Register</title>
+    <title>CDVH | Sign In & Register</title>
+
+    <!-- Anti-Cache & Back-Button Protection -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        // Purge any stored credentials on login page arrival
+        try {
+            localStorage.removeItem("cdvh_access_token");
+            localStorage.removeItem("cdvh_user");
+            localStorage.removeItem("cdvh_user_role");
+            sessionStorage.clear();
+        } catch (e) {}
+
+        // Prevent navigating back into cached protected dashboards
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("popstate", function () {
+                window.history.pushState(null, "", window.location.href);
+            });
+        }
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -199,8 +221,7 @@
                 <a href="../index.html#about" class="hover:text-brand-red transition">About Us</a>
                 <a href="../index.html#campaigns" class="hover:text-brand-red transition">Campaigns</a>
 
-                <a href="#register"
-                   onclick="switchMode('register'); document.getElementById('roleVolunteer').checked=true; updateRoleFields('volunteer');"
+                <a href="/pages/login.html?mode=register"
                    class="text-brand-red font-semibold hover:underline">
                     Join as Volunteer
                 </a>
@@ -211,12 +232,9 @@
             </nav>
 
 
-            <button class="md:hidden text-brand-navy" type="button" aria-label="Open navigation menu">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
+            <a href="/" class="md:hidden text-xs font-semibold text-brand-navy border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50 transition">
+                Home
+            </a>
         </div>
     </header>
 
@@ -252,34 +270,302 @@
                     </p>
                 </div>
 
-                <!-- Form -->
+                <!-- Form Card Content -->
                 <div class="p-6 sm:p-10">
 
                     <div class="mb-8 text-center">
                         <h2 id="formTitle" class="text-3xl font-bold text-brand-navy mb-2">
-                            Welcome back
+                            {% if mode == 'register' %}Create an Account{% else %}Welcome back{% endif %}
                         </h2>
 
                         <p id="formSubtitle" class="text-gray-500 text-sm">
-                            Enter your credentials to access the CDVH dashboard.
+                            {% if mode == 'register' %}Join the CDVH network and support active disaster response.{% else %}Enter your credentials to access the CDVH dashboard.{% endif %}
                         </p>
                     </div>
 
+                    <!-- Server-Side Feedback Alerts -->
+                    {% if error %}
+                    <div class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3 animate-fade-in">
+                        <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                        <span>{{ error }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if msg %}
+                    <div class="mb-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-start gap-3 animate-fade-in">
+                        <svg class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        <span>{{ msg }}</span>
+                    </div>
+                    {% endif %}
+
                     <!-- Login / Registration Tabs -->
                     <div class="flex border-b border-gray-200 mb-8">
-                        <button type="button" onclick="switchMode('login')" id="tabLogin"
-                                class="flex-1 pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
+                        <a href="/pages/login.html?mode=login" id="tabLogin"
+                           class="flex-1 pb-3 text-center text-sm font-semibold border-b-2 {% if mode != 'register' %}border-brand-navy text-brand-navy{% else %}border-transparent text-gray-400 hover:text-gray-600{% endif %} transition">
                             Sign In
-                        </button>
+                        </a>
 
-                        <button type="button" onclick="switchMode('register')" id="tabRegister"
-                                class="flex-1 pb-3 text-sm font-semibold border-b-2 border-brand-navy text-brand-navy transition">
+                        <a href="/pages/login.html?mode=register" id="tabRegister"
+                           class="flex-1 pb-3 text-center text-sm font-semibold border-b-2 {% if mode == 'register' %}border-brand-navy text-brand-navy{% else %}border-transparent text-gray-400 hover:text-gray-600{% endif %} transition">
                             Create Account
-                        </button>
+                        </a>
                     </div>
 
-                    <form id="authForm" onsubmit="handleAuth(event)" class="space-y-5">
+                    {% if mode == 'register' %}
+                    <!-- ============================================== -->
+                    <!-- REGISTRATION FORM (SERVER-SIDE HANDLED)        -->
+                    <!-- ============================================== -->
+                    <form method="POST" action="/register" class="space-y-5">
+                        <!-- Role Selection -->
+                        <div class="mb-6">
+                            <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                Register As
+                            </label>
+                            <div class="segmented-control">
+                                <input type="radio" name="role" id="roleVolunteer" value="volunteer" checked onclick="document.getElementById('volunteerFields').style.display='grid'; document.getElementById('coordinatorFields').style.display='none';">
+                                <label for="roleVolunteer">Volunteer</label>
 
+                                <input type="radio" name="role" id="roleCoordinator" value="coordinator" onclick="document.getElementById('volunteerFields').style.display='none'; document.getElementById('coordinatorFields').style.display='grid';">
+                                <label for="roleCoordinator">Coordinator</label>
+                            </div>
+                            <p class="mt-2 text-xs text-gray-500">
+                                Coordinator accounts are reviewed and approved by administrators.
+                            </p>
+                        </div>
+
+                        <!-- Name & Contact -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="input-group">
+                                <input type="text" name="first_name" id="firstName" placeholder=" " required
+                                       autocomplete="given-name"
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="firstName">First Name</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="text" name="last_name" id="lastName" placeholder=" "
+                                       autocomplete="family-name"
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="lastName">Last Name</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="text" name="username" id="regUsername" placeholder=" "
+                                       autocomplete="username"
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="regUsername">Username (Optional)</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="tel" name="phone" id="regPhone" placeholder=" "
+                                       autocomplete="tel"
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="regPhone">Phone</label>
+                            </div>
+
+                            <!-- District -->
+                            <div>
+                                <label for="regDistrict" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    District
+                                </label>
+                                <select id="regDistrict" name="district" required
+                                        class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <option value="">Select district</option>
+                                    {% for d in kerala_districts %}
+                                    <option value="{{ d }}">{{ d }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Place / Town -->
+                            <div>
+                                <label for="regPlace" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    Place / Town
+                                </label>
+                                <input type="text" id="regPlace" name="place" list="keralaPlaceList" placeholder="e.g. Chengannur" required
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <datalist id="keralaPlaceList">
+                                    {% for dist, places in kerala_places.items() %}
+                                        {% for p in places %}
+                                            <option value="{{ p }}">{{ p }} ({{ dist }})</option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+
+                            <div class="input-group sm:col-span-2">
+                                <input type="text" name="address" id="regAddress" placeholder=" "
+                                       autocomplete="street-address"
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="regAddress">Address</label>
+                            </div>
+
+                            <div class="input-group sm:col-span-2">
+                                <input type="text" name="pincode" id="regPincode" placeholder=" "
+                                       autocomplete="postal-code"
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="regPincode">Pincode</label>
+                            </div>
+                        </div>
+
+                        <!-- Volunteer Specific Fields -->
+                        <div id="volunteerFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-4">
+                            <div>
+                                <label for="regDob" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    Date of Birth
+                                </label>
+                                <input type="date" name="date_of_birth" id="regDob"
+                                       class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                            </div>
+
+                            <div>
+                                <label for="regGender" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    Gender
+                                </label>
+                                <select name="gender" id="regGender"
+                                        class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="regBloodGroup" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    Blood Group
+                                </label>
+                                <select name="blood_group" id="regBloodGroup"
+                                        class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <option value="">Select Group</option>
+                                    <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                                    <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="skill1" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    Primary Skill *
+                                </label>
+                                <select id="skill1" name="skill1" required
+                                        class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <option value="" disabled selected>Select a skill</option>
+                                    <option value="Medical">Medical</option>
+                                    <option value="Driving">Driving</option>
+                                    <option value="Rescue">Rescue</option>
+                                    <option value="Food Supply">Food Supply</option>
+                                    <option value="Ambulance">Ambulance</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="skill2" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    Secondary Skill
+                                </label>
+                                <select id="skill2" name="skill2"
+                                        class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <option value="">None / Optional</option>
+                                    <option value="Medical">Medical</option>
+                                    <option value="Driving">Driving</option>
+                                    <option value="Rescue">Rescue</option>
+                                    <option value="Food Supply">Food Supply</option>
+                                    <option value="Ambulance">Ambulance</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="skill3" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                    Tertiary Skill
+                                </label>
+                                <select id="skill3" name="skill3"
+                                        class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                    <option value="">None / Optional</option>
+                                    <option value="Medical">Medical</option>
+                                    <option value="Driving">Driving</option>
+                                    <option value="Rescue">Rescue</option>
+                                    <option value="Food Supply">Food Supply</option>
+                                    <option value="Ambulance">Ambulance</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="number" name="years_experience" id="yoe" min="0" max="80" value="0" placeholder=" "
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="yoe">Years of Experience</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="text" name="languages" id="langs" placeholder=" "
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="langs">Languages Known</label>
+                            </div>
+
+                            <div class="sm:col-span-2 grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="availableFrom" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                        Available From
+                                    </label>
+                                    <input type="time" name="available_from" id="availableFrom"
+                                           class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                </div>
+
+                                <div>
+                                    <label for="availableTo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                                        Available To
+                                    </label>
+                                    <input type="time" name="available_to" id="availableTo"
+                                           class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coordinator Specific Fields -->
+                        <div id="coordinatorFields" style="display:none;" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-4">
+                            <div class="input-group">
+                                <input type="text" name="organization" id="org" placeholder=" "
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="org">Organization / Agency</label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="text" name="region" id="region" placeholder=" "
+                                       class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                                <label for="region">Assigned Region / Zone</label>
+                            </div>
+                        </div>
+
+                        <!-- Email & Password -->
+                        <div class="input-group border-t border-gray-200 pt-4">
+                            <input type="email" name="email" id="email" placeholder=" " required
+                                   autocomplete="email"
+                                   class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
+                            <label for="email">Email Address</label>
+                        </div>
+
+                        <div class="input-group relative">
+                            <input type="password" name="password" id="regPassword" placeholder=" " required minlength="6"
+                                   autocomplete="new-password"
+                                   class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition pr-12">
+                            <label for="regPassword">Password (min 6 characters)</label>
+                            <button type="button" onclick="const p=document.getElementById('regPassword'); p.type = (p.type==='password'?'text':'password');"
+                                    aria-label="Show or hide password"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-navy focus:outline-none transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" id="submitBtn"
+                                class="btn-fill w-full bg-brand-navy text-white font-semibold py-3.5 rounded-lg text-sm transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 mt-6 flex justify-center items-center gap-2">
+                            <span>Create Account</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </form>
+                    {% else %}
+                    <!-- ============================================== -->
+                    <!-- SIGN IN FORM (SERVER-SIDE HANDLED)             -->
+                    <!-- ============================================== -->
+                    <form method="POST" action="/login" class="space-y-5">
                         <!-- Role Selection -->
                         <div class="mb-6">
                             <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
@@ -293,251 +579,31 @@
                                 <input type="radio" name="role" id="roleCoordinator" value="coordinator">
                                 <label for="roleCoordinator">Coordinator</label>
 
-                                <!-- Admin is available for login only.
-                                     auth.js hides this option on registration. -->
                                 <input type="radio" name="role" id="roleAdmin" value="admin">
                                 <label for="roleAdmin">Admin</label>
                             </div>
 
                             <p class="mt-2 text-xs text-gray-500">
-                                Admin accounts are created by the system administrator and cannot be registered publicly.
+                                Select the portal matching your account permissions.
                             </p>
                         </div>
 
-                        <!-- Registration Fields -->
-                        <div id="registerFields" class="hidden space-y-5 animate-fadeIn">
-
-                            <!-- Common Details -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                                <div class="input-group">
-                                    <input type="text" id="firstName" placeholder=" "
-                                           autocomplete="given-name"
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="firstName">First Name</label>
-                                </div>
-
-                                <div class="input-group">
-                                    <input type="text" id="lastName" placeholder=" "
-                                           autocomplete="family-name"
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="lastName">Last Name</label>
-                                </div>
-
-                                <div class="input-group">
-                                    <input type="tel" id="regPhone" placeholder=" "
-                                           autocomplete="tel"
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="regPhone">Phone</label>
-                                </div>
-
-                                <!-- District -->
-                                <div>
-                                    <label for="regDistrict" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        District
-                                    </label>
-
-                                    <select id="regDistrict" name="district"
-                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-
-                                        <option value="">Select district</option>
-                                        <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-                                        <option value="Kollam">Kollam</option>
-                                        <option value="Pathanamthitta">Pathanamthitta</option>
-                                        <option value="Alappuzha">Alappuzha</option>
-                                        <option value="Kottayam">Kottayam</option>
-                                        <option value="Idukki">Idukki</option>
-                                        <option value="Ernakulam">Ernakulam</option>
-                                        <option value="Thrissur">Thrissur</option>
-                                        <option value="Palakkad">Palakkad</option>
-                                        <option value="Malappuram">Malappuram</option>
-                                        <option value="Kozhikode">Kozhikode</option>
-                                        <option value="Wayanad">Wayanad</option>
-                                        <option value="Kannur">Kannur</option>
-                                        <option value="Kasaragod">Kasaragod</option>
-                                    </select>
-                                </div>
-
-                                <div class="input-group sm:col-span-2">
-                                    <input type="text" id="regAddress" placeholder=" "
-                                           autocomplete="street-address"
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="regAddress">Address</label>
-                                </div>
-
-                                <!-- Place / Town -->
-                                <div>
-                                    <label for="regPlace" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        Place / Town
-                                    </label>
-
-                                    <select id="regPlace" name="place" disabled
-                                            class="w-full px-4 py-3.5 bg-gray-100 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition disabled:cursor-not-allowed disabled:opacity-70">
-                                        <option value="">Select a district first</option>
-                                    </select>
-                                </div>
-
-                                <div class="input-group">
-                                    <input type="text" id="regPincode" placeholder=" "
-                                           autocomplete="postal-code"
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="regPincode">Pincode</label>
-                                </div>
-                            </div>
-
-                            <!-- Volunteer Fields -->
-                            <div id="volunteerFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-4">
-
-                                <div>
-                                    <label for="regDob" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        Date of Birth
-                                    </label>
-                                    <input type="date" id="regDob"
-                                           class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                </div>
-
-                                <div>
-                                    <label for="regGender" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        Gender
-                                    </label>
-
-                                    <select id="regGender"
-                                            class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                        <option value="">Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label for="regBloodGroup" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        Blood Group
-                                    </label>
-
-                                    <select id="regBloodGroup"
-                                            class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                        <option value="">Select Group</option>
-                                        <option>A+</option>
-                                        <option>A-</option>
-                                        <option>B+</option>
-                                        <option>B-</option>
-                                        <option>AB+</option>
-                                        <option>AB-</option>
-                                        <option>O+</option>
-                                        <option>O-</option>
-                                    </select>
-                                </div>
-
-                                <div class="mt-2">
-                                    <label for="skill1" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        Skill 1
-                                    </label>
-                                    <select id="skill1" name="skill1"
-                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                        <option value="">Select a skill</option>
-                                        <option value="Medical">Medical</option>
-                                        <option value="Driving">Driving</option>
-                                        <option value="Rescue">Rescue</option>
-                                        <option value="Food Supply">Food Supply</option>
-                                        <option value="Ambulance">Ambulance</option>
-                                    </select>
-                                </div>
-
-                                <div class="mt-2">
-                                    <label for="skill2" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        Skill 2
-                                    </label>
-                                    <select id="skill2" name="skill2"
-                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                        <option value="">Select a skill</option>
-                                        <option value="Medical">Medical</option>
-                                        <option value="Driving">Driving</option>
-                                        <option value="Rescue">Rescue</option>
-                                        <option value="Food Supply">Food Supply</option>
-                                        <option value="Ambulance">Ambulance</option>
-                                    </select>
-                                </div>
-
-                                <div class="mt-2">
-                                    <label for="skill3" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                        Skill 3
-                                    </label>
-                                    <select id="skill3" name="skill3"
-                                            class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                        <option value="">Select a skill</option>
-                                        <option value="Medical">Medical</option>
-                                        <option value="Driving">Driving</option>
-                                        <option value="Rescue">Rescue</option>
-                                        <option value="Food Supply">Food Supply</option>
-                                        <option value="Ambulance">Ambulance</option>
-                                    </select>
-                                </div>
-
-                                <div class="input-group mt-2">
-                                    <input type="number" id="yoe" min="0" max="80" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="yoe">Years of Experience</label>
-                                </div>
-
-                                <div class="sm:col-span-2 grid grid-cols-2 gap-4 mt-2">
-                                    <div>
-                                        <label for="availableFrom" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                            Available From
-                                        </label>
-                                        <input type="time" id="availableFrom"
-                                               class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    </div>
-
-                                    <div>
-                                        <label for="availableTo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                                            Available To
-                                        </label>
-                                        <input type="time" id="availableTo"
-                                               class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    </div>
-                                </div>
-
-                                <div class="input-group sm:col-span-2 mt-2">
-                                    <input type="text" id="langs" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="langs">Languages</label>
-                                </div>
-                            </div>
-
-                            <!-- Coordinator Fields -->
-                            <div id="coordinatorFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-200 pt-4 hidden">
-                                <div class="input-group mt-2">
-                                    <input type="text" id="org" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="org">Organization</label>
-                                </div>
-
-                                <div class="input-group mt-2">
-                                    <input type="text" id="region" placeholder=" "
-                                           class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                                    <label for="region">Region</label>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- Email -->
+                        <!-- Username or Email -->
                         <div class="input-group">
-                            <input type="email" id="email" placeholder=" " required
-                                   autocomplete="email"
+                            <input type="text" name="username_or_email" id="username_or_email" placeholder=" " required
+                                   autocomplete="username"
                                    class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition">
-                            <label for="email">Email Address</label>
+                            <label for="username_or_email">Username or Email Address</label>
                         </div>
 
                         <!-- Password -->
                         <div class="input-group relative">
-                            <input type="password" id="password" placeholder=" " required
+                            <input type="password" name="password" id="password" placeholder=" " required
                                    autocomplete="current-password"
                                    class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition pr-12">
                             <label for="password">Password</label>
 
-                            <button type="button" onclick="togglePassword()"
+                            <button type="button" onclick="const p=document.getElementById('password'); p.type = (p.type==='password'?'text':'password');"
                                     aria-label="Show or hide password"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-navy focus:outline-none transition">
                                 <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -549,11 +615,11 @@
                             </button>
                         </div>
 
-                        <!-- Remember Me -->
+                        <!-- Remember Me & Forgot Password -->
                         <div id="RegisterUtils" class="flex items-center justify-between mt-2">
                             <label class="flex items-center gap-2 cursor-pointer group">
                                 <div class="relative flex items-center justify-center w-4 h-4">
-                                    <input type="checkbox"
+                                    <input type="checkbox" name="remember"
                                            class="peer appearance-none w-4 h-4 border border-gray-300 rounded checked:bg-brand-navy checked:border-brand-navy transition cursor-pointer">
 
                                     <svg class="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition"
@@ -568,9 +634,9 @@
                                 </span>
                             </label>
 
-                            <a href="#" class="text-xs font-semibold text-brand-navy hover:text-brand-red transition">
+                            <button type="button" onclick="alert('For security during active disaster response, please contact your district coordinator or system administrator to reset credentials.');" class="text-xs font-semibold text-brand-navy hover:text-brand-red transition">
                                 Forgot Password?
-                            </a>
+                            </button>
                         </div>
 
                         <!-- Submit -->
@@ -584,11 +650,10 @@
                             </svg>
                         </button>
                     </form>
+                    {% endif %}
 
-                    <!-- Social buttons are visual placeholders until OAuth is implemented. -->
                     <p class="text-center text-xs text-gray-400 mt-8">
-                        Secured by FastAPI &amp; JWT. Protected by
-                        <a href="#" class="underline hover:text-brand-navy">Privacy Policy</a>.
+                        Secured by FastAPI &amp; JWT. Protected by CDVH Security Protocols.
                     </p>
                 </div>
             </div>
@@ -617,19 +682,17 @@
                     Platform
                 </h4>
                 <ul class="space-y-2 text-gray-400">
-                    <li><a href="#" class="hover:text-white transition">ML Volunteer Matching</a></li>
-                    <li><a href="#" class="hover:text-white transition">DL Intent Detection</a></li>
-                    <li><a href="#" class="hover:text-white transition">RAG Architecture</a></li>
+                    <li><a href="../index.html#volunteer" class="hover:text-white transition">ML Volunteer Matching</a></li>
+                    <li><a href="../index.html#nlp-engine" class="hover:text-white transition">DL Intent Detection</a></li>
+                    <li><a href="../index.html#about" class="hover:text-white transition">Emergency Response</a></li>
                     <li>
-                        <a href="#register"
-                           onclick="switchMode('register'); window.scrollTo({top:0, behavior:'smooth'});"
+                        <a href="/pages/login.html?mode=register"
                            class="hover:text-white transition">
                             Create Account
                         </a>
                     </li>
                     <li>
-                        <a href="#register"
-                           onclick="switchMode('register'); document.getElementById('roleVolunteer').checked=true; updateRoleFields('volunteer'); window.scrollTo({top:0, behavior:'smooth'});"
+                        <a href="/pages/login.html?mode=register"
                            class="hover:text-white transition">
                             Register as Volunteer
                         </a>
@@ -642,11 +705,11 @@
                     Resources
                 </h4>
                 <ul class="space-y-2 text-gray-400">
-                    <li><a href="volunteer-dashboard.html" class="hover:text-white transition">Volunteer Dashboard</a></li>
-                    <li><a href="coordinator-dashboard.html" class="hover:text-white transition">Coordinator Dashboard</a></li>
-                    <li><a href="admin-dashboard.html" class="hover:text-white transition">Admin Dashboard</a></li>
+                    <li><a href="/volunteers/dashboard" class="hover:text-white transition">Volunteer Dashboard</a></li>
+                    <li><a href="/coordinator/dashboard" class="hover:text-white transition">Coordinator Dashboard</a></li>
+                    <li><a href="/admin/dashboard" class="hover:text-white transition">Admin Dashboard</a></li>
                     <li><a href="../index.html#safety" class="hover:text-white transition">Disaster Guidelines</a></li>
-                    <li><a href="#" class="hover:text-white transition">API Documentation</a></li>
+                    <li><a href="/docs" class="hover:text-white transition">API Documentation</a></li>
                 </ul>
             </div>
 
@@ -700,11 +763,8 @@
                 <span class="text-white font-semibold">112 · Emergency Hotline</span>
             </div>
 
-            <div class="flex items-center gap-4">
-                <span class="text-xs uppercase tracking-wider text-gray-500 mr-1">Follow:</span>
-                <a href="#" class="hover:text-brand-yellow transition">Facebook</a>
-                <a href="#" class="hover:text-brand-yellow transition">Twitter</a>
-                <a href="#" class="hover:text-brand-yellow transition">Instagram</a>
+            <div class="text-xs text-gray-400">
+                Official Kerala Disaster Volunteer Hub
             </div>
         </div>
 
@@ -728,7 +788,6 @@
         </div>
     </div>
 
-    <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/animations.js"></script>
 </body>
 </html>

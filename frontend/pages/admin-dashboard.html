@@ -6,6 +6,22 @@
     <meta name="theme-color" content="#0b1b36">
 
     <title>CDVH | Admin Dashboard</title>
+
+    <!-- Anti-Cache & Back-Button Logout Protection -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        // Immediately kick user to login if navigating back to protected page after logout
+        window.addEventListener("pageshow", function (event) {
+            var navEntries = (window.performance && window.performance.getEntriesByType) ? window.performance.getEntriesByType("navigation") : [];
+            var isBackForward = (navEntries.length > 0 && navEntries[0].type === "back_forward") ||
+                                (window.performance && window.performance.navigation && window.performance.navigation.type === 2);
+            if (event.persisted || isBackForward) {
+                window.location.replace("/pages/login.html");
+            }
+        });
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -144,13 +160,13 @@
 
                 <a href="/profile" class="w-10 h-10 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold overflow-hidden border-2 border-white shadow-sm" title="Admin Profile">
                     {% if user.profile_image %}
-                        <img src="{{ user.profile_image }}" alt="{{ user.first_name }}" class="w-full h-full object-cover">
+                        <img src="{{ user.profile_image }}" alt="{{ user.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
                     {% else %}
                         <span>{{ (((user.first_name or '')[:1]) ~ ((user.last_name or '')[:1]))|upper or 'A' }}</span>
                     {% endif %}
                 </a>
 
-                <a href="/auth/logout" class="btn-ripple border border-gray-200 hover:border-brand-red hover:text-brand-red px-3 py-2 rounded text-xs font-semibold">
+                <a id="logoutButton" href="/auth/logout" onclick="try{localStorage.clear();sessionStorage.clear();}catch(e){}" class="btn-ripple border border-gray-200 hover:border-brand-red hover:text-brand-red px-3 py-2 rounded text-xs font-semibold">
                     Sign out
                 </a>
 
@@ -226,7 +242,8 @@
                     <img
                         src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80"
                         alt="CDVH administration and operations"
-                        class="w-full h-full object-cover border-l-8 border-white">
+                        class="w-full h-full object-cover border-l-8 border-white"
+                        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80';">
 
                 </div>
 
@@ -586,7 +603,7 @@
 
                                             <div class="w-10 h-10 shrink-0 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold overflow-hidden">
                                                 {% if account.profile_image %}
-                                                    <img src="{{ account.profile_image }}" alt="{{ account.first_name }}" class="w-full h-full object-cover">
+                                                    <img src="{{ account.profile_image }}" alt="{{ account.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
                                                 {% else %}
                                                     <span>{{ ((account.first_name or '')[:1] ~ (account.last_name or '')[:1])|upper or 'U' }}</span>
                                                 {% endif %}
@@ -894,7 +911,7 @@
                     <div class="flex items-center gap-4">
                         <div class="w-16 h-16 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold text-xl overflow-hidden border-2 border-brand-navy shadow-sm shrink-0">
                             {% if user.profile_image %}
-                                <img src="{{ user.profile_image }}" alt="{{ user.first_name }}" class="w-full h-full object-cover">
+                                <img src="{{ user.profile_image }}" alt="{{ user.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
                             {% else %}
                                 <span>{{ (((user.first_name or '')[:1]) ~ ((user.last_name or '')[:1]))|upper or 'A' }}</span>
                             {% endif %}
@@ -1045,35 +1062,24 @@
         // LOGOUT
         // -----------------------------------------
 
-        document.getElementById("logoutButton").addEventListener(
-            "click",
-            async () => {
-                const button = document.getElementById("logoutButton");
-                button.disabled = true;
-
+        const logoutBtn = document.getElementById("logoutButton");
+        if (logoutBtn) {
+            logoutBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
                 try {
-                    const response = await fetch("/auth/logout", {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    await fetch("/auth/logout", {
                         method: "POST",
                         credentials: "same-origin"
                     });
-
-                    if (!response.ok) {
-                        throw new Error("Logout request failed.");
-                    }
-
-                    window.location.replace("/pages/login.html");
-
                 } catch (error) {
                     console.error("Logout error:", error);
-
-                    alert(
-                        "Unable to log out. Please try again."
-                    );
-
-                    button.disabled = false;
+                } finally {
+                    window.location.replace("/pages/login.html");
                 }
-            }
-        );
+            });
+        }
     </script>
 
 </body>

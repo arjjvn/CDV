@@ -6,6 +6,22 @@
     <meta name="theme-color" content="#0b1b36">
     <title>CDVH | Coordinator Dashboard</title>
 
+    <!-- Anti-Cache & Back-Button Logout Protection -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        // Immediately kick user to login if navigating back to protected page after logout
+        window.addEventListener("pageshow", function (event) {
+            var navEntries = (window.performance && window.performance.getEntriesByType) ? window.performance.getEntriesByType("navigation") : [];
+            var isBackForward = (navEntries.length > 0 && navEntries[0].type === "back_forward") ||
+                                (window.performance && window.performance.navigation && window.performance.navigation.type === 2);
+            if (event.persisted || isBackForward) {
+                window.location.replace("/pages/login.html");
+            }
+        });
+    </script>
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,13 +125,13 @@
 
                 <a href="/profile" class="w-10 h-10 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold border-2 border-white shadow-sm overflow-hidden" title="View Profile">
                     {% if user.profile_image %}
-                        <img src="{{ user.profile_image }}" alt="{{ user.first_name }}" class="w-full h-full object-cover">
+                        <img src="{{ user.profile_image }}" alt="{{ user.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
                     {% else %}
                         <span>{{ (((user.first_name or '')[:1]) ~ ((user.last_name or '')[:1]))|upper or 'C' }}</span>
                     {% endif %}
                 </a>
 
-                <a href="/auth/logout" class="btn-ripple bg-white border border-gray-200 hover:border-brand-red hover:text-brand-red text-brand-navy text-xs font-semibold px-3 py-2 rounded transition">
+                <a href="/auth/logout" onclick="try{localStorage.clear();sessionStorage.clear();}catch(e){}" class="btn-ripple bg-white border border-gray-200 hover:border-brand-red hover:text-brand-red text-brand-navy text-xs font-semibold px-3 py-2 rounded transition">
                     Sign out
                 </a>
             </div>
@@ -154,7 +170,7 @@
                 <!-- Red Right Image -->
                 <div class="bg-brand-red w-full md:w-[40%] relative hidden md:block">
                     <div class="absolute top-1/2 -translate-y-1/2 -left-16 w-[115%] z-20 shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80" alt="Disaster Response Command" class="w-full h-auto object-cover border-8 border-white">
+                        <img src="https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=800&q=80" alt="Disaster Response Command" class="w-full h-auto object-cover border-8 border-white" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80';">
                     </div>
                 </div>
             </div>
@@ -217,19 +233,28 @@
                         {% for disaster in disasters %}
                             <div class="bg-white rounded-xl border-2 {% if disaster.severity == 'Urgent' or disaster.severity == 'High' %}border-red-400 bg-red-50/15{% elif disaster.severity == 'Medium' %}border-amber-300 bg-amber-50/15{% else %}border-gray-200 bg-white{% endif %} shadow-card overflow-hidden transition flex flex-col justify-between">
                                 <div class="p-6">
-                                    <!-- Header Badges -->
+                                    <!-- Header Badges: DL Predictions -->
                                     <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <!-- 1. Urgency Level -->
                                             <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded text-white
                                                 {% if disaster.severity == 'Urgent' or disaster.severity == 'High' %}bg-brand-red
                                                 {% elif disaster.severity == 'Medium' %}bg-amber-600
                                                 {% else %}bg-green-600{% endif %}">
                                                 🚨 {{ disaster.severity }} Urgency
                                             </span>
+                                            <!-- 2. Disaster Prediction -->
                                             <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-purple-100 text-purple-900 border border-purple-200 flex items-center gap-1">
-                                                <span>🧠 DL Model:</span>
+                                                <span>🧠 Disaster:</span>
                                                 <strong>{{ disaster.disaster_type }}</strong>
                                             </span>
+                                            <!-- 3. Identified Need -->
+                                            {% if disaster.tasks %}
+                                                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-blue-100 text-blue-900 border border-blue-200 flex items-center gap-1">
+                                                    <span>🎯 Need:</span>
+                                                    <strong>{{ disaster.tasks[0].skills_required or 'Rescue' }}</strong>
+                                                </span>
+                                            {% endif %}
                                             <span class="text-[10px] font-semibold px-2 py-0.5 rounded
                                                 {% if disaster.status == 'Active' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-700{% endif %}">
                                                 {{ disaster.status }}
@@ -240,13 +265,29 @@
                                         </span>
                                     </div>
 
+                                    <!-- Deep Learning Model Assessment Box -->
+                                    <div class="grid grid-cols-3 gap-2 p-2.5 bg-gray-50 border border-gray-200 rounded-lg mb-3 text-xs">
+                                        <div>
+                                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">DL Disaster</span>
+                                            <strong class="text-brand-navy">{{ disaster.disaster_type }}</strong>
+                                        </div>
+                                        <div>
+                                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">DL Urgency</span>
+                                            <strong class="{% if disaster.severity in ('Urgent', 'High') %}text-brand-red{% else %}text-amber-600{% endif %}">{{ disaster.severity }}</strong>
+                                        </div>
+                                        <div>
+                                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">DL Need / Skill</span>
+                                            <strong class="text-brand-blue">{{ (disaster.tasks[0].skills_required if disaster.tasks else 'Rescue') }}</strong>
+                                        </div>
+                                    </div>
+
                                     <!-- Title & Location -->
                                     <h3 class="font-display font-bold text-lg text-brand-navy uppercase mb-1">
                                         {{ disaster.title }}
                                     </h3>
                                     <p class="text-xs text-gray-600 mb-4 flex items-center gap-1.5">
                                         <svg class="w-3.5 h-3.5 text-brand-red shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                        <span>Sector: <strong class="text-brand-navy">{{ disaster.place or 'Kerala Sector' }}{% if disaster.district %}, {{ disaster.district }}{% endif %}</strong></span>
+                                        <span>Sector Jurisdiction: <strong class="text-brand-navy">{{ disaster.place or 'Kerala Sector' }}{% if disaster.district %}, {{ disaster.district }}{% endif %}</strong></span>
                                     </p>
 
                                     <!-- Distress Text -->
@@ -277,35 +318,24 @@
                                             </div>
 
                                             <div class="flex items-center gap-2">
-                                                <button
-                                                    type="button"
-                                                    onclick="loadVolunteerMatches({{ dtask.id }}, {{ dtask.required_volunteer_count or 5 }})"
-                                                    class="btn-ripple flex-1 bg-brand-navy hover:bg-[#152e59] text-white py-2 text-xs font-bold uppercase tracking-wider rounded transition text-center shadow-sm flex items-center justify-center gap-1.5"
-                                                >
-                                                    <span>🎯 Find ML Responders</span>
-                                                </button>
-                                                <form action="/coordinator/tasks/{{ dtask.id }}/status" method="post" class="inline m-0">
+                                                <form action="/coordinator/tasks/{{ dtask.id }}/status" method="post" class="flex-1 m-0">
                                                     {% if dtask.status == 'active' %}
                                                         <input type="hidden" name="new_status" value="resolved">
-                                                        <button type="submit" class="border border-gray-300 hover:border-gray-500 bg-white text-gray-700 py-2 px-3 text-xs font-semibold rounded transition">
-                                                            Resolve Task
+                                                        <button type="submit" class="w-full border border-gray-300 hover:border-gray-500 bg-white text-gray-700 py-2 px-3 text-xs font-semibold rounded transition">
+                                                            Mark Resolved
                                                         </button>
                                                     {% else %}
                                                         <input type="hidden" name="new_status" value="active">
-                                                        <button type="submit" class="border border-gray-300 hover:border-brand-navy bg-white text-brand-navy py-2 px-3 text-xs font-semibold rounded transition">
+                                                        <button type="submit" class="w-full border border-gray-300 hover:border-brand-navy bg-white text-brand-navy py-2 px-3 text-xs font-semibold rounded transition">
                                                             Re-open Task
                                                         </button>
                                                     {% endif %}
                                                 </form>
-                                            </div>
-
-                                            <!-- Matches Container -->
-                                            <div id="matches-{{ dtask.id }}" class="hidden mt-4 pt-4 border-t border-blue-200">
-                                                <div class="text-xs text-brand-navy font-bold flex items-center justify-between mb-3 uppercase tracking-wider">
-                                                    <span>AI Recommended Volunteers for this Incident</span>
-                                                    <button onclick="document.getElementById('matches-{{ dtask.id }}').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 font-bold text-sm">&times; Close</button>
-                                                </div>
-                                                <div id="matches-list-{{ dtask.id }}" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                                                <form action="/coordinator/tasks/{{ dtask.id }}/delete" method="post" class="inline m-0" onsubmit="return confirm('Delete this response task?');">
+                                                    <button type="submit" title="Delete Task" class="p-2 border border-red-200 text-brand-red hover:bg-red-50 rounded transition flex items-center justify-center">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -361,6 +391,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                     {% for task in tasks %}
+                        {% set active_asgs = task.assignments|selectattr('status', 'ne', 'rejected')|list %}
+                        {% set is_full = (active_asgs|length >= task.required_volunteer_count) %}
+                        {% set spots_needed = task.required_volunteer_count - active_asgs|length %}
                         <div class="bg-white rounded border border-gray-100 shadow-card overflow-hidden hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
                             <div>
                                 <div class="h-2 {% if task.urgency == 'Urgent' %}bg-brand-red{% elif task.urgency == 'Resolved' %}bg-gray-400{% else %}bg-green-500{% endif %}"></div>
@@ -388,48 +421,122 @@
                                     {% endif %}
 
                                     <p class="text-xs text-gray-600 mb-4">{{ task.description or 'Active relief task deployed for emergency responders.' }}</p>
-                                    <ul class="text-xs text-gray-500 space-y-2 mb-6">
+                                    <ul class="text-xs text-gray-500 space-y-2 mb-4">
                                         <li class="flex items-center gap-2">
                                             <svg class="w-3.5 h-3.5 text-brand-navy flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                                             <span>Skills: <strong class="text-brand-navy">{{ task.skills_required or 'General Support' }}</strong></span>
                                         </li>
-                                        <li class="flex items-center gap-2">
-                                            <svg class="w-3.5 h-3.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                            <span>Team Target: <strong>{{ task.required_volunteer_count }} Volunteer(s)</strong></span>
+                                        <li class="flex items-center justify-between">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-3.5 h-3.5 text-brand-red flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                <span>Team Roster: <strong class="text-brand-navy">{{ active_asgs|length }} / {{ task.required_volunteer_count }}</strong></span>
+                                            </span>
+                                            {% if is_full %}
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
+                                                    ✓ Target Reached
+                                                </span>
+                                            {% else %}
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800">
+                                                    {{ spots_needed }} needed
+                                                </span>
+                                            {% endif %}
                                         </li>
                                     </ul>
 
-                                    <!-- AI / ML VOLUNTEER MATCHING -->
-                                    <div class="mt-5 border-t border-gray-100 pt-4">
-                                        <div class="flex flex-wrap items-center justify-between gap-3">
-                                            <div>
-                                                <h5 class="text-sm font-bold text-brand-navy">AI Recommended Volunteers</h5>
-                                                <p class="text-[11px] text-gray-500 mt-1">
-                                                    Find volunteers based on this task's required skills and location.
-                                                </p>
-                                            </div>
-                                            <button
-                                                id="match-button-{{ task.id }}"
-                                                type="button"
-                                                onclick="loadVolunteerMatches({{ task.id }}, {{ task.required_volunteer_count or 5 }})"
-                                                class="btn-ripple bg-brand-red hover:bg-red-700 text-white px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider rounded transition"
-                                            >
-                                                Find ML Matches
-                                            </button>
+                                    <!-- DEPLOYED ASSIGNEES -->
+                                    <div class="mt-4 pt-4 border-t border-gray-100">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-[11px] font-bold uppercase tracking-wider text-brand-navy flex items-center gap-1.5">
+                                                <svg class="w-3.5 h-3.5 text-brand-blue" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+                                                Assigned Responders ({{ active_asgs|length }})
+                                            </span>
+                                            {% if is_full %}
+                                                <span class="text-[10px] text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded border border-green-200">Full</span>
+                                            {% endif %}
                                         </div>
-
-                                        <div
-                                            id="matches-{{ task.id }}"
-                                            class="hidden mt-4 space-y-3"
-                                            aria-live="polite"
-                                        ></div>
+                                        {% if active_asgs %}
+                                            <div class="space-y-1.5">
+                                                {% for asg in active_asgs %}
+                                                    <div class="p-2 bg-gray-50 rounded border border-gray-200 text-xs flex items-center justify-between gap-2">
+                                                        <div class="min-w-0">
+                                                            <span class="font-bold text-brand-navy block truncate">
+                                                                {{ asg.volunteer.first_name }} {{ asg.volunteer.last_name or '' }}
+                                                            </span>
+                                                            <span class="text-[10px] text-gray-500 block">
+                                                                {{ asg.volunteer.phone or 'No phone' }} · {{ asg.volunteer.place or asg.volunteer.district or 'Kerala' }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="shrink-0 text-right">
+                                                            <span class="text-[9px] font-bold px-2 py-0.5 rounded uppercase
+                                                                {% if asg.status == 'accepted' %}bg-green-100 text-green-800
+                                                                {% elif asg.status == 'pending' %}bg-amber-100 text-amber-800
+                                                                {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                                                {{ asg.status|capitalize }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            <p class="text-xs text-gray-400 italic">No volunteers assigned to this deployment yet.</p>
+                                        {% endif %}
                                     </div>
+
+                                    <!-- AI / ML VOLUNTEER MATCHING (SERVER-SIDE RENDERED) -->
+                                    {% if is_full %}
+                                        <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded text-xs text-green-800 flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-green-600 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                            <span class="font-semibold">Required volunteer quota reached ({{ active_asgs|length }}/{{ task.required_volunteer_count }} deployed).</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="mt-4 border-t border-gray-100 pt-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div>
+                                                    <h5 class="text-sm font-bold text-brand-navy">AI Recommended Responders</h5>
+                                                    <p class="text-[11px] text-gray-500">
+                                                        ML matched candidates for this deployment ({{ spots_needed }} spot(s) needed).
+                                                    </p>
+                                                </div>
+                                                <span class="text-green-700 bg-green-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">
+                                                    {{ spots_needed }} Spot(s) Needed
+                                                </span>
+                                            </div>
+
+                                            {% set t_matches = task_matches.get(task.id, []) if task_matches else [] %}
+                                            {% if t_matches %}
+                                                <div class="space-y-2 pt-1">
+                                                    {% for m in t_matches %}
+                                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-2.5 rounded border border-gray-200 gap-2">
+                                                            <div class="text-xs">
+                                                                <span class="font-bold text-brand-navy block">{{ m.name }}</span>
+                                                                <span class="text-gray-500 text-[11px]">{{ m.city or 'Kerala' }} · {{ m.experience or 0 }} yrs exp · Skills: {{ (m.matched_skills or [])|join(', ') or m.skill or 'Relief' }}</span>
+                                                            </div>
+                                                            <div class="flex items-center gap-2 self-end sm:self-auto">
+                                                                <span class="bg-blue-100 text-brand-blue font-bold px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
+                                                                    {{ m.match_score }}% Match
+                                                                </span>
+                                                                <form action="/coordinator/tasks/assign" method="post" class="inline m-0">
+                                                                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                                                                    <input type="hidden" name="volunteer_id" value="{{ m.id }}">
+                                                                    <input type="hidden" name="match_score" value="{{ m.match_score }}">
+                                                                    <button type="submit" class="btn-ripple bg-brand-navy hover:bg-[#152e59] text-white px-3 py-1.5 rounded font-bold text-[11px] uppercase tracking-wider transition">
+                                                                        Assign
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <div class="p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded text-xs">
+                                                    ℹ️ No additional eligible unassigned volunteers available for this task.
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="p-6 pt-0 flex gap-2">
-                                <button onclick="openAssignModal('{{ task.id }}', '{{ task.title }}')" class="btn-ripple flex-1 bg-brand-navy text-white py-2.5 text-xs font-semibold rounded hover:bg-[#152e59] transition">
-                                    Assign Team
-                                </button>
+                            <div class="p-6 pt-0 flex gap-2 items-center">
                                 {% if task.status != 'resolved' %}
                                     <form action="/coordinator/tasks/{{ task.id }}/status" method="post" class="flex-1">
                                         <input type="hidden" name="new_status" value="resolved">
@@ -445,6 +552,11 @@
                                         </button>
                                     </form>
                                 {% endif %}
+                                <form action="/coordinator/tasks/{{ task.id }}/delete" method="post" class="inline m-0" onsubmit="return confirm('Are you sure you want to permanently delete this task?');">
+                                    <button type="submit" title="Delete Task" class="p-2.5 border border-red-200 text-brand-red hover:bg-red-50 rounded transition flex items-center justify-center">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     {% else %}
@@ -485,7 +597,7 @@
                             <div class="bg-white rounded p-5 flex items-center gap-4 shadow-card hover:-translate-y-0.5 transition border border-gray-100">
                                 <div class="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center font-bold text-base border-2 border-brand-red overflow-hidden shrink-0">
                                     {% if vol.profile_image %}
-                                        <img src="{{ vol.profile_image }}" alt="{{ vol.first_name }}" class="w-full h-full object-cover">
+                                        <img src="{{ vol.profile_image }}" alt="{{ vol.first_name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
                                     {% else %}
                                         <span>{{ (((vol.first_name or '')[:1]) ~ ((vol.last_name or '')[:1]))|upper or 'V' }}</span>
                                     {% endif %}
@@ -499,14 +611,25 @@
                                         {{ [vol.skill1, vol.skill2, vol.skill3]|select|join(' · ') or 'General Relief' }}
                                         {% if vol.years_experience %} · {{ vol.years_experience }} Yrs Exp{% endif %}
                                     </p>
-                                    <p class="text-[10px] text-gray-500">
-                                        {{ vol.place or vol.district or 'Available' }} ·
-                                        {% if vol.available_from and vol.available_to %}
-                                            {{ vol.available_from.strftime('%H:%M') }} – {{ vol.available_to.strftime('%H:%M') }}
-                                        {% else %}
-                                            Available on call
-                                        {% endif %}
-                                    </p>
+                                    <div class="flex items-center justify-between mt-1">
+                                        <p class="text-[10px] text-gray-500 truncate">
+                                            {{ vol.place or vol.district or 'Available' }} ·
+                                            {% if vol.available_from and vol.available_to %}
+                                                {{ vol.available_from.strftime('%H:%M') }} – {{ vol.available_to.strftime('%H:%M') }}
+                                            {% else %}
+                                                Available on call
+                                            {% endif %}
+                                        </p>
+                                        <button
+                                            type="button"
+                                            onclick="openCoordinatorEditSkillModal('{{ vol.id }}', '{{ vol.first_name }} {{ vol.last_name }}', '{{ vol.skill1 or '' }}', '{{ vol.skill2 or '' }}', '{{ vol.skill3 or '' }}', '{{ vol.years_experience or 0 }}')"
+                                            class="text-[10px] text-brand-blue hover:text-brand-navy font-bold flex items-center gap-1 shrink-0 ml-2 uppercase tracking-wider"
+                                            title="Update Volunteer Skills"
+                                        >
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                            Edit Skills
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         {% else %}
@@ -531,25 +654,24 @@
                             <h3 class="text-xl font-display font-bold uppercase text-brand-navy">Log Field Report</h3>
                         </div>
                     </div>
-                    <form id="reportForm" class="space-y-4">
+                    <form id="reportForm" method="post" action="/coordinator/field-report" class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Sector / Location</label>
-                            <input type="text" placeholder="e.g., Sector 4, Near Highway Bridge" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                            <input type="text" name="location" placeholder="e.g., Sector 4, Near Highway Bridge" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Situation Type</label>
-                            <select required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
-                                <option disabled selected>Select situation type</option>
-                                <option>Medical Emergency</option>
-                                <option>Rescue Required</option>
-                                <option>Resource Request</option>
-                                <option>Volunteer Shortage</option>
-                                <option>Infrastructure Damage</option>
+                            <select name="situation" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                                <option value="Medical Emergency" selected>Medical Emergency</option>
+                                <option value="Rescue Required">Rescue Required</option>
+                                <option value="Resource Request">Resource Request</option>
+                                <option value="Volunteer Shortage">Volunteer Shortage</option>
+                                <option value="Infrastructure Damage">Infrastructure Damage</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Field Notes</label>
-                            <textarea rows="3" placeholder="Describe the on-ground situation..." required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition resize-none"></textarea>
+                            <textarea name="notes" rows="3" placeholder="Describe the on-ground situation..." required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition resize-none"></textarea>
                         </div>
                         <button type="submit" class="btn-ripple w-full bg-brand-navy hover:bg-[#152e59] text-white py-3 rounded text-xs font-bold uppercase tracking-wider transition flex justify-center items-center gap-2 shadow">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
@@ -648,8 +770,15 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Required Skills</label>
-                    <input type="text" name="skills_required" placeholder="e.g. First Aid, CPR, Logistics" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
+                    <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Required Skill (ML Matching Compatible)</label>
+                    <select name="skills_required" required class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                        <option value="" disabled selected>Select Skill Used by ML Model</option>
+                        <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
+                        <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
+                        <option value="Food Supply">Food Supply (Logistics, Ration Packing, Clean Water)</option>
+                        <option value="Ambulance">Ambulance (Emergency Patient Transport, EMT Support)</option>
+                        <option value="Driving">Driving (Heavy Transport, Relief Vehicles, Boat Operation)</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-brand-navy mb-1 uppercase tracking-wider">Instructions</label>
@@ -663,39 +792,58 @@
         </div>
     </div>
 
-    <!-- ASSIGN MODAL -->
-    <div id="assignModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in">
+    <!-- COORDINATOR EDIT VOLUNTEER SKILLS MODAL -->
+    <div id="coordinatorSkillModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fade-in" onclick="event.stopPropagation()">
             <div class="bg-brand-navy p-6 text-white flex justify-between items-center">
                 <div>
-                    <span class="text-brand-red text-[10px] font-bold uppercase tracking-widest block mb-1">Dispatch Protocol</span>
-                    <h3 class="text-lg font-display font-bold uppercase">Assign Volunteer</h3>
-                    <p class="text-xs text-gray-300 mt-1">Deploying to: <span id="assignTaskLabel" class="font-semibold text-brand-yellow"></span></p>
+                    <span class="text-brand-red text-[10px] font-bold uppercase tracking-widest block mb-1">Roster Management</span>
+                    <h3 class="text-lg font-display font-bold uppercase">Update Volunteer Skills</h3>
+                    <p class="text-xs text-gray-300 mt-1">Volunteer: <span id="coordSkillVolName" class="font-semibold text-brand-yellow"></span></p>
                 </div>
-                <button type="button" onclick="closeAssignModal()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+                <button type="button" onclick="closeCoordinatorEditSkillModal()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
             </div>
-            <form action="/coordinator/tasks/assign" method="post" class="p-6 space-y-4">
-                <input type="hidden" name="task_id" id="assignTaskId" value="">
+            <form id="coordinatorSkillForm" action="" method="post" class="p-6 space-y-4">
                 <div>
-                    <label for="assignVolunteerSelect" class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Available Volunteers</label>
-                    <select name="volunteer_id" id="assignVolunteerSelect" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy">
-                        {% for vol in volunteers %}
-                            <option value="{{ vol.id }}">{{ vol.first_name }} {{ vol.last_name }} ({{ vol.district or 'General' }}) — Skills: {{ vol.skill1 or 'Relief' }}</option>
-                        {% else %}
-                            <option disabled>No volunteers registered</option>
-                        {% endfor %}
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Primary Skill (ML Compatible) <span class="text-brand-red">*</span></label>
+                    <select id="coordSkill1" name="skill1" required class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                        <option value="" disabled>Select primary skill</option>
+                        <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
+                        <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
+                        <option value="Food Supply">Food Supply (Logistics, Ration Packing, Clean Water)</option>
+                        <option value="Ambulance">Ambulance (Emergency Patient Transport, EMT Support)</option>
+                        <option value="Driving">Driving (Supply Transit, Heavy Transport, Evac Vans)</option>
                     </select>
                 </div>
-
-                <!-- Match preview info -->
-                <div id="assignMatchNote" class="text-xs text-gray-500 bg-blue-50 p-3 rounded border border-blue-100 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-brand-blue flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>Volunteers with matching skill profiles are prioritized for optimal field deployment.</span>
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Secondary Skill</label>
+                    <select id="coordSkill2" name="skill2" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                        <option value="">None / Not applicable</option>
+                        <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
+                        <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
+                        <option value="Food Supply">Food Supply (Logistics, Ration Packing, Clean Water)</option>
+                        <option value="Ambulance">Ambulance (Emergency Patient Transport, EMT Support)</option>
+                        <option value="Driving">Driving (Supply Transit, Heavy Transport, Evac Vans)</option>
+                    </select>
                 </div>
-
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Tertiary Skill</label>
+                    <select id="coordSkill3" name="skill3" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                        <option value="">None / Not applicable</option>
+                        <option value="Medical">Medical (First Aid, CPR, Triage, Clinical Support)</option>
+                        <option value="Rescue">Rescue (Search & Rescue, Water Safety, Evacuation)</option>
+                        <option value="Food Supply">Food Supply (Logistics, Ration Packing, Clean Water)</option>
+                        <option value="Ambulance">Ambulance (Emergency Patient Transport, EMT Support)</option>
+                        <option value="Driving">Driving (Supply Transit, Heavy Transport, Evac Vans)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">Years of Experience</label>
+                    <input type="number" id="coordSkillExp" name="years_experience" min="0" max="60" value="0" class="w-full px-3 py-2 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy bg-white">
+                </div>
                 <div class="flex gap-3 pt-2">
-                    <button type="submit" class="btn-ripple flex-1 bg-brand-navy text-white py-2.5 rounded text-xs font-bold uppercase tracking-wider transition">Confirm Assignment</button>
-                    <button type="button" onclick="closeAssignModal()" class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded text-xs font-semibold hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" class="btn-ripple flex-1 bg-brand-navy text-white py-2.5 rounded text-xs font-bold uppercase tracking-wider transition">Save Changes</button>
+                    <button type="button" onclick="closeCoordinatorEditSkillModal()" class="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded text-xs font-semibold hover:bg-gray-50 transition">Cancel</button>
                 </div>
             </form>
         </div>
@@ -770,143 +918,7 @@
         </button>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
-    <script type="module" src="/assets/js/chatbot.js?v=4"></script>
+    <!-- Scripts (Animations Only) -->
     <script src="/assets/js/animations.js"></script>
-    <script src="/assets/js/coordinator.js"></script>
-
-
-    <!-- ASYNC ML VOLUNTEER MATCHING -->
-    <script>
-        function escapeMatchHTML(value) {
-            return String(value ?? "").replace(/[&<>"']/g, function (character) {
-                return {
-                    "&": "&amp;",
-                    "<": "&lt;",
-                    ">": "&gt;",
-                    '"': "&quot;",
-                    "'": "&#39;"
-                }[character];
-            });
-        }
-
-        async function loadVolunteerMatches(taskId, topN = 5) {
-            const button = document.getElementById(`match-button-${taskId}`);
-            const container = document.getElementById(`matches-${taskId}`);
-
-            if (!container) return;
-
-            container.classList.remove("hidden");
-            container.innerHTML = `
-                <div class="flex items-center gap-2 rounded bg-blue-50 p-3 text-sm text-blue-800">
-                    <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".25"></circle>
-                        <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
-                    </svg>
-                    Finding suitable volunteers...
-                </div>
-            `;
-
-            if (button) {
-                button.disabled = true;
-                button.textContent = "Finding Matches...";
-                button.classList.add("opacity-60", "cursor-not-allowed");
-            }
-
-            try {
-                const url = `/coordinator/tasks/${encodeURIComponent(taskId)}/matches?top_n=${encodeURIComponent(topN)}`;
-                const response = await fetch(url, {
-                    method: "GET",
-                    credentials: "same-origin",
-                    headers: { "Accept": "application/json" }
-                });
-
-                const contentType = response.headers.get("content-type") || "";
-                let data = {};
-
-                if (contentType.includes("application/json")) {
-                    data = await response.json();
-                } else {
-                    throw new Error(
-                        response.redirected
-                            ? "Your session may have expired. Please sign in again."
-                            : `The server returned an unexpected response (${response.status}).`
-                    );
-                }
-
-                if (!response.ok) {
-                    throw new Error(data.detail || data.message || `Request failed (${response.status}).`);
-                }
-
-                const matches = Array.isArray(data.matches) ? data.matches : [];
-
-                if (matches.length === 0) {
-                    container.innerHTML = `
-                        <div class="rounded border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-                            <p class="font-semibold">No matching volunteers found.</p>
-                            <p class="mt-1 text-xs">${escapeMatchHTML(data.message || "Check the task location, required skills, and volunteer profiles.")}</p>
-                            ${data.city ? `<p class="mt-1 text-xs">Detected city: ${escapeMatchHTML(data.city)}</p>` : ""}
-                        </div>
-                    `;
-                    return;
-                }
-
-                const cards = matches.map((volunteer, index) => {
-                    const score = Number(volunteer.match_score);
-                    const scoreText = Number.isFinite(score) ? `${score.toFixed(1)}%` : "N/A";
-                    const skills = Array.isArray(volunteer.matched_skills)
-                        ? volunteer.matched_skills.map(escapeMatchHTML).join(" · ")
-                        : "Not specified";
-
-                    return `
-                        <article class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-navy text-[10px] font-bold text-white">${index + 1}</span>
-                                    <h6 class="truncate text-sm font-bold text-brand-navy">${escapeMatchHTML(volunteer.name || "Volunteer")}</h6>
-                                </div>
-                                <p class="mt-2 text-xs text-gray-600">
-                                    ${escapeMatchHTML(volunteer.city || "City unavailable")}
-                                    <span class="mx-1">·</span>
-                                    ${escapeMatchHTML(volunteer.experience ?? 0)} years experience
-                                </p>
-                                <p class="mt-1 text-xs text-gray-500">Matched skills: ${skills}</p>
-                                <p class="mt-1 text-xs text-gray-500">Available from: ${escapeMatchHTML(volunteer.available_from || "Not specified")}</p>
-                            </div>
-                            <div class="shrink-0 rounded-lg bg-green-50 px-4 py-2 text-center">
-                                <div class="text-xl font-extrabold text-green-700">${scoreText}</div>
-                                <div class="text-[9px] font-bold uppercase tracking-wider text-green-700">ML suitability</div>
-                            </div>
-                        </article>
-                    `;
-                }).join("");
-
-                container.innerHTML = `
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <p class="text-xs font-semibold text-brand-navy">${matches.length} recommended volunteer(s)</p>
-                        <p class="text-xs text-gray-500">City: ${escapeMatchHTML(data.city || "All trained cities")}</p>
-                    </div>
-                    <div class="space-y-2">${cards}</div>
-                    <p class="text-[10px] text-gray-400">Suitability scores are model predictions, not a guarantee of task completion.</p>
-                `;
-
-            } catch (error) {
-                container.innerHTML = `
-                    <div class="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-                        ${escapeMatchHTML(error.message || "Unable to load volunteer matches.")}
-                    </div>
-                `;
-                console.error("Volunteer matching error:", error);
-            } finally {
-                if (button) {
-                    button.disabled = false;
-                    button.textContent = "Find ML Matches";
-                    button.classList.remove("opacity-60", "cursor-not-allowed");
-                }
-            }
-        }
-    </script>
 </body>
 </html>

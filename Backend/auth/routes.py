@@ -225,6 +225,14 @@ def logout_user(response: Response):
         httponly=True,
         samesite="lax",
     )
+    res.delete_cookie(
+        key="cdvh_access_token",
+        path="/",
+    )
+    res.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, private, max-age=0"
+    res.headers["Pragma"] = "no-cache"
+    res.headers["Expires"] = "0"
+    res.headers["Clear-Site-Data"] = '"cache", "cookies", "storage"'
     return res
 
 

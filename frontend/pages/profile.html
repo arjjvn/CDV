@@ -6,6 +6,22 @@
     <meta name="theme-color" content="#0b1b36">
     <title>CDVH | My Profile</title>
 
+    <!-- Anti-Cache & Back-Button Logout Protection -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        // Immediately kick user to login if navigating back to protected page after logout
+        window.addEventListener("pageshow", function (event) {
+            var navEntries = (window.performance && window.performance.getEntriesByType) ? window.performance.getEntriesByType("navigation") : [];
+            var isBackForward = (navEntries.length > 0 && navEntries[0].type === "back_forward") ||
+                                (window.performance && window.performance.navigation && window.performance.navigation.type === 2);
+            if (event.persisted || isBackForward) {
+                window.location.replace("/pages/login.html");
+            }
+        });
+    </script>
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,7 +101,7 @@
                     <a href="/admin/dashboard" class="text-sm font-semibold text-brand-navy hover:text-brand-red transition">← Back to Dashboard</a>
                 {% endif %}
 
-                <a href="/auth/logout" class="bg-white border border-gray-200 hover:border-brand-red hover:text-brand-red text-brand-navy text-xs font-semibold px-3 py-2 rounded transition">
+                <a href="/auth/logout" onclick="try{localStorage.clear();sessionStorage.clear();}catch(e){}" class="bg-white border border-gray-200 hover:border-brand-red hover:text-brand-red text-brand-navy text-xs font-semibold px-3 py-2 rounded transition">
                     Sign out
                 </a>
             </div>
@@ -100,7 +116,7 @@
                 <!-- Avatar Display -->
                 <div class="w-24 h-24 rounded-full border-4 border-white shadow-md bg-brand-navy text-white flex items-center justify-center font-bold text-2xl overflow-hidden shrink-0">
                     {% if user.profile_image %}
-                        <img src="{{ user.profile_image }}" alt="{{ user.first_name or 'User' }}" class="w-full h-full object-cover">
+                        <img src="{{ user.profile_image }}" alt="{{ user.first_name or 'User' }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/assets/uploads/avatars/user_1.jpg';">
                     {% else %}
                         <span>{{ (((user.first_name or '')[:1]) ~ ((user.last_name or '')[:1]))|upper or 'U' }}</span>
                     {% endif %}
@@ -199,8 +215,16 @@
 
                 <!-- Skills & Background -->
                 <div class="bg-white rounded-xl border border-gray-100 shadow-card p-6 md:p-8">
-                    <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100">
-                        Volunteer Skills & Background
+                    <h2 class="text-lg font-display font-bold uppercase text-brand-navy mb-6 pb-3 border-b border-gray-100 flex items-center justify-between">
+                        <span>Volunteer Skills & Background</span>
+                        <button
+                            type="button"
+                            onclick="openVolunteerSkillModal()"
+                            class="bg-brand-navy hover:bg-[#152e59] text-white px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded transition flex items-center gap-1.5 shadow-sm"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            <span>Update Skills</span>
+                        </button>
                     </h2>
 
                     <div class="mb-6">
@@ -320,6 +344,124 @@
         &copy; 2026 Community Disaster Volunteer Hub. Secure Platform.
     </footer>
 
+    <!-- UPDATE SKILLS MODAL -->
+    <div id="volunteerSkillModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeVolunteerSkillModal()">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 sm:p-8 relative border border-gray-100 animate-fade-in my-8" onclick="event.stopPropagation()">
+            <!-- Close Button -->
+            <button type="button" onclick="closeVolunteerSkillModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-700 transition" aria-label="Close modal">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+                <div class="w-10 h-10 rounded bg-blue-50 text-brand-blue flex items-center justify-center font-bold text-lg">
+                    ✓
+                </div>
+                <div>
+                    <span class="text-brand-red text-[10px] font-bold uppercase tracking-widest block">Deployment Competencies</span>
+                    <h3 class="text-xl font-display font-bold uppercase text-brand-navy">Update Volunteer Skills</h3>
+                </div>
+            </div>
+
+            <form action="/volunteer/skills/update" method="post" class="space-y-4">
+                <!-- Skill 1 (Primary) -->
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">
+                        Primary Skill <span class="text-brand-red">*</span>
+                    </label>
+                    <select name="skill1" required class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                        <option value="" disabled {% if not user.skill1 %}selected{% endif %}>Select primary skill</option>
+                        <option value="Medical" {% if user.skill1 == 'Medical' %}selected{% endif %}>Medical (First Aid, CPR, Triage, Clinical Support)</option>
+                        <option value="Rescue" {% if user.skill1 == 'Rescue' %}selected{% endif %}>Rescue (Search & Rescue, Water Safety, Evacuation)</option>
+                        <option value="Food Supply" {% if user.skill1 == 'Food Supply' %}selected{% endif %}>Food Supply (Logistics, Ration Packing, Clean Water)</option>
+                        <option value="Ambulance" {% if user.skill1 == 'Ambulance' %}selected{% endif %}>Ambulance (Emergency Patient Transport, EMT Support)</option>
+                        <option value="Driving" {% if user.skill1 == 'Driving' %}selected{% endif %}>Driving (Supply Transit, Heavy Transport, Evac Vans)</option>
+                    </select>
+                </div>
+
+                <!-- Skill 2 (Secondary) -->
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">
+                        Secondary Skill (Optional)
+                    </label>
+                    <select name="skill2" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                        <option value="" {% if not user.skill2 %}selected{% endif %}>None / Not applicable</option>
+                        <option value="Medical" {% if user.skill2 == 'Medical' %}selected{% endif %}>Medical (First Aid, CPR, Triage, Clinical Support)</option>
+                        <option value="Rescue" {% if user.skill2 == 'Rescue' %}selected{% endif %}>Rescue (Search & Rescue, Water Safety, Evacuation)</option>
+                        <option value="Food Supply" {% if user.skill2 == 'Food Supply' %}selected{% endif %}>Food Supply (Logistics, Ration Packing, Clean Water)</option>
+                        <option value="Ambulance" {% if user.skill2 == 'Ambulance' %}selected{% endif %}>Ambulance (Emergency Patient Transport, EMT Support)</option>
+                        <option value="Driving" {% if user.skill2 == 'Driving' %}selected{% endif %}>Driving (Supply Transit, Heavy Transport, Evac Vans)</option>
+                    </select>
+                </div>
+
+                <!-- Skill 3 (Tertiary) -->
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">
+                        Tertiary Skill (Optional)
+                    </label>
+                    <select name="skill3" class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                        <option value="" {% if not user.skill3 %}selected{% endif %}>None / Not applicable</option>
+                        <option value="Medical" {% if user.skill3 == 'Medical' %}selected{% endif %}>Medical (First Aid, CPR, Triage, Clinical Support)</option>
+                        <option value="Rescue" {% if user.skill3 == 'Rescue' %}selected{% endif %}>Rescue (Search & Rescue, Water Safety, Evacuation)</option>
+                        <option value="Food Supply" {% if user.skill3 == 'Food Supply' %}selected{% endif %}>Food Supply (Logistics, Ration Packing, Clean Water)</option>
+                        <option value="Ambulance" {% if user.skill3 == 'Ambulance' %}selected{% endif %}>Ambulance (Emergency Patient Transport, EMT Support)</option>
+                        <option value="Driving" {% if user.skill3 == 'Driving' %}selected{% endif %}>Driving (Supply Transit, Heavy Transport, Evac Vans)</option>
+                    </select>
+                </div>
+
+                <!-- Years of Experience -->
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">
+                        Years of Experience
+                    </label>
+                    <input type="number" name="years_experience" min="0" max="60" value="{{ user.years_experience if user.years_experience is not none else 0 }}"
+                           class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition">
+                </div>
+
+                <!-- Prior Experience Summary -->
+                <div>
+                    <label class="block text-xs font-bold text-brand-navy mb-1.5 uppercase tracking-wider">
+                        Prior Experience Summary
+                    </label>
+                    <textarea name="previous_experience" rows="3" placeholder="Briefly describe past relief work, certifications, or field deployments..."
+                              class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-brand-navy focus:bg-white transition resize-none">{{ user.previous_experience or '' }}</textarea>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeVolunteerSkillModal()" class="px-4 py-2.5 border border-gray-200 text-gray-600 rounded text-xs font-semibold hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-brand-navy hover:bg-[#152e59] text-white px-5 py-2.5 rounded text-xs font-bold uppercase tracking-wider transition shadow-md">
+                        Save Skills
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openVolunteerSkillModal() {
+            const modal = document.getElementById("volunteerSkillModal");
+            if (modal) {
+                modal.classList.remove("hidden");
+                document.body.classList.add("overflow-hidden");
+            }
+        }
+
+        function closeVolunteerSkillModal() {
+            const modal = document.getElementById("volunteerSkillModal");
+            if (modal) {
+                modal.classList.add("hidden");
+                document.body.classList.remove("overflow-hidden");
+            }
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                closeVolunteerSkillModal();
+            }
+        });
+    </script>
 </body>
 </html>
 
