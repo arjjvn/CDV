@@ -322,10 +322,10 @@
                                 Register As
                             </label>
                             <div class="segmented-control">
-                                <input type="radio" name="role" id="roleVolunteer" value="volunteer" checked onclick="document.getElementById('volunteerFields').style.display='grid'; document.getElementById('coordinatorFields').style.display='none';">
+                                <input type="radio" name="role" id="roleVolunteer" value="volunteer" checked onclick="toggleRegisterRole('volunteer')" onchange="toggleRegisterRole('volunteer')">
                                 <label for="roleVolunteer">Volunteer</label>
 
-                                <input type="radio" name="role" id="roleCoordinator" value="coordinator" onclick="document.getElementById('volunteerFields').style.display='none'; document.getElementById('coordinatorFields').style.display='grid';">
+                                <input type="radio" name="role" id="roleCoordinator" value="coordinator" onclick="toggleRegisterRole('coordinator')" onchange="toggleRegisterRole('coordinator')">
                                 <label for="roleCoordinator">Coordinator</label>
                             </div>
                             <p class="mt-2 text-xs text-gray-500">
@@ -543,10 +543,10 @@
                         </div>
 
                         <div class="input-group relative">
-                            <input type="password" name="password" id="regPassword" placeholder=" " required minlength="6"
+                            <input type="password" name="password" id="regPassword" placeholder=" " required minlength="8"
                                    autocomplete="new-password"
                                    class="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition pr-12">
-                            <label for="regPassword">Password (min 6 characters)</label>
+                            <label for="regPassword">Password (min 8 characters)</label>
                             <button type="button" onclick="const p=document.getElementById('regPassword'); p.type = (p.type==='password'?'text':'password');"
                                     aria-label="Show or hide password"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-navy focus:outline-none transition">
@@ -789,5 +789,29 @@
     </div>
 
     <script src="../assets/js/animations.js"></script>
+    <script>
+    function toggleRegisterRole(role) {
+        var volFields = document.getElementById('volunteerFields');
+        var coordFields = document.getElementById('coordinatorFields');
+        var skill1 = document.getElementById('skill1');
+        var roleCoord = document.getElementById('roleCoordinator');
+
+        var isCoord = (role === 'coordinator') || (!role && roleCoord && roleCoord.checked);
+
+        if (volFields) volFields.style.display = isCoord ? 'none' : 'grid';
+        if (coordFields) coordFields.style.display = isCoord ? 'grid' : 'none';
+        if (skill1) {
+            if (isCoord) {
+                skill1.removeAttribute('required');
+            } else {
+                skill1.setAttribute('required', 'required');
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleRegisterRole();
+    });
+    </script>
 </body>
 </html>

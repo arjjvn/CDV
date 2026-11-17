@@ -29,7 +29,7 @@ class UserRegister(BaseModel):
     role: Literal["volunteer", "coordinator"] = "volunteer"
 
     first_name: str = Field(min_length=1, max_length=100)
-    last_name: str = Field(min_length=1, max_length=100)
+    last_name: Optional[str] = Field(default=None, max_length=100)
 
     phone: Optional[str] = None
     district: Optional[str] = None
@@ -117,8 +117,9 @@ def register_user(
             detail="An account with this email already exists.",
         )
 
+    ln = user.last_name.strip() if user.last_name else ""
     base_username = (
-        f"{user.first_name.strip()}_{user.last_name.strip()}"
+        f"{user.first_name.strip()}_{ln}".strip("_")
     ).lower()
 
     username = base_username[:50]
