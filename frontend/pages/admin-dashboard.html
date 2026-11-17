@@ -1121,5 +1121,71 @@
         }
     </script>
 
+    <!-- ════════════════════════════════════════════
+         FLOATING CHATBOT (RAG POWERED)
+    ═════════════════════════════════════════════ -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div id="chatWindow" class="bg-white w-[calc(100vw-2rem)] sm:w-[450px] h-[500px] rounded-xl shadow-2xl border border-gray-200 mb-4 {% if not chat_open %}hidden{% else %}flex{% endif %} flex-col overflow-hidden animate-fade-in">
+            <div class="bg-brand-navy p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-brand-red flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-sm">CDVH Disaster Assistant</h4>
+                        <p class="text-[10px] text-gray-300 uppercase tracking-widest font-mono">Official Guidelines AI</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    {% if chat_history %}
+                    <form action="/chat/clear" method="post" class="inline m-0">
+                        <button type="submit" title="Clear chat history" class="text-xs text-gray-300 hover:text-white px-2 py-1 rounded bg-white/10 transition">
+                            Clear
+                        </button>
+                    </form>
+                    {% endif %}
+                    <button id="chatCloseButton" type="button" class="text-gray-300 hover:text-white transition" aria-label="Close chat">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages Container (Jinja Server-Side Rendered) -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
+                <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-700 self-start max-w-[85%] shadow-sm">
+                    Hello Administrator{% if user and user.first_name %} {{ user.first_name }}{% endif %}! I am your CDVH AI Assistant. Ask about disaster safety guidelines, relief camps, evacuation protocols, or system administrative SOPs.
+                </div>
+
+                {% if chat_history %}
+                    {% for msg in chat_history %}
+                        {% if msg.sender == 'user' %}
+                            <div class="bg-brand-navy text-white p-3 rounded-lg rounded-tr-none text-sm self-end max-w-[85%] shadow-sm">
+                                {{ msg.text }}
+                            </div>
+                        {% else %}
+                            <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap bot-markdown">
+                                {{ msg.text | render_markdown | safe }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Chat Form (Submits via Backend POST or AJAX) -->
+            <form id="chatForm" method="POST" action="/chat#chatWindow" class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" name="question" id="chatInput" placeholder="Ask about guidelines..." required autocomplete="off" class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-brand-navy">
+                <button type="submit" class="bg-brand-red hover:bg-red-700 text-white px-3 py-2 rounded transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- Toggle Button -->
+        <button id="chatToggleButton" type="button" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-xl transition-transform hover:scale-105 border-2 border-white" aria-label="Open chat">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        </button>
+    </div>
+
+    <script src="/assets/js/animations.js"></script>
 </body>
 </html>

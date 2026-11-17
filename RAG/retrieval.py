@@ -1,4 +1,8 @@
 import os
+
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+
 import chromadb
 import chromadb.utils.embedding_functions as ef
 import ollama
@@ -11,65 +15,61 @@ client = chromadb.PersistentClient(path=VECTOR_DIR)
 embed = ef.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
 collection = client.get_collection(name="disaster_guidelines", embedding_function=embed)
 
+
+def get_coordinator_directory() -> str:
+    """Fetches approved disaster coordinators and their phone numbers from the CDVH database."""
+    try:
+        from Backend.database import SessionLocal
+        from Backend.models import User
+        db = SessionLocal()
+        coords = db.query(User).filter(User.role == "coordinator", User.is_approved == True).all()
+        if not coords:
+            db.close()
+            return ""
+        lines = []
+        for c in coords:
+            name = f"{c.first_name or ''} {c.last_name or ''}".strip() or c.username
+            loc = ", ".join(filter(None, [c.place, c.district])) or "Kerala"
+            phone = c.phone or "112 / Hub Control"
+            lines.append(f"- {name} ({loc}): {phone}")
+        db.close()
+        return "Official CDVH District Coordinators in Kerala:\n" + "\n".join(lines)
+    except Exception:
+        return ""
+
+
 def search_database(query: str) -> str:
-    result = collection.query(query_texts=[query], n_results=3)
-    if not result["documents"] or not result["documents"][0]:
-        return "No relevant information found."
-    return "\n\n".join(result["documents"][0])
+    retrieved_parts = []
+    try:
+        result = collection.query(query_texts=[query], n_results=3)
+        if result and result.get("documents") and result["documents"][0]:
+            retrieved_parts.append("\n\n".join(result["documents"][0]))
+    except Exception:
+        pass
+
+    q_lower = query.lower()
+    if any(k in q_lower for k in ("coordinator", "contact", "phone", "number", "officer", "help", "who", "call")):
+        coord_info = get_coordinator_directory()
+        if coord_info:
+            retrieved_parts.append(coord_info)
+
+    if not retrieved_parts:
+        return "No specific guidelines found in knowledge base."
+    return "\n\n".join(retrieved_parts)
+
 
 def rag(user_question):
-    system_prompt = ("""
-You are the CDVH Assistant, a friendly and professional chatbot
-for the Community Disaster Volunteer Hub in Kerala, India.
+    system_prompt = """You are the CDVH Disaster Assistant for the Community Disaster Volunteer Hub in Kerala, India.
 
-PERSONALITY:
-- Talk naturally like a helpful and caring human assistant.
-- Be friendly, calm, respectful, and supportive.
-- Use simple English that everyone can understand.
-- Answer the question directly without unnecessary introductions.
-- Give short answers for simple questions and detailed answers
-  when the user needs guidance.
-- Understand follow-up questions when conversation history is provided.
-
-KNOWLEDGE AND SAFETY:
-- Use retrieved disaster guidelines whenever relevant.
-- If the retrieved context is insufficient, use general knowledge
-  when appropriate. Never pretend an answer was verified if it was not.
-- Never invent facts, evacuation orders, rescue updates, or contact details.
-- Give coordinator phone numbers only when explicitly available in
-  retrieved documents or a trusted source supplied to the system.
-- If no coordinator number is available, say so politely.
-- Never claim an alert was sent or a rescue team was dispatched unless
-  the system confirms it.
-- For immediate danger, prioritize clear safety instructions and advise
-  contacting appropriate emergency services.
-- Never encourage untrained people to perform dangerous rescues.
-- Include document names as sources when that information is available.
-
-FORMATTING:
-- Respond in natural, conversational English.
-- Use relevant emojis sparingly to improve understanding.
-- Use Markdown headings for longer answers, such as:
-  ### 🚨 Immediate Safety Steps
-- Use bold formatting for important warnings and key information.
-- Use numbered lists for procedures and bullet points for safety advice.
-- Keep paragraphs short and easy to read.
-- Do not create Markdown tables; use readable lists instead.
-- Do not put the answer inside a code block.
-- Do not force headings into short conversational replies.
-- Do not repeat the user's question.
-- The frontend renders Markdown, so format headings and bold text
-  normally rather than explaining the formatting symbols.
-
-RETRIEVAL:
-- Use the search_database tool for relevant disaster guidelines
-  or coordinator contact information before answering when appropriate.
-- Base document-related claims on the retrieved content.
-- If a requested contact number cannot be found, do not guess.
-
-Return only the answer intended for the user.
+CRITICAL INSTRUCTIONS:
+- Tone: Speak in a natural, calm, friendly, and normal human conversational tone.
+- Do NOT use emoji bullet prefixes (do NOT start lines with emojis like 📱, ✅, 🚨, 📄, ⚠️, or 🔗).
+- Do NOT output weird double dashes like "- -". Use standard single bullet points or clean paragraphs.
+- Keep answers normal, clear, and concise. Provide direct, helpful answers without robotic filler.
+- If asked about coordinator contact numbers, share the registered coordinators available in the directory or suggest contacting the 24/7 Kerala Emergency Control Room at 112.
+- For emergency guidelines (floods, landslides, cyclones, first aid, evacuation, relief camps), provide practical, grounded advice from official Kerala disaster management protocols.
+- Keep paragraphs short and readable.
 """
-    )
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -87,8 +87,7 @@ Return only the answer intended for the user.
         
         for tool_call in response.message.tool_calls:
             if tool_call.function.name == "search_database":
-                search_query = tool_call.function.arguments.get("query")
-                
+                search_query = tool_call.function.arguments.get("query") or user_question
                 retrieved_context = search_database(search_query)
                 
                 messages.append({
@@ -102,9 +101,9 @@ Return only the answer intended for the user.
 
     return response.message.content
 
+
 if __name__ == "__main__":
     user_question = input("Enter your question: ").strip()
-    
     if user_question:
         answer = rag(user_question)
         print("\nCDVH Disaster Assistant:")

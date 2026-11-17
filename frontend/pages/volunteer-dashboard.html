@@ -1130,8 +1130,8 @@
                                 {{ msg.text }}
                             </div>
                         {% else %}
-                            <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap">
-                                {{ msg.text }}
+                            <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap bot-markdown">
+                                {{ msg.text | render_markdown | safe }}
                             </div>
                         {% endif %}
                     {% endfor %}

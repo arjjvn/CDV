@@ -224,22 +224,209 @@
     }
 
     // ------------------------------------------------------------------
-    // 6. CHATBOT WINDOW TOGGLE
+    // 6. CHATBOT WINDOW TOGGLE & INTERACTIVE MESSAGING
     // ------------------------------------------------------------------
+    function formatMarkdownToHtml(text) {
+        if (!text) return "";
+        let raw = text.trim();
+
+        // Clean up emoji bullet prefixes, smashed headers, and weird double hyphens
+        raw = raw.replace(/([📱🚨✅📄⚠️🔗]+)\s*(\*\*[^*]+?\*\*)/g, "\n\n$2");
+        raw = raw.replace(/([.!?])\s*([📱🚨✅📄⚠️🔗]+)\s*/g, "$1\n\n");
+        raw = raw.replace(/([.!?])\s*(\*\*[^*]+?\*\*)/g, "$1\n\n$2");
+        raw = raw.replace(/([📱🚨✅📄⚠️🔗]+)\s*-\s*/g, "\n- ");
+        raw = raw.replace(/\s+-\s*-\s*/g, "\n- ");
+        raw = raw.replace(/:\s*-\s*/g, ":\n- ");
+        raw = raw.replace(/^[📱🚨✅📄⚠️🔗]\s*/gm, "");
+        raw = raw.replace(/\s*[📱🚨✅📄⚠️🔗]\s*$/gm, "");
+        raw = raw.replace(/\s*[📱🚨✅📄⚠️🔗]\s*/g, " ");
+        raw = raw.replace(/^-\s*-\s*/gm, "- ");
+
+        // Basic HTML escaping
+        let html = raw
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+        // Bold formatting: **bold** or __bold__
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-brand-navy">$1</strong>');
+        html = html.replace(/__(.*?)__/g, '<strong class="font-semibold text-brand-navy">$1</strong>');
+
+        // Headers: ### Header
+        html = html.replace(/^###\s+(.*$)/gm, '<h5 class="font-bold text-sm text-brand-navy mt-2 mb-1">$1</h5>');
+        html = html.replace(/^##\s+(.*$)/gm, '<h4 class="font-bold text-base text-brand-navy mt-2.5 mb-1">$1</h4>');
+
+        // Markdown Links: [label](url)
+        html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-brand-blue font-semibold underline hover:text-blue-800">$1</a>');
+
+        // Process lists and paragraphs
+        const lines = html.split("\n");
+        let inList = false;
+        let out = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
+            if (line.startsWith("- ") || line.startsWith("* ")) {
+                if (!inList) {
+                    out.push('<ul class="list-disc ml-5 space-y-1 my-1.5">');
+                    inList = true;
+                }
+                out.push(`<li>${line.substring(2)}</li>`);
+            } else {
+                if (inList) {
+                    out.push('</ul>');
+                    inList = false;
+                }
+                if (line.length > 0) {
+                    out.push(`<p class="mb-2 leading-relaxed">${line}</p>`);
+                }
+            }
+        }
+        if (inList) {
+            out.push('</ul>');
+        }
+
+        return out.join("");
+    }
+
+    function formatExistingBotMessages() {
+        document.querySelectorAll(".bot-markdown").forEach(function (el) {
+            if (!el.getAttribute("data-formatted")) {
+                if (el.children.length === 0) {
+                    const rawText = el.textContent || "";
+                    if (rawText.includes("**") || rawText.includes("[") || rawText.includes("\n") || rawText.includes("- ")) {
+                        el.innerHTML = formatMarkdownToHtml(rawText);
+                    }
+                }
+                el.setAttribute("data-formatted", "true");
+            }
+        });
+    }
+
     function initChatbotToggle() {
         const toggleBtn = document.getElementById("chatToggleButton");
         const closeBtn = document.getElementById("chatCloseButton");
         const chatWin = document.getElementById("chatWindow");
-        if (toggleBtn && chatWin) {
-            toggleBtn.addEventListener("click", function () {
-                chatWin.classList.toggle("hidden");
-                chatWin.classList.toggle("flex");
-            });
+        const chatForm = document.getElementById("chatForm");
+        const chatInput = document.getElementById("chatInput");
+        const chatMessages = document.getElementById("chatMessages");
+
+        if (!chatWin) return;
+
+        function scrollToBottom() {
+            if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
-        if (closeBtn && chatWin) {
-            closeBtn.addEventListener("click", function () {
-                chatWin.classList.add("hidden");
-                chatWin.classList.remove("flex");
+
+        function openChat() {
+            chatWin.classList.remove("hidden");
+            chatWin.classList.add("flex");
+            setTimeout(scrollToBottom, 60);
+            if (chatInput) chatInput.focus();
+        }
+
+        function closeChat() {
+            chatWin.classList.add("hidden");
+            chatWin.classList.remove("flex");
+        }
+
+        if (toggleBtn) {
+            toggleBtn.onclick = function (e) {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                if (chatWin.classList.contains("hidden")) {
+                    openChat();
+                } else {
+                    closeChat();
+                }
+            };
+        }
+
+        if (closeBtn) {
+            closeBtn.onclick = function (e) {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                closeChat();
+            };
+        }
+
+        // Format any server-rendered bot messages already present
+        formatExistingBotMessages();
+
+        // Scroll to bottom if opened initially by ?chat=open
+        if (!chatWin.classList.contains("hidden")) {
+            setTimeout(scrollToBottom, 120);
+        }
+
+        // Seamless Asynchronous Chat (no page reload) with fallback
+        if (chatForm && chatInput && chatMessages) {
+            chatForm.addEventListener("submit", async function (e) {
+                const question = chatInput.value.trim();
+                if (!question) return;
+
+                if (window.fetch && window.FormData) {
+                    e.preventDefault();
+
+                    // 1. Add user bubble immediately
+                    const userDiv = document.createElement("div");
+                    userDiv.className = "bg-brand-navy text-white p-3 rounded-lg rounded-tr-none text-sm self-end max-w-[85%] shadow-sm animate-fade-in";
+                    userDiv.textContent = question;
+                    chatMessages.appendChild(userDiv);
+
+                    chatInput.value = "";
+                    const submitBtn = chatForm.querySelector('button[type="submit"]');
+                    if (submitBtn) submitBtn.disabled = true;
+
+                    // 2. Add typing indicator
+                    const typingDiv = document.createElement("div");
+                    typingDiv.id = "chatTypingIndicator";
+                    typingDiv.className = "bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-xs text-gray-500 self-start shadow-sm flex items-center gap-1.5 animate-pulse";
+                    typingDiv.innerHTML = '<span class="font-medium text-brand-navy">Assistant thinking</span><span class="animate-bounce">.</span><span class="animate-bounce delay-100">.</span><span class="animate-bounce delay-200">.</span>';
+                    chatMessages.appendChild(typingDiv);
+                    scrollToBottom();
+
+                    try {
+                        const formData = new FormData(chatForm);
+                        formData.set("question", question);
+
+                        const response = await fetch("/chat", {
+                            method: "POST",
+                            headers: {
+                                "Accept": "application/json"
+                            },
+                            body: formData
+                        });
+
+                        if (typingDiv && typingDiv.parentNode) {
+                            typingDiv.remove();
+                        }
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const botAnswer = data.answer || "I could not retrieve disaster guidelines at this moment.";
+
+                            const botDiv = document.createElement("div");
+                            botDiv.className = "bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap bot-markdown animate-fade-in";
+                            botDiv.innerHTML = formatMarkdownToHtml(botAnswer);
+                            chatMessages.appendChild(botDiv);
+                            scrollToBottom();
+                        } else {
+                            const errDiv = document.createElement("div");
+                            errDiv.className = "bg-red-50 text-red-600 p-3 rounded-lg text-xs self-start border border-red-200";
+                            errDiv.textContent = "Could not fetch guidelines right now. Please call emergency hotline 112.";
+                            chatMessages.appendChild(errDiv);
+                            scrollToBottom();
+                        }
+                    } catch (err) {
+                        if (typingDiv && typingDiv.parentNode) {
+                            typingDiv.remove();
+                        }
+                        chatForm.submit();
+                        return;
+                    } finally {
+                        if (submitBtn) submitBtn.disabled = false;
+                        if (chatInput) chatInput.focus();
+                    }
+                }
             });
         }
     }

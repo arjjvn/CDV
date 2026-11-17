@@ -31,6 +31,48 @@ UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 templates = Jinja2Templates(directory=str(PAGES_DIR))
 
+import re
+import html as html_lib
+
+def render_markdown_filter(text: str) -> str:
+    if not text:
+        return ""
+    raw = text.strip()
+    raw = re.sub(r'([📱🚨✅📄⚠️🔗]+)\s*(\*\*[^*]+?\*\*)', r'\n\n\2', raw)
+    raw = re.sub(r'([.!?])\s*([📱🚨✅📄⚠️🔗]+)\s*', r'\1\n\n', raw)
+    raw = re.sub(r'([.!?])\s*(\*\*[^*]+?\*\*)', r'\1\n\n\2', raw)
+    raw = re.sub(r'([📱🚨✅📄⚠️🔗]+)\s*-\s*', r'\n- ', raw)
+    raw = re.sub(r'\s+-\s*-\s*', r'\n- ', raw)
+    raw = re.sub(r':\s*-\s*', r':\n- ', raw)
+    raw = re.sub(r'^[📱🚨✅📄⚠️🔗]\s*', '', raw, flags=re.MULTILINE)
+    raw = re.sub(r'\s*[📱🚨✅📄⚠️🔗]\s*$', '', raw, flags=re.MULTILINE)
+    raw = re.sub(r'\s*[📱🚨✅📄⚠️🔗]\s*', ' ', raw)
+    escaped = html_lib.escape(raw)
+    escaped = re.sub(r"\*\*(.*?)\*\*", r'<strong class="font-semibold text-brand-navy">\1</strong>', escaped)
+    escaped = re.sub(r"__(.*?)__", r'<strong class="font-semibold text-brand-navy">\1</strong>', escaped)
+    escaped = re.sub(r"\[([^\]]+)\]\((https?://[^\s)]+)\)", r'<a href="\2" target="_blank" rel="noopener noreferrer" class="text-brand-blue font-semibold underline hover:text-blue-800">\1</a>', escaped)
+    lines = escaped.split("\n")
+    out = []
+    in_list = False
+    for line in lines:
+        s = line.strip()
+        if s.startswith("- ") or s.startswith("* "):
+            if not in_list:
+                out.append('<ul class="list-disc ml-5 space-y-1 my-1.5">')
+                in_list = True
+            out.append(f"<li>{s[2:]}</li>")
+        else:
+            if in_list:
+                out.append("</ul>")
+                in_list = False
+            if s:
+                out.append(f'<p class="mb-2 leading-relaxed">{s}</p>')
+    if in_list:
+        out.append("</ul>")
+    return "\n".join(out)
+
+templates.env.filters["render_markdown"] = render_markdown_filter
+
 COOKIE_NAME = "access_token"
 COOKIE_SECURE = False
 
@@ -931,6 +973,13 @@ async def admin_dashboard(
         for account in all_users
     ]
 
+    raw_history = request.cookies.get("cdvh_chat_history")
+    try:
+        chat_history = json.loads(unquote(raw_history)) if raw_history else []
+    except Exception:
+        chat_history = []
+    chat_open = (request.query_params.get("chat") == "open")
+
     return templates.TemplateResponse(
         request=request,
         name="admin-dashboard.html",
@@ -940,7 +989,9 @@ async def admin_dashboard(
             "total_volunteers": total_volunteers,
             "total_coordinators": total_coordinators,
             "pending_coordinators": pending_coordinators,
-            "accounts": accounts
+            "accounts": accounts,
+            "chat_history": chat_history,
+            "chat_open": chat_open,
         },
         headers=NO_CACHE_HEADERS
     )

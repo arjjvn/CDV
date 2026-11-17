@@ -1053,7 +1053,7 @@
                     </button>
                 </form>
                 {% endif %}
-                <button id="chatCloseButton" type="button" onclick="document.getElementById('chatWindow').classList.add('hidden'); document.getElementById('chatWindow').classList.remove('flex');" class="text-gray-300 hover:text-white transition" aria-label="Close chat">
+                <button id="chatCloseButton" type="button" class="text-gray-300 hover:text-white transition" aria-label="Close chat">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -1072,8 +1072,8 @@
                             {{ msg.text }}
                         </div>
                     {% else %}
-                        <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap">
-                            {{ msg.text }}
+                        <div class="bg-white p-3 rounded-lg rounded-tl-none border border-gray-200 text-sm text-gray-800 self-start max-w-[85%] shadow-sm leading-relaxed whitespace-pre-wrap bot-markdown">
+                            {{ msg.text | render_markdown | safe }}
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -1090,7 +1090,7 @@
     </div>
 
     <!-- Toggle Button -->
-    <button id="chatToggleButton" type="button" onclick="const w=document.getElementById('chatWindow'); w.classList.toggle('hidden'); w.classList.toggle('flex');" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-xl transition-transform hover:scale-105 border-2 border-white" aria-label="Open chat">
+    <button id="chatToggleButton" type="button" class="w-14 h-14 bg-brand-navy hover:bg-[#152e59] text-white rounded-full flex items-center justify-center shadow-xl transition-transform hover:scale-105 border-2 border-white" aria-label="Open chat">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
     </button>
 </div>

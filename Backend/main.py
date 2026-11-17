@@ -5,7 +5,7 @@ import logging
 from urllib.parse import quote, unquote
 
 from fastapi import FastAPI, Request, Depends, Query, Form
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -45,7 +45,49 @@ ASSETS_DIR = FRONTEND_DIR / "assets"
 PAGES_DIR = FRONTEND_DIR / "pages"
 
 
+import re
+import html as html_lib
+
 templates = Jinja2Templates(directory=str(FRONTEND_DIR))
+
+def render_markdown_filter(text: str) -> str:
+    if not text:
+        return ""
+    raw = text.strip()
+    raw = re.sub(r'([📱🚨✅📄⚠️🔗]+)\s*(\*\*[^*]+?\*\*)', r'\n\n\2', raw)
+    raw = re.sub(r'([.!?])\s*([📱🚨✅📄⚠️🔗]+)\s*', r'\1\n\n', raw)
+    raw = re.sub(r'([.!?])\s*(\*\*[^*]+?\*\*)', r'\1\n\n\2', raw)
+    raw = re.sub(r'([📱🚨✅📄⚠️🔗]+)\s*-\s*', r'\n- ', raw)
+    raw = re.sub(r'\s+-\s*-\s*', r'\n- ', raw)
+    raw = re.sub(r':\s*-\s*', r':\n- ', raw)
+    raw = re.sub(r'^[📱🚨✅📄⚠️🔗]\s*', '', raw, flags=re.MULTILINE)
+    raw = re.sub(r'\s*[📱🚨✅📄⚠️🔗]\s*$', '', raw, flags=re.MULTILINE)
+    raw = re.sub(r'\s*[📱🚨✅📄⚠️🔗]\s*', ' ', raw)
+    escaped = html_lib.escape(raw)
+    escaped = re.sub(r"\*\*(.*?)\*\*", r'<strong class="font-semibold text-brand-navy">\1</strong>', escaped)
+    escaped = re.sub(r"__(.*?)__", r'<strong class="font-semibold text-brand-navy">\1</strong>', escaped)
+    escaped = re.sub(r"\[([^\]]+)\]\((https?://[^\s)]+)\)", r'<a href="\2" target="_blank" rel="noopener noreferrer" class="text-brand-blue font-semibold underline hover:text-blue-800">\1</a>', escaped)
+    lines = escaped.split("\n")
+    out = []
+    in_list = False
+    for line in lines:
+        s = line.strip()
+        if s.startswith("- ") or s.startswith("* "):
+            if not in_list:
+                out.append('<ul class="list-disc ml-5 space-y-1 my-1.5">')
+                in_list = True
+            out.append(f"<li>{s[2:]}</li>")
+        else:
+            if in_list:
+                out.append("</ul>")
+                in_list = False
+            if s:
+                out.append(f'<p class="mb-2 leading-relaxed">{s}</p>')
+    if in_list:
+        out.append("</ul>")
+    return "\n".join(out)
+
+templates.env.filters["render_markdown"] = render_markdown_filter
 
 
 @app.on_event("startup")
@@ -99,15 +141,27 @@ def home(
 @app.post("/chat")
 async def handle_home_chat(
     request: Request,
-    question: str = Form(...)
+    question: Optional[str] = Form(None)
 ):
+    content_type = request.headers.get("content-type", "")
+    accept_header = request.headers.get("accept", "")
+    is_api = "application/json" in content_type or "application/json" in accept_header
+
+    if not question:
+        try:
+            body = await request.json()
+            question = body.get("question") or body.get("message")
+        except Exception:
+            pass
+
+    clean_q = (question or "").strip()
     raw_history = request.cookies.get("cdvh_chat_history")
     try:
         chat_history = json.loads(unquote(raw_history)) if raw_history else []
     except Exception:
         chat_history = []
 
-    clean_q = question.strip()
+    bot_answer = ""
     if clean_q:
         try:
             bot_answer = await run_in_threadpool(rag, clean_q)
@@ -118,6 +172,11 @@ async def handle_home_chat(
         chat_history.append({"sender": "user", "text": clean_q})
         chat_history.append({"sender": "bot", "text": bot_answer})
         chat_history = chat_history[-10:]
+
+    if is_api:
+        res = JSONResponse(content={"success": True, "answer": bot_answer, "history": chat_history})
+        res.set_cookie(key="cdvh_chat_history", value=quote(json.dumps(chat_history)), max_age=86400, path="/")
+        return res
 
     referer = request.headers.get("referer") or "/"
     clean_target = referer.split("#")[0]
@@ -134,6 +193,15 @@ async def handle_home_chat(
 
 @app.post("/chat/clear")
 def handle_clear_chat(request: Request):
+    content_type = request.headers.get("content-type", "")
+    accept_header = request.headers.get("accept", "")
+    is_api = "application/json" in content_type or "application/json" in accept_header
+
+    if is_api:
+        res = JSONResponse(content={"success": True, "cleared": True})
+        res.delete_cookie(key="cdvh_chat_history", path="/")
+        return res
+
     referer = request.headers.get("referer") or "/"
     clean_target = referer.split("#")[0]
     sep = "&" if "?" in clean_target else "?"
@@ -154,11 +222,23 @@ async def handle_home_emergency_report(
     request: Request,
     db: Session = Depends(get_db)
 ):
-    """Processes public emergency distress alerts from index.html form using Python DL pipeline."""
+    """Processes public emergency distress alerts from index.html form or API using Python DL pipeline."""
+    content_type = request.headers.get("content-type", "")
+    accept_header = request.headers.get("accept", "")
+    is_api = "application/json" in content_type or "application/json" in accept_header or request.url.path.startswith("/api/")
+
     try:
-        await report_emergency_endpoint(request, db)
+        result = await report_emergency_endpoint(request=request, db=db)
+        if is_api:
+            return result
+    except HTTPException:
+        if is_api:
+            raise
     except Exception as exc:
-        logger.error("Failed to process public emergency report: %s", exc)
+        logger.error("Failed to process emergency report: %s", exc)
+        if is_api:
+            raise HTTPException(status_code=500, detail="Failed to process emergency report.")
+
     return RedirectResponse(url="/?status=reported#heroEmergencyForm", status_code=303)
 
 
@@ -177,6 +257,13 @@ def render_login_page(
     db: Session = Depends(get_db)
 ):
     current_mode = (tab or mode or "login").lower()
+    raw_history = request.cookies.get("cdvh_chat_history")
+    try:
+        chat_history = json.loads(unquote(raw_history)) if raw_history else []
+    except Exception:
+        chat_history = []
+    chat_open = (request.query_params.get("chat") == "open")
+
     return templates.TemplateResponse(
         request=request,
         name="pages/login.html",
@@ -187,6 +274,8 @@ def render_login_page(
             "msg": msg,
             "kerala_districts": KERALA_DISTRICTS,
             "kerala_places": KERALA_DISTRICT_PLACES,
+            "chat_history": chat_history,
+            "chat_open": chat_open,
         },
         headers=NO_CACHE_HEADERS
     )
@@ -360,6 +449,11 @@ async def handle_coordinator_field_report(
     notes: str = Form(""),
     db: Session = Depends(get_db)
 ):
+    from Backend.routers.dashboards import get_cookie_user
+    user, _ = await get_cookie_user(request, db)
+    user_id = user.id if user else None
+    district = user.district if user and user.district else "Kerala"
+
     combined_desc = f"[Field Report - {situation}] {notes} (Sector: {location})"
     try:
         from Backend.dl_model import understand_message_sync
@@ -371,7 +465,8 @@ async def handle_coordinator_field_report(
             severity=analysis.get("urgency", "Medium").capitalize(),
             status="Active",
             place=location or "Kerala",
-            district="Kerala",
+            district=district,
+            created_by=user_id,
         )
         db.add(new_disaster)
         db.commit()
